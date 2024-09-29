@@ -18,13 +18,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('password'),
-        ]);
 
-        $this->call([DosenSeeder::class,]);
+        $this->call([UserSeeder::class,]);
         $this->call([JabatanPimpinanSeeder::class,]);
         $this->call([JurusanSeeder::class,]);
         $this->call([KelasSeeder::class,]);
@@ -32,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call([PimpinanProdiSeeder::class,]);
         $this->call([PimpinanJurusanSeeder::class,]);
         $this->call([prodiSeeder::class,]);
+        $this->call([DosenSeeder::class,]);
         $this->call([SmtThnakdSeeder::class,]);
     }
 }

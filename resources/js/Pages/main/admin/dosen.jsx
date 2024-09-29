@@ -3,134 +3,180 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
 import { FileUpload } from "primereact/fileupload";
-import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
 import { RadioButton } from "primereact/radiobutton";
-import { Rating } from "primereact/rating";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
 import { classNames } from "primereact/utils";
 import React, { useEffect, useRef, useState } from "react";
-import { ProductService } from "../../../demo/service/ProductService";
+// import { dosenService } from "../../../demo/service/dosenService";
+import { usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
+import { Dropdown } from "primereact/dropdown";
 
 const dosen = () => {
-    let emptyProduct = {
+    let emptydosen = {
         id: null,
-        name: "",
-        image: null,
-        description: "",
-        category: null,
-        price: 0,
-        quantity: 0,
-        rating: 0,
-        inventoryStatus: "INSTOCK",
+        user_id: null,
+        prodi_id: null,
+        nama_dosen: "",
+        nidn_dosen: "",
+        gender: "",
+        status_dosen: "",
     };
-
-    const [products, setProducts] = useState(null);
-    const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-    const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-    const [product, setProduct] = useState(emptyProduct);
-    const [selectedProducts, setSelectedProducts] = useState(null);
+    const { props } = usePage();
+    const { data_dosen, prodiOptions, userOptions } = props;
+    const [dosens, setdosens] = useState(data_dosen);
+    const [selectedProdi, setSelectedProdi] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [dosenDialog, setdosenDialog] = useState(false);
+    const [deletedosenDialog, setDeletedosenDialog] = useState(false);
+    const [deletedosensDialog, setDeletedosensDialog] = useState(false);
+    const [dosen, setdosen] = useState(emptydosen);
+    const [selecteddosens, setSelecteddosens] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
 
     useEffect(() => {
-        ProductService.getProducts().then((data) => setProducts(data));
+        setdosens(data_dosen);
+    }, [data_dosen]);
+
+    // Ambil data prodi dan user dari backend, gabungkan dalam satu useEffect
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch data prodi
+                const prodiResponse = await fetch("/api/prodi", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`, // Pastikan token ada
+                    },
+                });
+
+                if (!prodiResponse.ok) {
+                    throw new Error("Error fetching prodi data");
+                }
+
+                const prodiData = await prodiResponse.json();
+                setProdiOptions(
+                    prodiData.map((prodi) => ({
+                        label: prodi.nama_prodi,
+                        value: prodi.id,
+                    }))
+                );
+
+                // Fetch data users
+                const userResponse = await fetch("/api/users", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`, // Tambahkan token autentikasi
+                    },
+                });
+
+                if (!userResponse.ok) {
+                    throw new Error("Error fetching users data");
+                }
+
+                const userData = await userResponse.json();
+                setUserOptions(
+                    userData.map((user) => ({
+                        label: user.name,
+                        value: user.id,
+                    }))
+                );
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+            }
+        };
+
+        fetchData();
     }, []);
 
-    const formatCurrency = (value) => {
-        return value.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-        });
-    };
-
     const openNew = () => {
-        setProduct(emptyProduct);
+        setdosen(emptydosen);
         setSubmitted(false);
-        setProductDialog(true);
+        setdosenDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setProductDialog(false);
+        setdosenDialog(false);
     };
 
-    const hideDeleteProductDialog = () => {
-        setDeleteProductDialog(false);
+    const hideDeletedosenDialog = () => {
+        setDeletedosenDialog(false);
     };
 
-    const hideDeleteProductsDialog = () => {
-        setDeleteProductsDialog(false);
+    const hideDeletedosensDialog = () => {
+        setDeletedosensDialog(false);
     };
 
-    const saveProduct = () => {
+    const savedosen = () => {
         setSubmitted(true);
 
-        if (product.name.trim()) {
-            let _products = [...products];
-            let _product = { ...product };
-            if (product.id) {
-                const index = findIndexById(product.id);
+        if (dosen.name.trim()) {
+            let _dosens = [...dosens];
+            let _dosen = { ...dosen };
+            if (dosen.id) {
+                const index = findIndexById(dosen.id);
 
-                _products[index] = _product;
+                _dosens[index] = _dosen;
                 toast.current.show({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Product Updated",
+                    detail: "dosen Updated",
                     life: 3000,
                 });
             } else {
-                _product.id = createId();
-                _product.code = createId();
-                _product.image = "product-placeholder.svg";
-                _products.push(_product);
+                _dosen.id = createId();
+                _dosen.code = createId();
+                _dosen.image = "dosen-placeholder.svg";
+                _dosens.push(_dosen);
                 toast.current.show({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Product Created",
+                    detail: "dosen Created",
                     life: 3000,
                 });
             }
 
-            setProducts(_products);
-            setProductDialog(false);
-            setProduct(emptyProduct);
+            setdosens(_dosens);
+            setdosenDialog(false);
+            setdosen(emptydosen);
         }
     };
 
-    const editProduct = (product) => {
-        setProduct({ ...product });
-        setProductDialog(true);
+    const editdosen = (dosen) => {
+        setdosen({ ...dosen });
+        setdosenDialog(true);
     };
 
-    const confirmDeleteProduct = (product) => {
-        setProduct(product);
-        setDeleteProductDialog(true);
+    const confirmDeletedosen = (dosen) => {
+        setdosen(dosen);
+        setDeletedosenDialog(true);
     };
 
-    const deleteProduct = () => {
-        let _products = products.filter((val) => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
+    const deletedosen = () => {
+        let _dosens = dosens.filter((val) => val.id !== dosen.id);
+        setdosens(_dosens);
+        setDeletedosenDialog(false);
+        setdosen(emptydosen);
         toast.current.show({
             severity: "success",
             summary: "Successful",
-            detail: "Product Deleted",
+            detail: "dosen Deleted",
             life: 3000,
         });
     };
 
     const findIndexById = (id) => {
         let index = -1;
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].id === id) {
+        for (let i = 0; i < dosens.length; i++) {
+            if (dosens[i].id === id) {
                 index = i;
                 break;
             }
@@ -154,44 +200,33 @@ const dosen = () => {
     };
 
     const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
+        setDeletedosensDialog(true);
     };
 
-    const deleteSelectedProducts = () => {
-        let _products = products.filter(
-            (val) => !selectedProducts.includes(val)
-        );
-        setProducts(_products);
-        setDeleteProductsDialog(false);
-        setSelectedProducts(null);
+    const deleteSelecteddosens = () => {
+        let _dosens = dosens.filter((val) => !selecteddosens.includes(val));
+        setdosens(_dosens);
+        setDeletedosensDialog(false);
+        setSelecteddosens(null);
         toast.current.show({
             severity: "success",
             summary: "Successful",
-            detail: "Products Deleted",
+            detail: "dosens Deleted",
             life: 3000,
         });
     };
 
     const onCategoryChange = (e) => {
-        let _product = { ...product };
-        _product["category"] = e.value;
-        setProduct(_product);
+        let _dosen = { ...dosen };
+        _dosen["category"] = e.value;
+        setdosen(_dosen);
     };
 
-    const onInputChange = (e, name) => {
-        const val = (e.target && e.target.value) || "";
-        let _product = { ...product };
-        _product[`${name}`] = val;
-
-        setProduct(_product);
-    };
-
-    const onInputNumberChange = (e, name) => {
-        const val = e.value || 0;
-        let _product = { ...product };
-        _product[`${name}`] = val;
-
-        setProduct(_product);
+    const onInputChange = (e, fieldName) => {
+        setDosen({
+            ...dosen,
+            [fieldName]: e.value,
+        });
     };
 
     const leftToolbarTemplate = () => {
@@ -210,7 +245,7 @@ const dosen = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
-                        disabled={!selectedProducts || !selectedProducts.length}
+                        disabled={!selecteddosens || !selecteddosens.length}
                     />
                 </div>
             </React.Fragment>
@@ -238,61 +273,38 @@ const dosen = () => {
         );
     };
 
-    const codeBodyTemplate = (rowData) => {
+    const namaBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Code</span>
-                {rowData.code}
+                <span className="p-column-title">Nama Dosen</span>
+                {rowData.nama_dosen}
             </>
         );
     };
 
-    const nameBodyTemplate = (rowData) => {
+    const prodiBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Name</span>
-                {rowData.name}
+                <span className="p-column-title">Prodi</span>
+                {rowData.r_prodi.nama_prodi}
             </>
         );
     };
 
-    const imageBodyTemplate = (rowData) => {
+    const nidnBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Image</span>
-                <img
-                    src={`/demo/images/product/${rowData.image}`}
-                    alt={rowData.image}
-                    className="shadow-2"
-                    width="100"
-                />
+                <span className="p-column-title">NIDN</span>
+                {rowData.nidn_dosen}
             </>
         );
     };
 
-    const priceBodyTemplate = (rowData) => {
+    const genderBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
-            </>
-        );
-    };
-
-    const categoryBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Category</span>
-                {rowData.category}
-            </>
-        );
-    };
-
-    const ratingBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Reviews</span>
-                <Rating value={rowData.rating} readOnly cancel={false} />
+                <span className="p-column-title">Gender</span>
+                {rowData.gender}
             </>
         );
     };
@@ -301,11 +313,7 @@ const dosen = () => {
         return (
             <>
                 <span className="p-column-title">Status</span>
-                <span
-                    className={`product-badge status-${rowData.inventoryStatus.toLowerCase()}`}
-                >
-                    {rowData.inventoryStatus}
-                </span>
+                {rowData.status_dosen === 1 ? "Aktif" : "Tidak Aktif"}
             </>
         );
     };
@@ -318,13 +326,13 @@ const dosen = () => {
                     severity="success"
                     rounded
                     className="mr-2"
-                    onClick={() => editProduct(rowData)}
+                    onClick={() => editdosen(rowData)}
                 />
                 <Button
                     icon="pi pi-trash"
                     severity="warning"
                     rounded
-                    onClick={() => confirmDeleteProduct(rowData)}
+                    onClick={() => confirmDeletedosen(rowData)}
                 />
             </>
         );
@@ -332,7 +340,7 @@ const dosen = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Manage Products</h5>
+            <h5 className="m-0">Dosen</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -344,7 +352,7 @@ const dosen = () => {
         </div>
     );
 
-    const productDialogFooter = (
+    const dosenDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -352,43 +360,33 @@ const dosen = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button
-                label="Save"
-                icon="pi pi-check"
-                text
-                onClick={saveProduct}
-            />
+            <Button label="Save" icon="pi pi-check" text onClick={savedosen} />
         </>
     );
-    const deleteProductDialogFooter = (
+    const deletedosenDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeleteProductDialog}
+                onClick={hideDeletedosenDialog}
             />
-            <Button
-                label="Yes"
-                icon="pi pi-check"
-                text
-                onClick={deleteProduct}
-            />
+            <Button label="Yes" icon="pi pi-check" text onClick={deletedosen} />
         </>
     );
-    const deleteProductsDialogFooter = (
+    const deletedosensDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeleteProductsDialog}
+                onClick={hideDeletedosensDialog}
             />
             <Button
                 label="Yes"
                 icon="pi pi-check"
                 text
-                onClick={deleteSelectedProducts}
+                onClick={deleteSelecteddosens}
             />
         </>
     );
@@ -407,20 +405,20 @@ const dosen = () => {
 
                         <DataTable
                             ref={dt}
-                            value={products}
-                            selection={selectedProducts}
+                            value={dosens}
+                            selection={selecteddosens}
                             onSelectionChange={(e) =>
-                                setSelectedProducts(e.value)
+                                setSelecteddosens(e.value)
                             }
-                            dataKey="id"
+                            dataKey="id-dosen"
                             paginator
                             rows={10}
                             rowsPerPageOptions={[5, 10, 25]}
                             className="datatable-responsive"
                             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} dosens"
                             globalFilter={globalFilter}
-                            emptyMessage="No products found."
+                            emptyMessage="No dosens found."
                             header={header}
                             responsiveLayout="scroll"
                         >
@@ -429,48 +427,37 @@ const dosen = () => {
                                 headerStyle={{ width: "4rem" }}
                             ></Column>
                             <Column
-                                field="code"
-                                header="Code"
+                                field="Nama"
+                                header="Nama"
                                 sortable
-                                body={codeBodyTemplate}
+                                body={namaBodyTemplate}
                                 headerStyle={{ minWidth: "15rem" }}
                             ></Column>
                             <Column
-                                field="name"
-                                header="Name"
+                                field="Prodi"
+                                header="Prodi"
                                 sortable
-                                body={nameBodyTemplate}
+                                body={prodiBodyTemplate}
                                 headerStyle={{ minWidth: "15rem" }}
                             ></Column>
                             <Column
-                                header="Image"
-                                body={imageBodyTemplate}
-                            ></Column>
-                            <Column
-                                field="price"
-                                header="Price"
-                                body={priceBodyTemplate}
+                                field="NIDN"
+                                header="NIDN"
+                                body={nidnBodyTemplate}
                                 sortable
                             ></Column>
                             <Column
-                                field="category"
-                                header="Category"
+                                field="Gender"
+                                header="Gender"
                                 sortable
-                                body={categoryBodyTemplate}
+                                body={genderBodyTemplate}
                                 headerStyle={{ minWidth: "10rem" }}
                             ></Column>
                             <Column
-                                field="rating"
-                                header="Reviews"
-                                body={ratingBodyTemplate}
-                                sortable
-                            ></Column>
-                            <Column
-                                field="inventoryStatus"
+                                field="Status"
                                 header="Status"
                                 body={statusBodyTemplate}
                                 sortable
-                                headerStyle={{ minWidth: "10rem" }}
                             ></Column>
                             <Column
                                 body={actionBodyTemplate}
@@ -479,185 +466,188 @@ const dosen = () => {
                         </DataTable>
 
                         <Dialog
-                            visible={productDialog}
+                            visible={dosenDialog}
                             style={{ width: "450px" }}
-                            header="Product Details"
+                            header="Dosen Details"
                             modal
                             className="p-fluid"
-                            footer={productDialogFooter}
+                            footer={dosenDialogFooter}
                             onHide={hideDialog}
                         >
-                            {product.image && (
-                                <img
-                                    src={`/demo/images/product/${product.image}`}
-                                    alt={product.image}
-                                    width="150"
-                                    className="mt-0 mx-auto mb-5 block shadow-2"
-                                />
-                            )}
+                            {/* Nama Dosen */}
                             <div className="field">
-                                <label htmlFor="name">Name</label>
+                                <label htmlFor="nama_dosen">Nama Dosen</label>
                                 <InputText
-                                    id="name"
-                                    value={product.name}
-                                    onChange={(e) => onInputChange(e, "name")}
+                                    id="nama_dosen"
+                                    value={dosen.nama_dosen} // Sesuaikan dengan state dosen
+                                    onChange={(e) =>
+                                        onInputChange(e, "nama_dosen")
+                                    }
                                     required
                                     autoFocus
                                     className={classNames({
-                                        "p-invalid": submitted && !product.name,
+                                        "p-invalid":
+                                            submitted && !dosen.nama_dosen,
                                     })}
                                 />
-                                {submitted && !product.name && (
+                                {submitted && !dosen.nama_dosen && (
                                     <small className="p-invalid">
-                                        Name is required.
+                                        Nama Dosen is required.
                                     </small>
                                 )}
                             </div>
-                            <div className="field">
-                                <label htmlFor="description">Description</label>
-                                <InputTextarea
-                                    id="description"
-                                    value={product.description}
-                                    onChange={(e) =>
-                                        onInputChange(e, "description")
-                                    }
-                                    required
-                                    rows={3}
-                                    cols={20}
-                                />
+
+                            {/* User ID */}
+                            <div>
+                                <div className="field">
+                                    <label htmlFor="user_id">User</label>
+                                    <Dropdown
+                                        id="user_id"
+                                        value={dosen.user_id}
+                                        options={userOptions}
+                                        onChange={(e) =>
+                                            onInputChange(e, "user_id")
+                                        }
+                                        placeholder="Select a User"
+                                        required
+                                    />
+                                    {submitted && !dosen.user_id && (
+                                        <small className="p-invalid">
+                                            User is required.
+                                        </small>
+                                    )}
+                                </div>
                             </div>
 
+                            {/* Prodi ID */}
                             <div className="field">
-                                <label className="mb-3">Category</label>
+                                <label htmlFor="prodi_id">Prodi</label>
+                                <Dropdown
+                                    id="prodi_id"
+                                    value={dosen.prodi_id}
+                                    onChange={(e) =>
+                                        onInputChange(e, "prodi_id")
+                                    }
+                                    options={prodiOptions}
+                                    placeholder="Select a Prodi"
+                                    optionLabel="label"
+                                    required
+                                />
+                                {submitted && !dosen.prodi_id && (
+                                    <small className="p-invalid">
+                                        Prodi is required.
+                                    </small>
+                                )}
+                            </div>
+
+                            {/* NIDN */}
+                            <div className="field">
+                                <label htmlFor="nidn_dosen">NIDN</label>
+                                <InputText
+                                    id="nidn_dosen"
+                                    value={dosen.nidn_dosen}
+                                    onChange={(e) =>
+                                        onInputChange(e, "nidn_dosen")
+                                    }
+                                    required
+                                />
+                                {submitted && !dosen.nidn_dosen && (
+                                    <small className="p-invalid">
+                                        NIDN is required.
+                                    </small>
+                                )}
+                            </div>
+
+                            {/* Gender */}
+                            <div className="field">
+                                <label htmlFor="gender">Gender</label>
+                                <Dropdown
+                                    id="gender"
+                                    value={dosen.gender}
+                                    onChange={(e) => onInputChange(e, "gender")}
+                                    options={[
+                                        { label: "Male", value: "Male" },
+                                        { label: "Female", value: "Female" },
+                                    ]}
+                                    placeholder="Select a Gender"
+                                    required
+                                />
+                                {submitted && !dosen.gender && (
+                                    <small className="p-invalid">
+                                        Gender is required.
+                                    </small>
+                                )}
+                            </div>
+
+                            {/* Status Dosen */}
+                            <div className="field">
+                                <label className="mb-3">Status Dosen</label>
                                 <div className="formgrid grid">
                                     <div className="field-radiobutton col-6">
                                         <RadioButton
-                                            inputId="category1"
-                                            name="category"
-                                            value="Accessories"
+                                            inputId="status1"
+                                            name="status"
+                                            value="0"
                                             onChange={onCategoryChange}
-                                            checked={
-                                                product.category ===
-                                                "Accessories"
-                                            }
+                                            checked={dosen.status_dosen === "0"}
                                         />
-                                        <label htmlFor="category1">
-                                            Accessories
+                                        <label htmlFor="status1">
+                                            Tidak Aktif
                                         </label>
                                     </div>
                                     <div className="field-radiobutton col-6">
                                         <RadioButton
-                                            inputId="category2"
-                                            name="category"
-                                            value="Clothing"
+                                            inputId="status2"
+                                            name="status"
+                                            value="1"
                                             onChange={onCategoryChange}
-                                            checked={
-                                                product.category === "Clothing"
-                                            }
+                                            checked={dosen.status_dosen === "1"}
                                         />
-                                        <label htmlFor="category2">
-                                            Clothing
-                                        </label>
+                                        <label htmlFor="status2">Aktif</label>
                                     </div>
-                                    <div className="field-radiobutton col-6">
-                                        <RadioButton
-                                            inputId="category3"
-                                            name="category"
-                                            value="Electronics"
-                                            onChange={onCategoryChange}
-                                            checked={
-                                                product.category ===
-                                                "Electronics"
-                                            }
-                                        />
-                                        <label htmlFor="category3">
-                                            Electronics
-                                        </label>
-                                    </div>
-                                    <div className="field-radiobutton col-6">
-                                        <RadioButton
-                                            inputId="category4"
-                                            name="category"
-                                            value="Fitness"
-                                            onChange={onCategoryChange}
-                                            checked={
-                                                product.category === "Fitness"
-                                            }
-                                        />
-                                        <label htmlFor="category4">
-                                            Fitness
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="formgrid grid">
-                                <div className="field col">
-                                    <label htmlFor="price">Price</label>
-                                    <InputNumber
-                                        id="price"
-                                        value={product.price}
-                                        onValueChange={(e) =>
-                                            onInputNumberChange(e, "price")
-                                        }
-                                        mode="currency"
-                                        currency="USD"
-                                        locale="en-US"
-                                    />
-                                </div>
-                                <div className="field col">
-                                    <label htmlFor="quantity">Quantity</label>
-                                    <InputNumber
-                                        id="quantity"
-                                        value={product.quantity}
-                                        onValueChange={(e) =>
-                                            onInputNumberChange(e, "quantity")
-                                        }
-                                        integeronly="true"
-                                    />
                                 </div>
                             </div>
                         </Dialog>
 
                         <Dialog
-                            visible={deleteProductDialog}
+                            visible={deletedosenDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deleteProductDialogFooter}
-                            onHide={hideDeleteProductDialog}
+                            footer={deletedosenDialogFooter}
+                            onHide={hideDeletedosenDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {product && (
+                                {dosen && (
                                     <span>
                                         Are you sure you want to delete{" "}
-                                        <b>{product.name}</b>?
+                                        <b>{dosen.name}</b>?
                                     </span>
                                 )}
                             </div>
                         </Dialog>
 
                         <Dialog
-                            visible={deleteProductsDialog}
+                            visible={deletedosensDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deleteProductsDialogFooter}
-                            onHide={hideDeleteProductsDialog}
+                            footer={deletedosensDialogFooter}
+                            onHide={hideDeletedosensDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {product && (
+                                {dosen && (
                                     <span>
                                         Are you sure you want to delete the
-                                        selected products?
+                                        selected dosens?
                                     </span>
                                 )}
                             </div>

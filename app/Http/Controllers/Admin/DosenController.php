@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dosen;
+use App\Models\Prodi;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,7 +16,18 @@ class DosenController extends Controller
      */
     public function index()
     {
-        return Inertia::render('main/admin/dosen');
+        $data_dosen = Dosen::with('r_user', 'r_prodi')
+            ->orderByDesc('id_dosen')
+            ->get();
+
+        $prodi = Prodi::all();
+        $users = User::all();
+        // dd($data_dosen->toArray());
+        return Inertia::render('main/admin/dosen', [
+            'data_dosen' => $data_dosen,
+            'prodiOptions' => $prodi->map(fn($p) => ['label' => $p->nama_prodi, 'value' => $p->id]),
+            'userOptions' => $users->map(fn($u) => ['label' => $u->name, 'value' => $u->id])
+        ]);
     }
 
     /**

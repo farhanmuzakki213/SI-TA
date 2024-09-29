@@ -63,4 +63,9 @@ class ProdiController extends Controller
     {
         //
     }
+
+    public function endpoinProdi()
+    {
+        //
+    }
 }
