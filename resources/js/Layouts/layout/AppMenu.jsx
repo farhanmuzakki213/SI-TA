@@ -18,6 +18,12 @@ const AppMenu = () => {
                 { label: 'table', icon: 'pi pi-fw pi-table', to: route('table') },
             ]
         },
+        {
+            label: 'Data Master',
+            items: [
+                { label: 'Dosen', icon: 'pi pi-fw pi-user', to: route('dosen') },
+            ]
+        },
     ];
 
     return (

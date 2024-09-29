@@ -25,12 +25,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})
-    ->name('dashboard');
-//    ->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -38,21 +32,30 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::get('/uikit/button', function () {
-    return Inertia::render('main/uikit/button/page');
-})->name('button');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 
-Route::get('/uikit/chart', function () {
-    return Inertia::render('main/uikit/charts/index');
-})->name('chart');
+    Route::get('/uikit/button', function () {
+        return Inertia::render('main/uikit/button/page');
+    })->name('button');
 
-Route::get('/uikit/file', function () {
-    return Inertia::render('main/uikit/file/index');
-})->name('file');
+    Route::get('/uikit/chart', function () {
+        return Inertia::render('main/uikit/charts/index');
+    })->name('chart');
 
-Route::get('/uikit/table', function () {
-    return Inertia::render('main/uikit/table/index');
-})->name('table');
+    Route::get('/uikit/file', function () {
+        return Inertia::render('main/uikit/file/index');
+    })->name('file');
+
+    Route::get('/uikit/table', function () {
+        return Inertia::render('main/uikit/table/index');
+    })->name('table');
+
+    Route::get('/Dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])
+        ->name('dosen');
+});
 
 
 
