@@ -9,14 +9,14 @@ import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
 import { classNames } from "primereact/utils";
 import React, { useEffect, useRef, useState } from "react";
-// import { dosenService } from "../../../demo/service/dosenService";
-import { usePage } from "@inertiajs/react";
+import { usePage, router } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
 import { Dropdown } from "primereact/dropdown";
+import { Inertia } from '@inertiajs/inertia';
 
 const dosen = () => {
     let emptydosen = {
-        id: null,
+        id_dosen: null,
         user_id: null,
         prodi_id: null,
         nama_dosen: "",
@@ -25,10 +25,10 @@ const dosen = () => {
         status_dosen: "",
     };
     const { props } = usePage();
-    const { data_dosen, prodiOptions, userOptions } = props;
-    const [dosens, setdosens] = useState(data_dosen);
-    const [selectedProdi, setSelectedProdi] = useState(null);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const { data_dosen, prodiOptions: initialProdiOptions, userOptions: initialUserOptions } = props;
+    const [dosens, setdosens] = useState(false);
+    const [prodiOptions, setProdiOptions] = useState([]);
+    const [userOptions, setUserOptions] = useState([]);
     const [dosenDialog, setdosenDialog] = useState(false);
     const [deletedosenDialog, setDeletedosenDialog] = useState(false);
     const [deletedosensDialog, setDeletedosensDialog] = useState(false);
@@ -40,61 +40,10 @@ const dosen = () => {
     const dt = useRef(null);
 
     useEffect(() => {
+        setProdiOptions(initialProdiOptions);
+        setUserOptions(initialUserOptions);
         setdosens(data_dosen);
-    }, [data_dosen]);
-
-    // Ambil data prodi dan user dari backend, gabungkan dalam satu useEffect
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch data prodi
-                const prodiResponse = await fetch("/api/prodi", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "token"
-                        )}`, // Pastikan token ada
-                    },
-                });
-
-                if (!prodiResponse.ok) {
-                    throw new Error("Error fetching prodi data");
-                }
-
-                const prodiData = await prodiResponse.json();
-                setProdiOptions(
-                    prodiData.map((prodi) => ({
-                        label: prodi.nama_prodi,
-                        value: prodi.id,
-                    }))
-                );
-
-                // Fetch data users
-                const userResponse = await fetch("/api/users", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "token"
-                        )}`, // Tambahkan token autentikasi
-                    },
-                });
-
-                if (!userResponse.ok) {
-                    throw new Error("Error fetching users data");
-                }
-
-                const userData = await userResponse.json();
-                setUserOptions(
-                    userData.map((user) => ({
-                        label: user.name,
-                        value: user.id,
-                    }))
-                );
-            } catch (error) {
-                console.error("Failed to fetch data:", error);
-            }
-        };
-
-        fetchData();
-    }, []);
+    }, [initialProdiOptions, initialUserOptions, data_dosen]);
 
     const openNew = () => {
         setdosen(emptydosen);
@@ -114,46 +63,65 @@ const dosen = () => {
     const hideDeletedosensDialog = () => {
         setDeletedosensDialog(false);
     };
-
-    const savedosen = () => {
+    const saveDosen = async () => {
         setSubmitted(true);
 
-        if (dosen.name.trim()) {
-            let _dosens = [...dosens];
+        if (dosen.nama_dosen && dosen.user_id && dosen.prodi_id && dosen.nidn_dosen && dosen.gender && dosen.status_dosen) {
             let _dosen = { ...dosen };
-            if (dosen.id) {
-                const index = findIndexById(dosen.id);
 
-                _dosens[index] = _dosen;
+            // Check if we're creating a new dosen
+            if (dosen.id_dosen === null) {
+                const existingIds = dosens.map(d => d.id_dosen);
+                _dosen.id_dosen = createId(existingIds);
+            }
+
+            // Use Inertia to send data to the backend
+            try {
+                if (dosen.id_dosen) {
+                    // Update existing dosen
+                    await Inertia.put(`/dosen/${dosen.id_dosen}`, _dosen);
+                    toast.current.show({
+                        severity: "success",
+                        summary: "Successful",
+                        detail: "Dosen Updated",
+                        life: 3000,
+                    });
+                } else {
+                    // Create new dosen
+                    e.preventDefault()
+                    router.post('/dosen', _dosen);
+                }
+
+                // Reset dosen state and close the dialog
+                setdosens((prevDosens) => [...prevDosens, _dosen]);
+                setdosen(emptydosen);
+                setdosenDialog(false);
+            } catch (error) {
+                console.error("Error saving dosen:", error);
                 toast.current.show({
-                    severity: "success",
-                    summary: "Successful",
-                    detail: "dosen Updated",
-                    life: 3000,
-                });
-            } else {
-                _dosen.id = createId();
-                _dosen.code = createId();
-                _dosen.image = "dosen-placeholder.svg";
-                _dosens.push(_dosen);
-                toast.current.show({
-                    severity: "success",
-                    summary: "Successful",
-                    detail: "dosen Created",
+                    severity: "error",
+                    summary: "Error",
+                    detail: "Failed to save dosen.",
                     life: 3000,
                 });
             }
-
-            setdosens(_dosens);
-            setdosenDialog(false);
-            setdosen(emptydosen);
+        } else {
+            // Handle validation failure
+            toast.current.show({
+                severity: "error",
+                summary: "Error",
+                detail: "Please fill in all required fields.",
+                life: 3000,
+            });
         }
     };
 
+    // Edit function remains the same
     const editdosen = (dosen) => {
         setdosen({ ...dosen });
         setdosenDialog(true);
     };
+
 
     const confirmDeletedosen = (dosen) => {
         setdosen(dosen);
@@ -161,7 +129,7 @@ const dosen = () => {
     };
 
     const deletedosen = () => {
-        let _dosens = dosens.filter((val) => val.id !== dosen.id);
+        let _dosens = dosens.filter((val) => val.id_dosen !== dosen.id_dosen);
         setdosens(_dosens);
         setDeletedosenDialog(false);
         setdosen(emptydosen);
@@ -173,10 +141,10 @@ const dosen = () => {
         });
     };
 
-    const findIndexById = (id) => {
+    const findIndexById = (id_dosen) => {
         let index = -1;
         for (let i = 0; i < dosens.length; i++) {
-            if (dosens[i].id === id) {
+            if (dosens[i].id_dosen === id_dosen) {
                 index = i;
                 break;
             }
@@ -185,16 +153,18 @@ const dosen = () => {
         return index;
     };
 
-    const createId = () => {
-        let id = "";
-        let chars =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    };
+    const createId = (existingIds) => {
+        let id_dosen;
+        const generateUniqueId = () => {
+            return Math.floor(10000 + Math.random() * 90000);
+        };
 
+        do {
+            id_dosen = generateUniqueId();
+        } while (existingIds.includes(id_dosen));
+
+        return id_dosen;
+    };
     const exportCSV = () => {
         dt.current.exportCSV();
     };
@@ -216,19 +186,22 @@ const dosen = () => {
         });
     };
 
-    const onCategoryChange = (e) => {
+    const onInputChange = (e, field) => {
+        const value = e.target ? e.target.value : e.value;
+        setdosen((prevState) => ({
+            ...prevState,
+            [field]: value,
+        }));
+    };
+
+
+
+    const onStatusChange = (e) => {
         let _dosen = { ...dosen };
-        _dosen["category"] = e.value;
+        _dosen['status_dosen'] = e.value;
+
         setdosen(_dosen);
     };
-
-    const onInputChange = (e, fieldName) => {
-        setDosen({
-            ...dosen,
-            [fieldName]: e.value,
-        });
-    };
-
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
@@ -286,7 +259,7 @@ const dosen = () => {
         return (
             <>
                 <span className="p-column-title">Prodi</span>
-                {rowData.r_prodi.nama_prodi}
+                {rowData.r_prodi ? rowData.r_prodi.nama_prodi : 'N/A'}
             </>
         );
     };
@@ -313,7 +286,7 @@ const dosen = () => {
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status_dosen === 1 ? "Aktif" : "Tidak Aktif"}
+                {rowData.status_dosen === "1" ? "Aktif" : "Tidak Aktif"}
             </>
         );
     };
@@ -360,7 +333,7 @@ const dosen = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={savedosen} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveDosen} />
         </>
     );
     const deletedosenDialogFooter = (
@@ -410,7 +383,7 @@ const dosen = () => {
                             onSelectionChange={(e) =>
                                 setSelecteddosens(e.value)
                             }
-                            dataKey="id-dosen"
+                            dataKey="id_dosen"
                             paginator
                             rows={10}
                             rowsPerPageOptions={[5, 10, 25]}
@@ -479,44 +452,33 @@ const dosen = () => {
                                 <label htmlFor="nama_dosen">Nama Dosen</label>
                                 <InputText
                                     id="nama_dosen"
-                                    value={dosen.nama_dosen} // Sesuaikan dengan state dosen
-                                    onChange={(e) =>
-                                        onInputChange(e, "nama_dosen")
-                                    }
+                                    value={dosen.nama_dosen || ''}  // Menggunakan state dosen
+                                    onChange={(e) => onInputChange(e, "nama_dosen")}
                                     required
                                     autoFocus
                                     className={classNames({
-                                        "p-invalid":
-                                            submitted && !dosen.nama_dosen,
+                                        "p-invalid": submitted && !dosen.nama_dosen,
                                     })}
                                 />
                                 {submitted && !dosen.nama_dosen && (
-                                    <small className="p-invalid">
-                                        Nama Dosen is required.
-                                    </small>
+                                    <small className="p-invalid">Nama Dosen is required.</small>
                                 )}
                             </div>
 
                             {/* User ID */}
-                            <div>
-                                <div className="field">
-                                    <label htmlFor="user_id">User</label>
-                                    <Dropdown
-                                        id="user_id"
-                                        value={dosen.user_id}
-                                        options={userOptions}
-                                        onChange={(e) =>
-                                            onInputChange(e, "user_id")
-                                        }
-                                        placeholder="Select a User"
-                                        required
-                                    />
-                                    {submitted && !dosen.user_id && (
-                                        <small className="p-invalid">
-                                            User is required.
-                                        </small>
-                                    )}
-                                </div>
+                            <div className="field">
+                                <label htmlFor="user_id">User</label>
+                                <Dropdown
+                                    id="user_id"
+                                    value={dosen.user_id || ''} // Menggunakan state dosen
+                                    options={userOptions}
+                                    onChange={(e) => onInputChange(e, "user_id")}
+                                    placeholder="Select a User"
+                                    required
+                                />
+                                {submitted && !dosen.user_id && (
+                                    <small className="p-invalid">User is required.</small>
+                                )}
                             </div>
 
                             {/* Prodi ID */}
@@ -524,37 +486,33 @@ const dosen = () => {
                                 <label htmlFor="prodi_id">Prodi</label>
                                 <Dropdown
                                     id="prodi_id"
-                                    value={dosen.prodi_id}
-                                    onChange={(e) =>
-                                        onInputChange(e, "prodi_id")
-                                    }
+                                    value={dosen.prodi_id || ''} // Menggunakan state dosen
+                                    onChange={(e) => onInputChange(e, "prodi_id")}
                                     options={prodiOptions}
                                     placeholder="Select a Prodi"
                                     optionLabel="label"
                                     required
                                 />
                                 {submitted && !dosen.prodi_id && (
-                                    <small className="p-invalid">
-                                        Prodi is required.
-                                    </small>
+                                    <small className="p-invalid">Prodi is required.</small>
                                 )}
                             </div>
+
 
                             {/* NIDN */}
                             <div className="field">
                                 <label htmlFor="nidn_dosen">NIDN</label>
-                                <InputText
+                                <input
+                                    type="number"
                                     id="nidn_dosen"
-                                    value={dosen.nidn_dosen}
-                                    onChange={(e) =>
-                                        onInputChange(e, "nidn_dosen")
-                                    }
+                                    value={dosen.nidn_dosen || ''}
+                                    onChange={(e) => onInputChange(e, "nidn_dosen")}
                                     required
+                                    min="0"
+                                    className="p-inputtext p-component"
                                 />
                                 {submitted && !dosen.nidn_dosen && (
-                                    <small className="p-invalid">
-                                        NIDN is required.
-                                    </small>
+                                    <small className="p-invalid">NIDN is required.</small>
                                 )}
                             </div>
 
@@ -563,19 +521,17 @@ const dosen = () => {
                                 <label htmlFor="gender">Gender</label>
                                 <Dropdown
                                     id="gender"
-                                    value={dosen.gender}
+                                    value={dosen.gender || ''} // Menggunakan state dosen
                                     onChange={(e) => onInputChange(e, "gender")}
                                     options={[
-                                        { label: "Male", value: "Male" },
-                                        { label: "Female", value: "Female" },
+                                        { label: "laki-laki", value: "laki-laki" },
+                                        { label: "perempuan", value: "perempuan" },
                                     ]}
                                     placeholder="Select a Gender"
                                     required
                                 />
                                 {submitted && !dosen.gender && (
-                                    <small className="p-invalid">
-                                        Gender is required.
-                                    </small>
+                                    <small className="p-invalid">Gender is required.</small>
                                 )}
                             </div>
 
@@ -586,21 +542,19 @@ const dosen = () => {
                                     <div className="field-radiobutton col-6">
                                         <RadioButton
                                             inputId="status1"
-                                            name="status"
+                                            name="status_dosen"
                                             value="0"
-                                            onChange={onCategoryChange}
+                                            onChange={onStatusChange}
                                             checked={dosen.status_dosen === "0"}
                                         />
-                                        <label htmlFor="status1">
-                                            Tidak Aktif
-                                        </label>
+                                        <label htmlFor="status1">Tidak Aktif</label>
                                     </div>
                                     <div className="field-radiobutton col-6">
                                         <RadioButton
                                             inputId="status2"
-                                            name="status"
+                                            name="status_dosen"
                                             value="1"
-                                            onChange={onCategoryChange}
+                                            onChange={onStatusChange}
                                             checked={dosen.status_dosen === "1"}
                                         />
                                         <label htmlFor="status2">Aktif</label>
@@ -608,7 +562,6 @@ const dosen = () => {
                                 </div>
                             </div>
                         </Dialog>
-
                         <Dialog
                             visible={deletedosenDialog}
                             style={{ width: "450px" }}

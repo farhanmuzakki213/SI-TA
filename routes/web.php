@@ -52,13 +52,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/uikit/table', function () {
         return Inertia::render('main/uikit/table/index');
     })->name('table');
-
-    Route::get('/Dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])
-        ->name('dosen');
+});
+Route::middleware('auth')->group(function () {
+    Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');
+    Route::post('/dosen/store', [\App\Http\Controllers\Admin\DosenController::class, 'store'])->name('dosen.store');
+    Route::put('/dosen/{id}/update', [\App\Http\Controllers\Admin\DosenController::class, 'update'])->name('dosen.update');
+    Route::delete('/dosen/{dosen}/delete', [\App\Http\Controllers\Admin\DosenController::class, 'destroy'])->name('dosen.destroy');
+    Route::delete('/dosen/destroyMultiple', [\App\Http\Controllers\Admin\DosenController::class, 'destroyMultiple'])->name('dosen.destroyMultiple');
 });
 
 
-
-
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

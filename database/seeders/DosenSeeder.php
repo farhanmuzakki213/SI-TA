@@ -16,7 +16,6 @@ class DosenSeeder extends Seeder
     public function run()
     {
         $dosenData = [
-            [13, 2 , 2 ,'ALDE ALANDA, S.Kom, M.T', '0025088802', 'Laki-laki', '1'],
             [14, 3 , 2 ,'ALDO ERIANDA, M.T, S.ST', '003078904',  'Laki-laki','1'],
             [40, 4 , 2 ,'CIPTO PRABOWO, S.T, M.T', '0002037410',  'Laki-laki', '1'],
             [46, 5 , 2 ,'DEDDY PRAYAMA, S.Kom, M.ISD', '0015048105', 'Laki-laki', '1'],

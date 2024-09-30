@@ -13,4 +13,9 @@ class Prodi extends Model
     ];
     protected $table = 'prodis';
     protected $primaryKey = 'id_prodi';
+
+    public function dosens()
+    {
+        return $this->hasMany(Dosen::class, 'prodi_id');
+    }
 }
