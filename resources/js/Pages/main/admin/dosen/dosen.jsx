@@ -1,17 +1,15 @@
 import { Button } from "primereact/button";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
-import { FileUpload } from "primereact/fileupload";
 import { InputText } from "primereact/inputtext";
-import { RadioButton } from "primereact/radiobutton";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
-import { classNames } from "primereact/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import { Dropdown } from "primereact/dropdown";
+import DosenDataTable from './component/DosenDataTable';
+import DosenForm from './component/DosenForm';
+import CSVExportComponent from '@/Components/CSVExportComponent';
+import CSVImportComponent from '@/Components/CSVImportComponent';
 
 const dosen = () => {
     let emptydosen = {
@@ -23,6 +21,7 @@ const dosen = () => {
         gender: "",
         status_dosen: "",
     };
+
     const { props } = usePage();
     const { data_dosen, prodiOptions: initialProdiOptions, userOptions: initialUserOptions } = props;
     const [dosens, setdosens] = useState(false);
@@ -167,9 +166,6 @@ const dosen = () => {
 
         return id_dosen;
     };
-    const exportCSV = () => {
-        dt.current.exportCSV();
-    };
 
     const confirmDeleteSelected = () => {
         setDeletedosensDialog(true);
@@ -214,25 +210,6 @@ const dosen = () => {
             setSelecteddosens(null);
         }
     };
-
-
-
-    const onInputChange = (e, field) => {
-        const value = e.target ? e.target.value : e.value;
-        setdosen((prevState) => ({
-            ...prevState,
-            [field]: value,
-        }));
-    };
-
-
-
-    const onStatusChange = (e) => {
-        let _dosen = { ...dosen };
-        _dosen['status_dosen'] = e.value;
-
-        setdosen(_dosen);
-    };
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
@@ -256,89 +233,29 @@ const dosen = () => {
         );
     };
 
+    const columns = [
+        { header: 'ID', field: 'id_dosen' },
+        {
+            header: 'Name',
+            field: (dosen) => `"${dosen.nama_dosen}"`
+        },
+        { header: 'Prodi', field: 'r_prodi.nama_prodi' },
+        { header: 'Gender', field: 'gender' },
+        {
+            header: 'Status',
+            field: (dosen) => dosen.status_dosen === "1" ? "Aktif" : "Tidak Aktif"
+        }
+    ];
+    const handleImport = (importedData) => {
+        setDosens(prevDosens => [...prevDosens, ...importedData]);
+    };
+
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <FileUpload
-                    mode="basic"
-                    accept="image/*"
-                    maxFileSize={1000000}
-                    label="Import"
-                    chooseLabel="Import"
-                    className="mr-2 inline-block"
-                />
-                <Button
-                    label="Export"
-                    icon="pi pi-upload"
-                    severity="help"
-                    onClick={exportCSV}
-                />
+                <CSVImportComponent onImport={handleImport} toast={toast} />
+                <CSVExportComponent data={dosens} toast={toast} fileName="dosen_data.csv" columns={columns} />
             </React.Fragment>
-        );
-    };
-
-    const namaBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Nama Dosen</span>
-                {rowData.nama_dosen}
-            </>
-        );
-    };
-
-    const prodiBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Prodi</span>
-                {rowData.r_prodi ? rowData.r_prodi.nama_prodi : 'N/A'}
-            </>
-        );
-    };
-
-    const nidnBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">NIDN</span>
-                {rowData.nidn_dosen}
-            </>
-        );
-    };
-
-    const genderBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Gender</span>
-                {rowData.gender}
-            </>
-        );
-    };
-
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Status</span>
-                {rowData.status_dosen === "1" ? "Aktif" : "Tidak Aktif"}
-            </>
-        );
-    };
-
-    const actionBodyTemplate = (rowData) => {
-        return (
-            <>
-                <Button
-                    icon="pi pi-pencil"
-                    severity="success"
-                    rounded
-                    className="mr-2"
-                    onClick={() => editdosen(rowData)}
-                />
-                <Button
-                    icon="pi pi-trash"
-                    severity="warning"
-                    rounded
-                    onClick={() => confirmDeletedosen(rowData)}
-                />
-            </>
         );
     };
 
@@ -407,192 +324,27 @@ const dosen = () => {
                             right={rightToolbarTemplate}
                         ></Toolbar>
 
-                        <DataTable
-                            ref={dt}
-                            value={dosens}
-                            selection={selecteddosens}
-                            onSelectionChange={(e) =>
-                                setSelecteddosens(e.value)
-                            }
-                            dataKey="id_dosen"
-                            paginator
-                            rows={10}
-                            rowsPerPageOptions={[5, 10, 25]}
-                            className="datatable-responsive"
-                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} dosens"
+                        <DosenDataTable
+                            dosens={dosens}
+                            selecteddosens={selecteddosens}
+                            setSelecteddosens={setSelecteddosens}
                             globalFilter={globalFilter}
-                            emptyMessage="No dosens found."
                             header={header}
-                            responsiveLayout="scroll"
-                        >
-                            <Column
-                                selectionMode="multiple"
-                                headerStyle={{ width: "4rem" }}
-                            ></Column>
-                            <Column
-                                field="Nama"
-                                header="Nama"
-                                sortable
-                                body={namaBodyTemplate}
-                                headerStyle={{ minWidth: "15rem" }}
-                            ></Column>
-                            <Column
-                                field="Prodi"
-                                header="Prodi"
-                                sortable
-                                body={prodiBodyTemplate}
-                                headerStyle={{ minWidth: "15rem" }}
-                            ></Column>
-                            <Column
-                                field="NIDN"
-                                header="NIDN"
-                                body={nidnBodyTemplate}
-                                sortable
-                            ></Column>
-                            <Column
-                                field="Gender"
-                                header="Gender"
-                                sortable
-                                body={genderBodyTemplate}
-                                headerStyle={{ minWidth: "10rem" }}
-                            ></Column>
-                            <Column
-                                field="Status"
-                                header="Status"
-                                body={statusBodyTemplate}
-                                sortable
-                            ></Column>
-                            <Column
-                                body={actionBodyTemplate}
-                                headerStyle={{ minWidth: "10rem" }}
-                            ></Column>
-                        </DataTable>
+                            editdosen={editdosen}
+                            confirmDeletedosen={confirmDeletedosen}
+                        />
 
-                        <Dialog
-                            visible={dosenDialog}
-                            style={{ width: "450px" }}
-                            header="Dosen Details"
-                            modal
-                            className="p-fluid"
-                            footer={dosenDialogFooter}
-                            onHide={hideDialog}
-                        >
-                            {/* Nama Dosen */}
-                            <div className="field">
-                                <label htmlFor="nama_dosen">Nama Dosen</label>
-                                <InputText
-                                    id="nama_dosen"
-                                    value={dosen.nama_dosen || ''}  // Menggunakan state dosen
-                                    onChange={(e) => onInputChange(e, "nama_dosen")}
-                                    required
-                                    autoFocus
-                                    className={classNames({
-                                        "p-invalid": submitted && !dosen.nama_dosen,
-                                    })}
-                                />
-                                {submitted && !dosen.nama_dosen && (
-                                    <small className="p-invalid">Nama Dosen is required.</small>
-                                )}
-                            </div>
+                        <DosenForm
+                            dosenDialog={dosenDialog}
+                            dosen={dosen}
+                            setdosen={setdosen}
+                            submitted={submitted}
+                            userOptions={userOptions}
+                            prodiOptions={prodiOptions}
+                            dosenDialogFooter={dosenDialogFooter}
+                            hideDialog={hideDialog}
+                        />
 
-                            {/* User ID */}
-                            <div className="field">
-                                <label htmlFor="user_id">User</label>
-                                <Dropdown
-                                    id="user_id"
-                                    value={dosen.user_id || ''} // Menggunakan state dosen
-                                    options={userOptions}
-                                    onChange={(e) => onInputChange(e, "user_id")}
-                                    placeholder="Select a User"
-                                    required
-                                />
-                                {submitted && !dosen.user_id && (
-                                    <small className="p-invalid">User is required.</small>
-                                )}
-                            </div>
-
-                            {/* Prodi ID */}
-                            <div className="field">
-                                <label htmlFor="prodi_id">Prodi</label>
-                                <Dropdown
-                                    id="prodi_id"
-                                    value={dosen.prodi_id || ''} // Menggunakan state dosen
-                                    onChange={(e) => onInputChange(e, "prodi_id")}
-                                    options={prodiOptions}
-                                    placeholder="Select a Prodi"
-                                    optionLabel="label"
-                                    required
-                                />
-                                {submitted && !dosen.prodi_id && (
-                                    <small className="p-invalid">Prodi is required.</small>
-                                )}
-                            </div>
-
-
-                            {/* NIDN */}
-                            <div className="field">
-                                <label htmlFor="nidn_dosen">NIDN</label>
-                                <input
-                                    type="number"
-                                    id="nidn_dosen"
-                                    value={dosen.nidn_dosen || ''}
-                                    onChange={(e) => onInputChange(e, "nidn_dosen")}
-                                    required
-                                    min="0"
-                                    className="p-inputtext p-component"
-                                />
-                                {submitted && !dosen.nidn_dosen && (
-                                    <small className="p-invalid">NIDN is required.</small>
-                                )}
-                            </div>
-
-                            {/* Gender */}
-                            <div className="field">
-                                <label htmlFor="gender">Gender</label>
-                                <Dropdown
-                                    id="gender"
-                                    value={dosen.gender || ''} // Menggunakan state dosen
-                                    onChange={(e) => onInputChange(e, "gender")}
-                                    options={[
-                                        { label: "laki-laki", value: "laki-laki" },
-                                        { label: "perempuan", value: "perempuan" },
-                                    ]}
-                                    placeholder="Select a Gender"
-                                    required
-                                />
-                                {submitted && !dosen.gender && (
-                                    <small className="p-invalid">Gender is required.</small>
-                                )}
-                            </div>
-
-                            {/* Status Dosen */}
-                            <div className="field">
-                                <label className="mb-3">Status Dosen</label>
-                                <div className="formgrid grid">
-                                    <div className="field-radiobutton col-6">
-                                        <RadioButton
-                                            inputId="status1"
-                                            name="status"
-                                            value="0"
-                                            onChange={onStatusChange}
-                                            checked={dosen.status_dosen === "0"}
-                                        />
-                                        <label htmlFor="status1">Tidak Aktif</label>
-                                    </div>
-                                    <div className="field-radiobutton col-6">
-                                        <RadioButton
-                                            inputId="status2"
-                                            name="status"
-                                            value="1"
-                                            onChange={onStatusChange}
-                                            checked={dosen.status_dosen === "1"}
-                                        />
-                                        <label htmlFor="status2">Aktif</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </Dialog>
                         <Dialog
                             visible={deletedosenDialog}
                             style={{ width: "450px" }}
