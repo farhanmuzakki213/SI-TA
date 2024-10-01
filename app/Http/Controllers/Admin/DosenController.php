@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Dosen;
 use App\Models\Prodi;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Illuminate\Validation\Rules;
 
 class DosenController extends Controller
 {
@@ -51,10 +54,10 @@ class DosenController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->toArray());
         $validator = Validator::make($request->all(), [
             'id_dosen' => 'required',
-            'user_id' => 'required|exists:users,id',
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'prodi_id' => 'required|exists:prodis,id_prodi',
             'nama_dosen' => 'required|string',
             'nidn_dosen' => 'required|string',
@@ -62,24 +65,44 @@ class DosenController extends Controller
             'status_dosen' => 'required|string',
         ]);
 
-        // dd($validator);
         if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
+            return back()->with('error', $validator->errors()->first());
         }
-        $data = [
-            'id_dosen' => $request->id_dosen,
-            'user_id' => $request->user_id,
-            'prodi_id' => $request->prodi_id,
-            'nama_dosen' => $request->nama_dosen,
-            'nidn_dosen' => $request->nidn_dosen,
-            'gender' => $request->gender,
-            'status_dosen' => $request->status_dosen,
-        ];
 
-        $dosen = Dosen::create($data);
+        DB::beginTransaction();
+        try {
+            // Create user
+            $user = User::create([
+                'name' => $request->nama_dosen, // Ensure correct field
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        return back()->with('success', 'Dosen created successfully');
+            // Get user_id after creation
+            $user_id = $user->id;
+
+            // Create dosen
+            Dosen::create([
+                'id_dosen' => $request->id_dosen,
+                'user_id' => $user_id,
+                'prodi_id' => $request->prodi_id,
+                'nama_dosen' => $request->nama_dosen,
+                'nidn_dosen' => $request->nidn_dosen,
+                'gender' => $request->gender,
+                'status_dosen' => $request->status_dosen,
+            ]);
+
+            // Trigger registered event
+            event(new Registered($user));
+            DB::commit();
+
+            return back()->with('success', 'Dosen created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to create dosen');
+        }
     }
+
 
     /**
      * Display the specified resource.

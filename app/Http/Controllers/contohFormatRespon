@@ -1,0 +1,66 @@
+# cara debug
+public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_dosen' => 'required',
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'prodi_id' => 'required|exists:prodis,id_prodi',
+            'nama_dosen' => 'required|string',
+            'nidn_dosen' => 'required|string',
+            'gender' => 'required|string',
+            'status_dosen' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors occurred',
+                'errors' => $validator->errors()
+            ], 422); // HTTP 422 Unprocessable Entity
+        }
+
+        DB::beginTransaction();
+        try {
+            // Create user
+            $user = User::create([
+                'name' => $request->nama_dosen, // Ensure correct field
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            // Get user_id after creation
+            $user_id = $user->id;
+
+            // Create dosen
+            Dosen::create([
+                'id_dosen' => $request->id_dosen,
+                'user_id' => $user_id,
+                'prodi_id' => $request->prodi_id,
+                'nama_dosen' => $request->nama_dosen,
+                'nidn_dosen' => $request->nidn_dosen,
+                'gender' => $request->gender,
+                'status_dosen' => $request->status_dosen,
+            ]);
+
+            // Trigger registered event
+            event(new Registered($user));
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dosen created successfully',
+                'data' => [
+                    'user_id' => $user_id,
+                    'dosen_id' => $request->id_dosen,
+                ],
+            ], 201); // HTTP 201 Created
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create dosen',
+                'error' => $e->getMessage(),
+            ], 500); // HTTP 500 Internal Server Error
+        }
+    }

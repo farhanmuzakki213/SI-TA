@@ -14,19 +14,21 @@ import CSVImportComponent from '@/Components/CSVImportComponent';
 const dosen = () => {
     let emptydosen = {
         id_dosen: null,
-        user_id: null,
         prodi_id: null,
+        email: "",
+        password: "",
+        password_confirmation: "",
         nama_dosen: "",
         nidn_dosen: "",
         gender: "",
-        status_dosen: "",
+        status_dosen: ""
     };
 
+
     const { props } = usePage();
-    const { data_dosen, prodiOptions: initialProdiOptions, userOptions: initialUserOptions } = props;
+    const { data_dosen, prodiOptions: initialProdiOptions } = props;
     const [dosens, setdosens] = useState(false);
     const [prodiOptions, setProdiOptions] = useState([]);
-    const [userOptions, setUserOptions] = useState([]);
     const [dosenDialog, setdosenDialog] = useState(false);
     const [deletedosenDialog, setDeletedosenDialog] = useState(false);
     const [deletedosensDialog, setDeletedosensDialog] = useState(false);
@@ -39,9 +41,8 @@ const dosen = () => {
 
     useEffect(() => {
         setProdiOptions(initialProdiOptions);
-        setUserOptions(initialUserOptions);
         setdosens(data_dosen);
-    }, [initialProdiOptions, initialUserOptions, data_dosen]);
+    }, [initialProdiOptions, data_dosen]);
 
     const openNew = () => {
         setdosen(emptydosen);
@@ -64,73 +65,122 @@ const dosen = () => {
     const saveDosen = async () => {
         setSubmitted(true);
 
-        if (dosen.nama_dosen && dosen.user_id && dosen.prodi_id && dosen.nidn_dosen && dosen.gender && dosen.status_dosen) {
-            let _dosen = { ...dosen };
+        const requiredFieldsForCreate = [
+            dosen.nama_dosen,
+            dosen.prodi_id,
+            dosen.nidn_dosen,
+            dosen.gender,
+            dosen.status_dosen,
+            dosen.email,
+            dosen.password,
+            dosen.password_confirmation,
+        ];
 
-            // Check if we're creating a new dosen
-            if (!dosen.id_dosen) {
-                const existingIds = dosens.map(d => d.id_dosen); // Get existing IDs
-                _dosen.id_dosen = createId(existingIds); // Generate a unique ID for the new dosen
-            }
+        const requiredFieldsForUpdate = [
+            dosen.nama_dosen,
+            dosen.prodi_id,
+            dosen.nidn_dosen,
+            dosen.gender,
+            dosen.status_dosen,
+        ];
 
-            // Use Inertia to send data to the backend
-            try {
-                if (dosen.id_dosen) {
-                    // Update existing dosen
-                    await router.put(`/dosen/${dosen.id_dosen}/update`, _dosen);
-                    toast.current?.show({
-                        severity: "success",
-                        summary: "Successful",
-                        detail: "Dosen Updated",
-                        life: 3000,
-                    });
-                } else {
-                    // Create new dosen
-                    await router.post('/dosen/store', _dosen);
-                    toast.current?.show({
-                        severity: "success",
-                        summary: "Successful",
-                        detail: "Dosen Created",
-                        life: 3000,
-                    });
-                }
+        const isCreating = !dosen.id_dosen;
+        let isValid = true;
 
-                // Reset dosen state and close the dialog
-                setdosens((prevDosens) => [...prevDosens, _dosen]);
-                setdosen(emptydosen);
-                setdosenDialog(false);
-            } catch (error) {
-                console.error("Error saving dosen:", error);
-                toast.current.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "Failed to save dosen.",
-                    life: 3000,
-                });
-            }
+        if (isCreating) {
+            isValid = requiredFieldsForCreate.every(field => field);
         } else {
-            // Handle validation failure
-            toast.current.show({
+            isValid = requiredFieldsForUpdate.every(field => field);
+        }
+
+        if (!isValid) {
+            toast.current?.show({
                 severity: "error",
                 summary: "Error",
                 detail: "Please fill in all required fields.",
                 life: 3000,
             });
+            return;
+        }
+
+        let _dosen = { ...dosen };
+
+        try {
+            let response;
+
+            if (isCreating) {
+                const existingIds = dosens.map(d => d.id_dosen);
+                _dosen.id_dosen = createId(existingIds);
+                response = await router.post('/dosen/store', _dosen);
+            } else {
+                delete _dosen.email;
+                delete _dosen.password;
+                delete _dosen.password_confirmation;
+
+                response = await router.put(`/dosen/${dosen.id_dosen}/update`, _dosen);
+            }
+
+            if (response && response.data) {
+                const message = response.data.success || response.data.message || "Operation successful";
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: message,
+                    life: 3000,
+                });
+
+                // Khusus untuk DEBUG
+                // if (isCreating) {
+                //     setdosens(prevDosens => [...prevDosens, _dosen]);
+                // } else {
+                //     setdosens(prevDosens =>
+                //         prevDosens.map(d => d.id_dosen === dosen.id_dosen ? _dosen : d)
+                //     );
+                // }
+
+                // setdosen(emptydosen);
+                // setdosenDialog(false);
+            }
+
+            if (isCreating) {
+                setdosens(prevDosens => [...prevDosens, _dosen]);
+            } else {
+                setdosens(prevDosens =>
+                    prevDosens.map(d => d.id_dosen === dosen.id_dosen ? _dosen : d)
+                );
+            }
+
+            setdosen(emptydosen);
+            setdosenDialog(false);
+            // Khusus untuk DEBUG
+            // else {
+            //     // Menangani kasus di mana response tidak memiliki data yang diharapkan
+            //     toast.current?.show({
+            //         severity: "error",
+            //         summary: "Error",
+            //         detail: "Unexpected response format.",
+            //         life: 3000,
+            //     });
+            // }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || "Failed to save dosen.";
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: errorMessage,
+                life: 3000,
+            });
         }
     };
-
-    // Edit function remains the same
     const editdosen = (dosen) => {
         setdosen({ ...dosen });
         setdosenDialog(true);
     };
 
-
     const confirmDeletedosen = (dosen) => {
         setdosen(dosen);
         setDeletedosenDialog(true);
     };
-
     const deletedosen = async (id_dosen) => {
         try {
             await router.delete(`/dosen/${dosen.id_dosen}/delete`);
@@ -153,13 +203,11 @@ const dosen = () => {
             setDeletedosenDialog(false);
         }
     };
-
     const createId = (existingIds) => {
         let id_dosen;
         const generateUniqueId = () => {
             return Math.floor(10000 + Math.random() * 90000);
         };
-
         do {
             id_dosen = generateUniqueId();
         } while (existingIds.includes(id_dosen));
@@ -339,7 +387,6 @@ const dosen = () => {
                             dosen={dosen}
                             setdosen={setdosen}
                             submitted={submitted}
-                            userOptions={userOptions}
                             prodiOptions={prodiOptions}
                             dosenDialogFooter={dosenDialogFooter}
                             hideDialog={hideDialog}
