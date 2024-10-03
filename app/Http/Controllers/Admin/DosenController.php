@@ -96,10 +96,10 @@ class DosenController extends Controller
             event(new Registered($user));
             DB::commit();
 
-            return back()->with('success', 'Dosen created successfully');
+            return to_route('dosen')->with('success', 'Dosen created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to create dosen');
+            return to_route('dosen')->with('error', 'Failed to create dosen');
         }
     }
 
@@ -136,7 +136,7 @@ class DosenController extends Controller
 
         // dd($validator);
         if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
+            return back()->with('error', $validator->errors()->first());
         }
         $data = [
             'user_id' => $request->user_id,
@@ -149,7 +149,7 @@ class DosenController extends Controller
 
         $dosen = Dosen::findOrFail($id);
         $dosen->update($data);
-        return back()->with('success', 'Dosen updated successfully');
+        return to_route('dosen')->with('success', 'Dosen updated successfully');
     }
 
     /**
@@ -159,7 +159,7 @@ class DosenController extends Controller
     {
         $dosen->delete();
 
-        return back()->with('success', 'Dosen deleted successfully');
+        return to_route('dosen')->with('success', 'Dosen deleted successfully');
     }
 
     public function destroyMultiple(Request $request)
@@ -171,6 +171,6 @@ class DosenController extends Controller
         $ids = $request->input('ids');
         Dosen::whereIn('id_dosen', $ids)->delete();
 
-        return back()->with('success', 'Dosen deleted successfully');
+        return to_route('dosen')->with('success', 'Selected dosens deleted successfully');
     }
 }

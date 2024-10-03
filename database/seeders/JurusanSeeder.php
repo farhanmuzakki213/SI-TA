@@ -20,18 +20,18 @@ class JurusanSeeder extends Seeder
         ]);
         Jurusan::factory()->create([
             'id_jurusan' => 2,
-            'kode_jurusan' => 'SI',
-            'nama_jurusan' => 'Sistem Informasi'
+            'kode_jurusan' => 'AN',
+            'nama_jurusan' => 'Administrasi Niaga'
         ]);
         Jurusan::factory()->create([
             'id_jurusan' => 3,
-            'kode_jurusan' => 'TK',
-            'nama_jurusan' => 'Teknik Kimia'
+            'kode_jurusan' => 'AK',
+            'nama_jurusan' => 'Akuntansi'
         ]);
         Jurusan::factory()->create([
             'id_jurusan' => 4,
-            'kode_jurusan' => 'TP',
-            'nama_jurusan' => 'Teknik Perminyakan'
+            'kode_jurusan' => 'BI',
+            'nama_jurusan' => 'Bahasa Inggris'
         ]);
     }
 }

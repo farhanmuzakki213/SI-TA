@@ -12,16 +12,15 @@ const AppMenu = () => {
             label: 'Home',
             items: [
                 { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: route('dashboard') },
-                { label: 'Button', icon: 'pi pi-fw pi-id-card', to: route('button') },
-                { label: 'chart', icon: 'pi pi-fw pi-apple', to: route('chart') },
-                { label: 'file', icon: 'pi pi-fw pi-file', to: route('file') },
-                { label: 'table', icon: 'pi pi-fw pi-table', to: route('table') },
             ]
         },
         {
             label: 'Data Master',
             items: [
                 { label: 'Dosen', icon: 'pi pi-fw pi-user', to: route('dosen') },
+                { label: 'Mahasiswa', icon: 'pi pi-fw pi-users', to: route('mahasiswa') },
+                { label: 'Jurusan', icon: 'pi pi-fw pi-users', to: route('jurusan') },
+                { label: 'Prodi', icon: 'pi pi-fw pi-users', to: route('prodi') },
             ]
         },
     ];

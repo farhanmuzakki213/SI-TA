@@ -13,4 +13,9 @@ class Jurusan extends Model
     ];
     protected $table = 'jurusans';
     protected $primaryKey = 'id_jurusan';
+
+    public function jurusans()
+    {
+        return $this->hasMany(Prodi::class, 'jurusan_id');
+    }
 }

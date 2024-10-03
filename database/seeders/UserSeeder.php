@@ -57,8 +57,33 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('password')
             ],
             [
-                'name' => 'Mahasiswa',
-                'email' => 'mahasiswa@mahasiswa.com',
+                'name' => 'Mahasiswa1',
+                'email' => 'mahasiswa1@mahasiswa.com',
+                'password' => bcrypt('password')
+            ],
+            [
+                'name' => 'Mahasiswa2',
+                'email' => 'mahasiswa2@mahasiswa.com',
+                'password' => bcrypt('password')
+            ],
+            [
+                'name' => 'Mahasiswa3',
+                'email' => 'mahasiswa3@mahasiswa.com',
+                'password' => bcrypt('password')
+            ],
+            [
+                'name' => 'Mahasiswa4',
+                'email' => 'mahasiswa4@mahasiswa.com',
+                'password' => bcrypt('password')
+            ],
+            [
+                'name' => 'Mahasiswa5',
+                'email' => 'mahasiswa5@mahasiswa.com',
+                'password' => bcrypt('password')
+            ],
+            [
+                'name' => 'Mahasiswa6',
+                'email' => 'mahasiswa6@mahasiswa.com',
                 'password' => bcrypt('password')
             ],
         ];

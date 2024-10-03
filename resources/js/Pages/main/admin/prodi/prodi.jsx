@@ -6,33 +6,27 @@ import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import DosenDataTable from './component/DosenDataTable';
-import DosenForm from './component/DosenForm';
+import ProdiDataTable from './component/ProdiDataTable';
+import ProdiForm from './component/ProdiForm';
 import CSVExportComponent from '@/Components/CSVExportComponent';
 import CSVImportComponent from '@/Components/CSVImportComponent';
 
-const dosen = () => {
-    let emptydosen = {
-        id_dosen: null,
-        prodi_id: null,
-        email: "",
-        password: "",
-        password_confirmation: "",
-        nama_dosen: "",
-        nidn_dosen: "",
-        gender: "",
-        status_dosen: ""
+const prodi = () => {
+    let emptyprodi = {
+        id_prodi: null,
+        nama_prodi: "",
+        kode_prodi: ""
     };
 
     const { props } = usePage();
-    const { data_dosen, prodiOptions: initialProdiOptions } = props;
-    const [dosens, setdosens] = useState(false);
-    const [prodiOptions, setProdiOptions] = useState([]);
-    const [dosenDialog, setdosenDialog] = useState(false);
-    const [deletedosenDialog, setDeletedosenDialog] = useState(false);
-    const [deletedosensDialog, setDeletedosensDialog] = useState(false);
-    const [dosen, setdosen] = useState(emptydosen);
-    const [selecteddosens, setSelecteddosens] = useState(null);
+    const { data_prodi, jurusanOptions: initialJurusanOptions } = props;
+    const [prodis, setprodis] = useState(false)
+    const [jurusanOptions, setJurusanOptions] = useState([]);;
+    const [prodiDialog, setprodiDialog] = useState(false);
+    const [deleteprodiDialog, setDeleteprodiDialog] = useState(false);
+    const [deleteprodisDialog, setDeleteprodisDialog] = useState(false);
+    const [prodi, setprodi] = useState(emptyprodi);
+    const [selectedprodis, setSelectedprodis] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
@@ -40,29 +34,29 @@ const dosen = () => {
     // console.log(props)
 
     useEffect(() => {
-        setProdiOptions(initialProdiOptions);
-        setdosens(data_dosen);
+        setprodis(data_prodi);
+        setJurusanOptions(initialJurusanOptions);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialProdiOptions, data_dosen, props.flash]);
+    }, [initialJurusanOptions, data_prodi, props.flash]);
 
     const openNew = () => {
-        setdosen(emptydosen);
+        setprodi(emptyprodi);
         setSubmitted(false);
-        setdosenDialog(true);
+        setprodiDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setdosenDialog(false);
+        setprodiDialog(false);
     };
 
-    const hideDeletedosenDialog = () => {
-        setDeletedosenDialog(false);
+    const hideDeleteprodiDialog = () => {
+        setDeleteprodiDialog(false);
     };
 
-    const hideDeletedosensDialog = () => {
-        setDeletedosensDialog(false);
+    const hideDeleteprodisDialog = () => {
+        setDeleteprodisDialog(false);
     };
 
     const displaySuccessMessage = (successMessage) => {
@@ -89,42 +83,24 @@ const dosen = () => {
         }
     };
 
-    const saveDosen = async () => {
+    const saveProdi = async () => {
         setSubmitted(true);
 
         const requiredFieldsForCreate = [
-            dosen.nama_dosen,
-            dosen.prodi_id,
-            dosen.nidn_dosen,
-            dosen.gender,
-            dosen.status_dosen,
-            dosen.email,
-            dosen.password,
-            dosen.password_confirmation,
+            prodi.nama_prodi,
+            prodi.kode_prodi,
         ];
 
         const requiredFieldsForUpdate = [
-            dosen.nama_dosen,
-            dosen.prodi_id,
-            dosen.nidn_dosen,
-            dosen.gender,
-            dosen.status_dosen,
+            prodi.nama_prodi,
+            prodi.kode_prodi,
         ];
 
-        const isCreating = !dosen.id_dosen;
+        const isCreating = !prodi.id_prodi;
         let isValid = true;
 
         if (isCreating) {
             isValid = requiredFieldsForCreate.every(field => field);
-            if (isValid && dosen.password !== dosen.password_confirmation) {
-                toast.current?.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "Passwords do not match.",
-                    life: 3000,
-                });
-                return;
-            }
         } else {
             isValid = requiredFieldsForUpdate.every(field => field);
         }
@@ -139,31 +115,27 @@ const dosen = () => {
             return;
         }
 
-        let _dosen = { ...dosen };
+        let _prodi = { ...prodi };
 
         try {
 
             if (isCreating) {
-                const existingIds = dosens.map(d => d.id_dosen);
-                _dosen.id_dosen = createId(existingIds);
-                await router.post('/dosen/store', _dosen);
+                const existingIds = prodis.map(d => d.id_prodi);
+                _prodi.id_prodi = createId(existingIds);
+                await router.post('/prodi/store', _prodi);
             } else {
-                delete _dosen.email;
-                delete _dosen.password;
-                delete _dosen.password_confirmation;
-
-                await router.put(`/dosen/${dosen.id_dosen}/update`, _dosen);
+                await router.put(`/prodi/${prodi.id_prodi}/update`, _prodi);
             }
 
             if (isCreating) {
-                setdosens(prevDosens => [...prevDosens, _dosen]);
+                setprodis(prevProdis => [...prevProdis, _prodi]);
             } else {
-                setdosens(prevDosens =>
-                    prevDosens.map(d => d.id_dosen === dosen.id_dosen ? _dosen : d)
+                setprodis(prevProdis =>
+                    prevProdis.map(d => d.id_prodi === prodi.id_prodi ? _prodi : d)
                 );
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Failed to save dosen.";
+            const errorMessage = error.response?.data?.message || "Failed to save prodi.";
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -171,82 +143,82 @@ const dosen = () => {
                 life: 3000,
             });
         }finally {
-            setdosen(emptydosen);
-            setdosenDialog(false);
+            setprodi(emptyprodi);
+            setprodiDialog(false);
         }
     };
 
-    const editdosen = (dosen) => {
-        setdosen({ ...dosen });
-        setdosenDialog(true);
+    const editprodi = (prodi) => {
+        setprodi({ ...prodi });
+        setprodiDialog(true);
     };
 
-    const confirmDeletedosen = (dosen) => {
-        setdosen(dosen);
-        setDeletedosenDialog(true);
+    const confirmDeleteprodi = (prodi) => {
+        setprodi(prodi);
+        setDeleteprodiDialog(true);
     };
-    const deletedosen = async () => {
+    const deleteprodi = async () => {
         try {
-            await router.delete(`/dosen/${dosen.id_dosen}/delete`);
+            await router.delete(`/prodi/${prodi.id_prodi}/delete`);
         } catch (error) {
-            console.error("Error deleting dosen:", error);
+            console.error("Error deleting prodi:", error);
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete dosen.",
+                detail: "Failed to delete prodi.",
                 life: 3000,
             });
         }
         finally {
-            setDeletedosenDialog(false);
+            setDeleteprodiDialog(false);
         }
     };
     const createId = (existingIds) => {
-        let id_dosen;
+        let id_prodi;
         const generateUniqueId = () => {
             return Math.floor(10000 + Math.random() * 90000);
         };
         do {
-            id_dosen = generateUniqueId();
-        } while (existingIds.includes(id_dosen));
+            id_prodi = generateUniqueId();
+        } while (existingIds.includes(id_prodi));
 
-        return id_dosen;
+        return id_prodi;
     };
 
     const confirmDeleteSelected = () => {
-        setDeletedosensDialog(true);
+        setDeleteprodisDialog(true);
     };
 
-    const deleteSelecteddosens = async () => {
-        if (!selecteddosens || selecteddosens.length === 0) {
+    const deleteSelectedprodis = async () => {
+        if (!selectedprodis || selectedprodis.length === 0) {
             toast.current.show({
                 severity: "warn",
                 summary: "Warning",
-                detail: "No dosens selected for deletion.",
+                detail: "No prodis selected for deletion.",
                 life: 3000,
             });
             return;
         }
 
-        const selectedIds = selecteddosens.map(dosen => dosen.id_dosen);
+        const selectedIds = selectedprodis.map(prodi => prodi.id_prodi);
 
         try {
-            await router.delete('/dosen/destroyMultiple', {
+            await router.delete('/prodi/destroyMultiple', {
                 data: {
                     ids: selectedIds,
                 },
             });
         } catch (error) {
-            // console.error("Error deleting selected dosens:", error);
+            // console.error("Error deleting selected prodis:", error);
             toast.current.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete selected dosens.",
+                detail: "Failed to delete selected prodis.",
                 life: 3000,
             });
         } finally {
-            setDeletedosensDialog(false);
-            setSelecteddosens(null);
+            setDeleteprodisDialog(false);
+            setSelectedprodis(null);
         }
     };
     const leftToolbarTemplate = () => {
@@ -265,7 +237,7 @@ const dosen = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
-                        disabled={!selecteddosens || !selecteddosens.length}
+                        disabled={!selectedprodis || !selectedprodis.length}
                     />
                 </div>
             </React.Fragment>
@@ -273,34 +245,34 @@ const dosen = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_dosen' },
+        { header: 'ID', field: 'id_prodi' },
         {
             header: 'Name',
-            field: (dosen) => `"${dosen.nama_dosen}"`
+            field: (prodi) => `"${prodi.nama_prodi}"`
         },
         { header: 'Prodi', field: 'r_prodi.nama_prodi' },
         { header: 'Gender', field: 'gender' },
         {
             header: 'Status',
-            field: (dosen) => dosen.status_dosen === "1" ? "Aktif" : "Tidak Aktif"
+            field: (prodi) => prodi.status_prodi === "1" ? "Aktif" : "Tidak Aktif"
         }
     ];
     const handleImport = (importedData) => {
-        setDosens(prevDosens => [...prevDosens, ...importedData]);
+        setProdis(prevProdis => [...prevProdis, ...importedData]);
     };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <CSVImportComponent onImport={handleImport} toast={toast} />
-                <CSVExportComponent data={dosens} toast={toast} fileName="dosen_data.csv" columns={columns} />
+                <CSVExportComponent data={prodis} toast={toast} fileName="prodi_data.csv" columns={columns} />
             </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Dosen</h5>
+            <h5 className="m-0">Prodi</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -312,7 +284,7 @@ const dosen = () => {
         </div>
     );
 
-    const dosenDialogFooter = (
+    const prodiDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -320,33 +292,33 @@ const dosen = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={saveDosen} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveProdi} />
         </>
     );
-    const deletedosenDialogFooter = (
+    const deleteprodiDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletedosenDialog}
+                onClick={hideDeleteprodiDialog}
             />
-            <Button label="Yes" icon="pi pi-check" text onClick={deletedosen} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deleteprodi} />
         </>
     );
-    const deletedosensDialogFooter = (
+    const deleteprodisDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletedosensDialog}
+                onClick={hideDeleteprodisDialog}
             />
             <Button
                 label="Yes"
                 icon="pi pi-check"
                 text
-                onClick={deleteSelecteddosens}
+                onClick={deleteSelectedprodis}
             />
         </>
     );
@@ -363,65 +335,65 @@ const dosen = () => {
                             right={rightToolbarTemplate}
                         ></Toolbar>
 
-                        <DosenDataTable
-                            dosens={dosens}
-                            selecteddosens={selecteddosens}
-                            setSelecteddosens={setSelecteddosens}
+                        <ProdiDataTable
+                            prodis={prodis}
+                            selectedprodis={selectedprodis}
+                            setSelectedprodis={setSelectedprodis}
                             globalFilter={globalFilter}
                             header={header}
-                            editdosen={editdosen}
-                            confirmDeletedosen={confirmDeletedosen}
+                            editprodi={editprodi}
+                            confirmDeleteprodi={confirmDeleteprodi}
                         />
 
-                        <DosenForm
-                            dosenDialog={dosenDialog}
-                            dosen={dosen}
-                            setdosen={setdosen}
+                        <ProdiForm
+                            prodiDialog={prodiDialog}
+                            prodi={prodi}
+                            setprodi={setprodi}
                             submitted={submitted}
-                            prodiOptions={prodiOptions}
-                            dosenDialogFooter={dosenDialogFooter}
+                            jurusanOptions={jurusanOptions}
+                            prodiDialogFooter={prodiDialogFooter}
                             hideDialog={hideDialog}
                         />
 
                         <Dialog
-                            visible={deletedosenDialog}
+                            visible={deleteprodiDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletedosenDialogFooter}
-                            onHide={hideDeletedosenDialog}
+                            footer={deleteprodiDialogFooter}
+                            onHide={hideDeleteprodiDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {dosen && (
+                                {prodi && (
                                     <span>
                                         Are you sure you want to delete{" "}
-                                        <b>{dosen.name}</b>?
+                                        <b>{prodi.name}</b>?
                                     </span>
                                 )}
                             </div>
                         </Dialog>
 
                         <Dialog
-                            visible={deletedosensDialog}
+                            visible={deleteprodisDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletedosensDialogFooter}
-                            onHide={hideDeletedosensDialog}
+                            footer={deleteprodisDialogFooter}
+                            onHide={hideDeleteprodisDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {dosen && (
+                                {prodi && (
                                     <span>
                                         Are you sure you want to delete the
-                                        selected dosens?
+                                        selected prodis?
                                     </span>
                                 )}
                             </div>
@@ -433,4 +405,4 @@ const dosen = () => {
     );
 };
 
-export default dosen;
+export default prodi;

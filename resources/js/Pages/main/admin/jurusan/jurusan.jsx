@@ -6,33 +6,26 @@ import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import DosenDataTable from './component/DosenDataTable';
-import DosenForm from './component/DosenForm';
+import JurusanDataTable from './component/JurusanDataTable';
+import JurusanForm from './component/JurusanForm';
 import CSVExportComponent from '@/Components/CSVExportComponent';
 import CSVImportComponent from '@/Components/CSVImportComponent';
 
-const dosen = () => {
-    let emptydosen = {
-        id_dosen: null,
-        prodi_id: null,
-        email: "",
-        password: "",
-        password_confirmation: "",
-        nama_dosen: "",
-        nidn_dosen: "",
-        gender: "",
-        status_dosen: ""
+const jurusan = () => {
+    let emptyjurusan = {
+        id_jurusan: null,
+        nama_jurusan: "",
+        kode_jurusan: ""
     };
 
     const { props } = usePage();
-    const { data_dosen, prodiOptions: initialProdiOptions } = props;
-    const [dosens, setdosens] = useState(false);
-    const [prodiOptions, setProdiOptions] = useState([]);
-    const [dosenDialog, setdosenDialog] = useState(false);
-    const [deletedosenDialog, setDeletedosenDialog] = useState(false);
-    const [deletedosensDialog, setDeletedosensDialog] = useState(false);
-    const [dosen, setdosen] = useState(emptydosen);
-    const [selecteddosens, setSelecteddosens] = useState(null);
+    const { data_jurusan } = props;
+    const [jurusans, setjurusans] = useState(false);
+    const [jurusanDialog, setjurusanDialog] = useState(false);
+    const [deletejurusanDialog, setDeletejurusanDialog] = useState(false);
+    const [deletejurusansDialog, setDeletejurusansDialog] = useState(false);
+    const [jurusan, setjurusan] = useState(emptyjurusan);
+    const [selectedjurusans, setSelectedjurusans] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
@@ -40,29 +33,28 @@ const dosen = () => {
     // console.log(props)
 
     useEffect(() => {
-        setProdiOptions(initialProdiOptions);
-        setdosens(data_dosen);
+        setjurusans(data_jurusan);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialProdiOptions, data_dosen, props.flash]);
+    }, [data_jurusan, props.flash]);
 
     const openNew = () => {
-        setdosen(emptydosen);
+        setjurusan(emptyjurusan);
         setSubmitted(false);
-        setdosenDialog(true);
+        setjurusanDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setdosenDialog(false);
+        setjurusanDialog(false);
     };
 
-    const hideDeletedosenDialog = () => {
-        setDeletedosenDialog(false);
+    const hideDeletejurusanDialog = () => {
+        setDeletejurusanDialog(false);
     };
 
-    const hideDeletedosensDialog = () => {
-        setDeletedosensDialog(false);
+    const hideDeletejurusansDialog = () => {
+        setDeletejurusansDialog(false);
     };
 
     const displaySuccessMessage = (successMessage) => {
@@ -89,42 +81,24 @@ const dosen = () => {
         }
     };
 
-    const saveDosen = async () => {
+    const saveJurusan = async () => {
         setSubmitted(true);
 
         const requiredFieldsForCreate = [
-            dosen.nama_dosen,
-            dosen.prodi_id,
-            dosen.nidn_dosen,
-            dosen.gender,
-            dosen.status_dosen,
-            dosen.email,
-            dosen.password,
-            dosen.password_confirmation,
+            jurusan.nama_jurusan,
+            jurusan.kode_jurusan,
         ];
 
         const requiredFieldsForUpdate = [
-            dosen.nama_dosen,
-            dosen.prodi_id,
-            dosen.nidn_dosen,
-            dosen.gender,
-            dosen.status_dosen,
+            jurusan.nama_jurusan,
+            jurusan.kode_jurusan,
         ];
 
-        const isCreating = !dosen.id_dosen;
+        const isCreating = !jurusan.id_jurusan;
         let isValid = true;
 
         if (isCreating) {
             isValid = requiredFieldsForCreate.every(field => field);
-            if (isValid && dosen.password !== dosen.password_confirmation) {
-                toast.current?.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "Passwords do not match.",
-                    life: 3000,
-                });
-                return;
-            }
         } else {
             isValid = requiredFieldsForUpdate.every(field => field);
         }
@@ -139,31 +113,27 @@ const dosen = () => {
             return;
         }
 
-        let _dosen = { ...dosen };
+        let _jurusan = { ...jurusan };
 
         try {
 
             if (isCreating) {
-                const existingIds = dosens.map(d => d.id_dosen);
-                _dosen.id_dosen = createId(existingIds);
-                await router.post('/dosen/store', _dosen);
+                const existingIds = jurusans.map(d => d.id_jurusan);
+                _jurusan.id_jurusan = createId(existingIds);
+                await router.post('/jurusan/store', _jurusan);
             } else {
-                delete _dosen.email;
-                delete _dosen.password;
-                delete _dosen.password_confirmation;
-
-                await router.put(`/dosen/${dosen.id_dosen}/update`, _dosen);
+                await router.put(`/jurusan/${jurusan.id_jurusan}/update`, _jurusan);
             }
 
             if (isCreating) {
-                setdosens(prevDosens => [...prevDosens, _dosen]);
+                setjurusans(prevjurusans => [...prevjurusans, _jurusan]);
             } else {
-                setdosens(prevDosens =>
-                    prevDosens.map(d => d.id_dosen === dosen.id_dosen ? _dosen : d)
+                setjurusans(prevJurusans =>
+                    prevJurusans.map(d => d.id_jurusan === jurusan.id_jurusan ? _jurusan : d)
                 );
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Failed to save dosen.";
+            const errorMessage = error.response?.data?.message || "Failed to save jurusan.";
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -171,82 +141,82 @@ const dosen = () => {
                 life: 3000,
             });
         }finally {
-            setdosen(emptydosen);
-            setdosenDialog(false);
+            setjurusan(emptyjurusan);
+            setjurusanDialog(false);
         }
     };
 
-    const editdosen = (dosen) => {
-        setdosen({ ...dosen });
-        setdosenDialog(true);
+    const editjurusan = (jurusan) => {
+        setjurusan({ ...jurusan });
+        setjurusanDialog(true);
     };
 
-    const confirmDeletedosen = (dosen) => {
-        setdosen(dosen);
-        setDeletedosenDialog(true);
+    const confirmDeletejurusan = (jurusan) => {
+        setjurusan(jurusan);
+        setDeletejurusanDialog(true);
     };
-    const deletedosen = async () => {
+    const deletejurusan = async () => {
         try {
-            await router.delete(`/dosen/${dosen.id_dosen}/delete`);
+            await router.delete(`/jurusan/${jurusan.id_jurusan}/delete`);
         } catch (error) {
-            console.error("Error deleting dosen:", error);
+            console.error("Error deleting jurusan:", error);
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete dosen.",
+                detail: "Failed to delete jurusan.",
                 life: 3000,
             });
         }
         finally {
-            setDeletedosenDialog(false);
+            setDeletejurusanDialog(false);
         }
     };
     const createId = (existingIds) => {
-        let id_dosen;
+        let id_jurusan;
         const generateUniqueId = () => {
             return Math.floor(10000 + Math.random() * 90000);
         };
         do {
-            id_dosen = generateUniqueId();
-        } while (existingIds.includes(id_dosen));
+            id_jurusan = generateUniqueId();
+        } while (existingIds.includes(id_jurusan));
 
-        return id_dosen;
+        return id_jurusan;
     };
 
     const confirmDeleteSelected = () => {
-        setDeletedosensDialog(true);
+        setDeletejurusansDialog(true);
     };
 
-    const deleteSelecteddosens = async () => {
-        if (!selecteddosens || selecteddosens.length === 0) {
+    const deleteSelectedjurusans = async () => {
+        if (!selectedjurusans || selectedjurusans.length === 0) {
             toast.current.show({
                 severity: "warn",
                 summary: "Warning",
-                detail: "No dosens selected for deletion.",
+                detail: "No jurusans selected for deletion.",
                 life: 3000,
             });
             return;
         }
 
-        const selectedIds = selecteddosens.map(dosen => dosen.id_dosen);
+        const selectedIds = selectedjurusans.map(jurusan => jurusan.id_jurusan);
 
         try {
-            await router.delete('/dosen/destroyMultiple', {
+            await router.delete('/jurusan/destroyMultiple', {
                 data: {
                     ids: selectedIds,
                 },
             });
         } catch (error) {
-            // console.error("Error deleting selected dosens:", error);
+            // console.error("Error deleting selected jurusans:", error);
             toast.current.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete selected dosens.",
+                detail: "Failed to delete selected jurusans.",
                 life: 3000,
             });
         } finally {
-            setDeletedosensDialog(false);
-            setSelecteddosens(null);
+            setDeletejurusansDialog(false);
+            setSelectedjurusans(null);
         }
     };
     const leftToolbarTemplate = () => {
@@ -265,7 +235,7 @@ const dosen = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
-                        disabled={!selecteddosens || !selecteddosens.length}
+                        disabled={!selectedjurusans || !selectedjurusans.length}
                     />
                 </div>
             </React.Fragment>
@@ -273,34 +243,34 @@ const dosen = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_dosen' },
+        { header: 'ID', field: 'id_jurusan' },
         {
             header: 'Name',
-            field: (dosen) => `"${dosen.nama_dosen}"`
+            field: (jurusan) => `"${jurusan.nama_jurusan}"`
         },
         { header: 'Prodi', field: 'r_prodi.nama_prodi' },
         { header: 'Gender', field: 'gender' },
         {
             header: 'Status',
-            field: (dosen) => dosen.status_dosen === "1" ? "Aktif" : "Tidak Aktif"
+            field: (jurusan) => jurusan.status_jurusan === "1" ? "Aktif" : "Tidak Aktif"
         }
     ];
     const handleImport = (importedData) => {
-        setDosens(prevDosens => [...prevDosens, ...importedData]);
+        setJurusans(prevJurusans => [...prevJurusans, ...importedData]);
     };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <CSVImportComponent onImport={handleImport} toast={toast} />
-                <CSVExportComponent data={dosens} toast={toast} fileName="dosen_data.csv" columns={columns} />
+                <CSVExportComponent data={jurusans} toast={toast} fileName="jurusan_data.csv" columns={columns} />
             </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Dosen</h5>
+            <h5 className="m-0">Jurusan</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -312,7 +282,7 @@ const dosen = () => {
         </div>
     );
 
-    const dosenDialogFooter = (
+    const jurusanDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -320,33 +290,33 @@ const dosen = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={saveDosen} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveJurusan} />
         </>
     );
-    const deletedosenDialogFooter = (
+    const deletejurusanDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletedosenDialog}
+                onClick={hideDeletejurusanDialog}
             />
-            <Button label="Yes" icon="pi pi-check" text onClick={deletedosen} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deletejurusan} />
         </>
     );
-    const deletedosensDialogFooter = (
+    const deletejurusansDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletedosensDialog}
+                onClick={hideDeletejurusansDialog}
             />
             <Button
                 label="Yes"
                 icon="pi pi-check"
                 text
-                onClick={deleteSelecteddosens}
+                onClick={deleteSelectedjurusans}
             />
         </>
     );
@@ -363,65 +333,64 @@ const dosen = () => {
                             right={rightToolbarTemplate}
                         ></Toolbar>
 
-                        <DosenDataTable
-                            dosens={dosens}
-                            selecteddosens={selecteddosens}
-                            setSelecteddosens={setSelecteddosens}
+                        <JurusanDataTable
+                            jurusans={jurusans}
+                            selectedjurusans={selectedjurusans}
+                            setSelectedjurusans={setSelectedjurusans}
                             globalFilter={globalFilter}
                             header={header}
-                            editdosen={editdosen}
-                            confirmDeletedosen={confirmDeletedosen}
+                            editjurusan={editjurusan}
+                            confirmDeletejurusan={confirmDeletejurusan}
                         />
 
-                        <DosenForm
-                            dosenDialog={dosenDialog}
-                            dosen={dosen}
-                            setdosen={setdosen}
+                        <JurusanForm
+                            jurusanDialog={jurusanDialog}
+                            jurusan={jurusan}
+                            setjurusan={setjurusan}
                             submitted={submitted}
-                            prodiOptions={prodiOptions}
-                            dosenDialogFooter={dosenDialogFooter}
+                            jurusanDialogFooter={jurusanDialogFooter}
                             hideDialog={hideDialog}
                         />
 
                         <Dialog
-                            visible={deletedosenDialog}
+                            visible={deletejurusanDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletedosenDialogFooter}
-                            onHide={hideDeletedosenDialog}
+                            footer={deletejurusanDialogFooter}
+                            onHide={hideDeletejurusanDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {dosen && (
+                                {jurusan && (
                                     <span>
                                         Are you sure you want to delete{" "}
-                                        <b>{dosen.name}</b>?
+                                        <b>{jurusan.name}</b>?
                                     </span>
                                 )}
                             </div>
                         </Dialog>
 
                         <Dialog
-                            visible={deletedosensDialog}
+                            visible={deletejurusansDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletedosensDialogFooter}
-                            onHide={hideDeletedosensDialog}
+                            footer={deletejurusansDialogFooter}
+                            onHide={hideDeletejurusansDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {dosen && (
+                                {jurusan && (
                                     <span>
                                         Are you sure you want to delete the
-                                        selected dosens?
+                                        selected jurusans?
                                     </span>
                                 )}
                             </div>
@@ -433,4 +402,4 @@ const dosen = () => {
     );
 };
 
-export default dosen;
+export default jurusan;
