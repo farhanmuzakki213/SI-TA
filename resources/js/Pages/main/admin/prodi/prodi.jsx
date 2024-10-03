@@ -89,11 +89,13 @@ const prodi = () => {
         const requiredFieldsForCreate = [
             prodi.nama_prodi,
             prodi.kode_prodi,
+            prodi.jurusan_id,
         ];
 
         const requiredFieldsForUpdate = [
             prodi.nama_prodi,
             prodi.kode_prodi,
+            prodi.jurusan_id,
         ];
 
         const isCreating = !prodi.id_prodi;

@@ -7,9 +7,9 @@ use App\Models\Dosen;
 use App\Models\Jurusan;
 use App\Models\Kelas;
 use App\Models\Prodi;
-use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class ProdiController extends Controller
@@ -49,6 +49,7 @@ class ProdiController extends Controller
             'id_prodi' => 'required',
             'nama_prodi' => ['required', 'string', 'max:255', 'unique:' . Prodi::class],
             'kode_prodi' => ['required', 'string', 'max:255', 'unique:' . Prodi::class],
+            'jurusan_id' => 'required|exists:jurusans,id_jurusan',
         ]);
 
         if ($validator->fails()) {
@@ -57,21 +58,18 @@ class ProdiController extends Controller
 
         DB::beginTransaction();
         try {
-            Jurusan::create([
-                'id_jurusan' => $request->id_jurusan,
-                'kode_jurusan' => $request->kode_jurusan,
-                'nama_jurusan' => $request->nama_jurusan,
+            Prodi::create([
+                'id_prodi' => $request->id_prodi,
+                'kode_prodi' => $request->kode_prodi,
+                'nama_prodi' => $request->nama_prodi,
+                'jurusan_id' => $request->jurusan_id,
             ]);
             DB::commit();
 
-            return to_route('jurusan')->with('success', 'Jurusan created successfully');
+            return to_route('prodi')->with('success', 'Prodi created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create dosen',
-                'error' => $e->getMessage(),
-            ], 500);
+            return to_route('prodi')->with('error', 'Prodi created failed');
         }
     }
 
@@ -98,28 +96,29 @@ class ProdiController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'nama_jurusan' => ['required', 'string', 'max:255', 'unique:' . Jurusan::class],
-            'kode_jurusan' => ['required', 'string', 'max:255', 'unique:' . Jurusan::class],
+            'nama_prodi' => ['required', 'string', 'max:255'],
+            'kode_prodi' => ['required', 'string', 'max:255'],
+            'jurusan_id' => 'required|exists:jurusans,id_jurusan',
         ]);
 
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
         }
-        // dd($request->nim_mahasiswa);
         DB::beginTransaction();
         try {
             $data = [
-                'nama_jurusan' => $request->nama_jurusan,
-                'kode_jurusan' => $request->kode_jurusan,
+                'kode_prodi' => $request->kode_prodi,
+                'nama_prodi' => $request->nama_prodi,
+                'jurusan_id' => $request->jurusan_id,
             ];
 
-            $jurusan = Jurusan::findOrFail($id);
-            $jurusan->update($data);
+            $prodi = Prodi::findOrFail($id);
+            $prodi->update($data);
             DB::commit();
-            return to_route('jurusan')->with('success', 'Jurusan updated successfully');
+            return to_route('prodi')->with('success', 'Prodi updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('jurusan')->with('error', 'Jurusan updated failed');
+            return to_route('prodi')->with('error', 'Prodi updated failed');
         }
     }
 
@@ -128,10 +127,9 @@ class ProdiController extends Controller
      */
     public function destroy(Prodi $prodi)
     {
-        // dd($jurusan->toArray());
+        // dd($prodi->toArray());
         $prodi = Prodi::findOrFail($prodi->id_prodi);
 
-        // Cek apakah jurusan_id ada di tabel prodi
         $existsInDosen = Dosen::where('prodi_id', $prodi->id_prodi)->exists();
         $existsInKelas = Kelas::where('prodi_id', $prodi->id_prodi)->exists();
 

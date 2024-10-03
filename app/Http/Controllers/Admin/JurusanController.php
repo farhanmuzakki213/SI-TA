@@ -60,11 +60,7 @@ class JurusanController extends Controller
             return to_route('jurusan')->with('success', 'Jurusan created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create dosen',
-                'error' => $e->getMessage(),
-            ], 500);
+            return to_route('jurusan')->with('error', 'Jurusan created failed');
         }
     }
 
