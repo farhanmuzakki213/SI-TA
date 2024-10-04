@@ -18,8 +18,10 @@ class JurusanController extends Controller
     public function index()
     {
         $data_jurusan = Jurusan::get();
+        $nextNumber = $this->getCariNomor();
         // dd($data_jurusan->toArray());
         return Inertia::render('main/admin/jurusan/jurusan', [
+            'nextNumber' => $nextNumber,
             'data_jurusan' => $data_jurusan
         ]);
     }
@@ -149,5 +151,17 @@ class JurusanController extends Controller
         Jurusan::whereIn('id_jurusan', $ids)->delete();
 
         return to_route('jurusan')->with('success', 'Jurusan deleted successfully');
+    }
+
+    function getCariNomor()
+    {
+        $id_jurusan = Jurusan::pluck('id_jurusan')->toArray();
+        for ($i = 1;; $i++) {
+            if (!in_array($i, $id_jurusan)) {
+                return $i;
+                break;
+            }
+        }
+        return $i;
     }
 }

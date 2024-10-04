@@ -26,8 +26,8 @@ const mahasiswa = () => {
 
 
     const { props } = usePage();
-    const {data_mahasiswa, kelasOptions: initialKelasOptions } = props;
-    const [mahasiswas, setmahasiswas] = useState(false);
+    const {data_mahasiswa, kelasOptions: initialKelasOptions, nextNumber } = props;
+    const [mahasiswas, setmahasiswas] = useState(null);
     const [kelasOptions, setKelasOptions] = useState([]);
     const [mahasiswaDialog, setmahasiswaDialog] = useState(false);
     const [deletemahasiswaDialog, setDeletemahasiswaDialog] = useState(false);
@@ -35,7 +35,7 @@ const mahasiswa = () => {
     const [mahasiswa, setmahasiswa] = useState(emptymahasiswa);
     const [selectedmahasiswas, setSelectedmahasiswas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
-    const [globalFilter, setGlobalFilter] = useState(null);
+    const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -144,8 +144,7 @@ const mahasiswa = () => {
         try {
 
             if (isCreating) {
-                const existingIds = mahasiswas.map(d => d.id_mahasiswa);
-                _mahasiswa.id_mahasiswa = createId(existingIds);
+                _mahasiswa.id_mahasiswa = nextNumber;
                 await router.post('/mahasiswa/store', _mahasiswa);
             } else {
                 delete _mahasiswa.email;
@@ -199,17 +198,6 @@ const mahasiswa = () => {
         finally {
             setDeletemahasiswaDialog(false);
         }
-    };
-    const createId = (existingIds) => {
-        let id_mahasiswa;
-        const generateUniqueId = () => {
-            return Math.floor(10000 + Math.random() * 90000);
-        };
-        do {
-            id_mahasiswa = generateUniqueId();
-        } while (existingIds.includes(id_mahasiswa));
-
-        return id_mahasiswa;
     };
 
     const confirmDeleteSelected = () => {
@@ -305,7 +293,8 @@ const mahasiswa = () => {
                 <i className="pi pi-search" />
                 <InputText
                     type="search"
-                    onChange={(e) => setGlobalFilter(e.target.value)}
+                    value={globalFilter || ''}
+                    onInput={(e) => setGlobalFilter(e.target.value || '')}
                     placeholder="Search..."
                 />
             </span>

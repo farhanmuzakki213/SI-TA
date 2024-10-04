@@ -6,58 +6,61 @@ import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import ProdiDataTable from './component/ProdiDataTable';
-import ProdiForm from './component/ProdiForm';
+import KelasDataTable from './component/KelasDataTable';
+import KelasForm from './component/KelasForm';
 import CSVExportComponent from '@/Components/CSVExportComponent';
 import CSVImportComponent from '@/Components/CSVImportComponent';
 
-const prodi = () => {
-    let emptyprodi = {
-        id_prodi: null,
-        nama_prodi: "",
-        kode_prodi: "",
-        jurusan_id: null,
+const kelas = () => {
+    let emptykelas = {
+        id_kelas: null,
+        nama_kelas: "",
+        kode_kelas: "",
+        prodi_id: null,
+        smt_thnakd_id: null,
     };
 
     const { props } = usePage();
-    const { data_prodi, jurusanOptions: initialJurusanOptions, nextNumber } = props;
-    const [prodis, setprodis] = useState(null)
-    const [jurusanOptions, setJurusanOptions] = useState([]);;
-    const [prodiDialog, setprodiDialog] = useState(false);
-    const [deleteprodiDialog, setDeleteprodiDialog] = useState(false);
-    const [deleteprodisDialog, setDeleteprodisDialog] = useState(false);
-    const [prodi, setprodi] = useState(emptyprodi);
-    const [selectedprodis, setSelectedprodis] = useState(null);
+    const { data_kelas, prodiOptions: initialProdiOptions, smt_thnakdOptions: initialSmt_thnakdOptions, nextNumber } = props;
+    const [kelass, setkelass] = useState(null)
+    const [prodiOptions, setProdiOptions] = useState([]);
+    const [smt_thnakdOptions, setSmt_thnakdOptions] = useState([]);
+    const [kelasDialog, setkelasDialog] = useState(false);
+    const [deletekelasDialog, setDeletekelasDialog] = useState(false);
+    const [deletekelassDialog, setDeletekelassDialog] = useState(false);
+    const [kelas, setkelas] = useState(emptykelas);
+    const [selectedkelass, setSelectedkelass] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
-    // console.log(props)
+    // console.log(props.smt_thnakdOptions)
 
     useEffect(() => {
-        setprodis(data_prodi);
-        setJurusanOptions(initialJurusanOptions);
+        setkelass(data_kelas);
+        setProdiOptions(initialProdiOptions);
+        setSmt_thnakdOptions(initialSmt_thnakdOptions);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialJurusanOptions, data_prodi, props.flash]);
+    }, [initialProdiOptions, initialSmt_thnakdOptions, data_kelas, props.flash]);
 
     const openNew = () => {
-        setprodi(emptyprodi);
+        setkelas(emptykelas);
         setSubmitted(false);
-        setprodiDialog(true);
+        setkelasDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setprodiDialog(false);
+        setkelasDialog(false);
     };
 
-    const hideDeleteprodiDialog = () => {
-        setDeleteprodiDialog(false);
+    const hideDeletekelasDialog = () => {
+        setDeletekelasDialog(false);
     };
 
-    const hideDeleteprodisDialog = () => {
-        setDeleteprodisDialog(false);
+    const hideDeletekelassDialog = () => {
+        setDeletekelassDialog(false);
     };
 
     const displaySuccessMessage = (successMessage) => {
@@ -84,22 +87,23 @@ const prodi = () => {
         }
     };
 
-    const saveProdi = async () => {
+    const savekelas = async () => {
         setSubmitted(true);
 
         const requiredFieldsForCreate = [
-            prodi.nama_prodi,
-            prodi.kode_prodi,
-            prodi.jurusan_id,
+            kelas.nama_kelas,
+            kelas.kode_kelas,
+            kelas.prodi_id,
         ];
 
         const requiredFieldsForUpdate = [
-            prodi.nama_prodi,
-            prodi.kode_prodi,
-            prodi.jurusan_id,
+            kelas.nama_kelas,
+            kelas.kode_kelas,
+            kelas.prodi_id,
+            kelas.smt_thnakd_id,
         ];
 
-        const isCreating = !prodi.id_prodi;
+        const isCreating = !kelas.id_kelas;
         let isValid = true;
 
         if (isCreating) {
@@ -118,26 +122,26 @@ const prodi = () => {
             return;
         }
 
-        let _prodi = { ...prodi };
+        let _kelas = { ...kelas };
 
         try {
 
             if (isCreating) {
-                _prodi.id_prodi = nextNumber;
-                await router.post('/prodi/store', _prodi);
+                _kelas.id_kelas = nextNumber;
+                await router.post('/kelas/store', _kelas);
             } else {
-                await router.put(`/prodi/${prodi.id_prodi}/update`, _prodi);
+                await router.put(`/kelas/${kelas.id_kelas}/update`, _kelas);
             }
 
             if (isCreating) {
-                setprodis(prevProdis => [...prevProdis, _prodi]);
+                setkelass(prevKelass => [...prevKelass, _kelas]);
             } else {
-                setprodis(prevProdis =>
-                    prevProdis.map(d => d.id_prodi === prodi.id_prodi ? _prodi : d)
+                setkelass(prevKelass =>
+                    prevKelass.map(d => d.id_kelas === kelas.id_kelas ? _kelas : d)
                 );
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Failed to save prodi.";
+            const errorMessage = error.response?.data?.message || "Failed to save kelas.";
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -145,71 +149,71 @@ const prodi = () => {
                 life: 3000,
             });
         }finally {
-            setprodi(emptyprodi);
-            setprodiDialog(false);
+            setkelas(emptykelas);
+            setkelasDialog(false);
         }
     };
 
-    const editprodi = (prodi) => {
-        setprodi({ ...prodi });
-        setprodiDialog(true);
+    const editkelas = (kelas) => {
+        setkelas({ ...kelas });
+        setkelasDialog(true);
     };
 
-    const confirmDeleteprodi = (prodi) => {
-        setprodi(prodi);
-        setDeleteprodiDialog(true);
+    const confirmDeletekelas = (kelas) => {
+        setkelas(kelas);
+        setDeletekelasDialog(true);
     };
-    const deleteprodi = async () => {
+    const deletekelas = async () => {
         try {
-            await router.delete(`/prodi/${prodi.id_prodi}/delete`);
+            await router.delete(`/kelas/${kelas.id_kelas}/delete`);
         } catch (error) {
-            console.error("Error deleting prodi:", error);
+            console.error("Error deleting kelas:", error);
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete prodi.",
+                detail: "Failed to delete kelas.",
                 life: 3000,
             });
         }
         finally {
-            setDeleteprodiDialog(false);
+            setDeletekelasDialog(false);
         }
     };
 
     const confirmDeleteSelected = () => {
-        setDeleteprodisDialog(true);
+        setDeletekelassDialog(true);
     };
 
-    const deleteSelectedprodis = async () => {
-        if (!selectedprodis || selectedprodis.length === 0) {
+    const deleteSelectedkelass = async () => {
+        if (!selectedkelass || selectedkelass.length === 0) {
             toast.current.show({
                 severity: "warn",
                 summary: "Warning",
-                detail: "No prodis selected for deletion.",
+                detail: "No kelass selected for deletion.",
                 life: 3000,
             });
             return;
         }
 
-        const selectedIds = selectedprodis.map(prodi => prodi.id_prodi);
+        const selectedIds = selectedkelass.map(kelas => kelas.id_kelas);
 
         try {
-            await router.delete('/prodi/destroyMultiple', {
+            await router.delete('/kelas/destroyMultiple', {
                 data: {
                     ids: selectedIds,
                 },
             });
         } catch (error) {
-            // console.error("Error deleting selected prodis:", error);
+            // console.error("Error deleting selected kelass:", error);
             toast.current.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete selected prodis.",
+                detail: "Failed to delete selected kelass.",
                 life: 3000,
             });
         } finally {
-            setDeleteprodisDialog(false);
-            setSelectedprodis(null);
+            setDeletekelassDialog(false);
+            setSelectedkelass(null);
         }
     };
     const leftToolbarTemplate = () => {
@@ -228,7 +232,7 @@ const prodi = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
-                        disabled={!selectedprodis || !selectedprodis.length}
+                        disabled={!selectedkelass || !selectedkelass.length}
                     />
                 </div>
             </React.Fragment>
@@ -236,30 +240,31 @@ const prodi = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_prodi' },
-        { header: 'Kode Prodi', field: 'kode_prodi' },
+        { header: 'ID', field: 'id_kelas' },
         {
-            header: 'Nama Prodi',
-            field: (prodi) => `"${prodi.nama_prodi}"`
+            header: 'Nama Kelas',
+            field: (kelas) => `"${kelas.nama_kelas}"`
         },
-        { header: 'Nama Jurusan', field: 'r_jurusan.nama_jurusan' },
+        { header: 'Kode Kelas', field: 'kode_kelas' },
+        { header: 'Nama Prodi', field: 'r_prodi.nama_prodi' },
+        { header: 'Semester dan Tahun Akademik', field: 'r_smt_thnakd.nama_smt_thnakd' },
     ];
     const handleImport = (importedData) => {
-        setProdis(prevProdis => [...prevProdis, ...importedData]);
+        setkelass(prevKelass => [...prevKelass, ...importedData]);
     };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <CSVImportComponent onImport={handleImport} toast={toast} />
-                <CSVExportComponent data={prodis} toast={toast} fileName="prodi_data.csv" columns={columns} />
+                <CSVExportComponent data={kelass} toast={toast} fileName="kelas_data.csv" columns={columns} />
             </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Prodi</h5>
+            <h5 className="m-0">Kelas</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -272,7 +277,7 @@ const prodi = () => {
         </div>
     );
 
-    const prodiDialogFooter = (
+    const kelasDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -280,33 +285,33 @@ const prodi = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={saveProdi} />
+            <Button label="Save" icon="pi pi-check" text onClick={savekelas} />
         </>
     );
-    const deleteprodiDialogFooter = (
+    const deletekelasDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeleteprodiDialog}
+                onClick={hideDeletekelasDialog}
             />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteprodi} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deletekelas} />
         </>
     );
-    const deleteprodisDialogFooter = (
+    const deletekelassDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeleteprodisDialog}
+                onClick={hideDeletekelassDialog}
             />
             <Button
                 label="Yes"
                 icon="pi pi-check"
                 text
-                onClick={deleteSelectedprodis}
+                onClick={deleteSelectedkelass}
             />
         </>
     );
@@ -323,65 +328,66 @@ const prodi = () => {
                             right={rightToolbarTemplate}
                         ></Toolbar>
 
-                        <ProdiDataTable
-                            prodis={prodis}
-                            selectedprodis={selectedprodis}
-                            setSelectedprodis={setSelectedprodis}
+                        <KelasDataTable
+                            kelass={kelass}
+                            selectedkelass={selectedkelass}
+                            setSelectedkelass={setSelectedkelass}
                             globalFilter={globalFilter}
                             header={header}
-                            editprodi={editprodi}
-                            confirmDeleteprodi={confirmDeleteprodi}
+                            editkelas={editkelas}
+                            confirmDeletekelas={confirmDeletekelas}
                         />
 
-                        <ProdiForm
-                            prodiDialog={prodiDialog}
-                            prodi={prodi}
-                            setprodi={setprodi}
+                        <KelasForm
+                            kelasDialog={kelasDialog}
+                            kelas={kelas}
+                            setkelas={setkelas}
                             submitted={submitted}
-                            jurusanOptions={jurusanOptions}
-                            prodiDialogFooter={prodiDialogFooter}
+                            prodiOptions={prodiOptions}
+                            smt_thnakdOptions={smt_thnakdOptions}
+                            kelasDialogFooter={kelasDialogFooter}
                             hideDialog={hideDialog}
                         />
 
                         <Dialog
-                            visible={deleteprodiDialog}
+                            visible={deletekelasDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deleteprodiDialogFooter}
-                            onHide={hideDeleteprodiDialog}
+                            footer={deletekelasDialogFooter}
+                            onHide={hideDeletekelasDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {prodi && (
+                                {kelas && (
                                     <span>
                                         Are you sure you want to delete{" "}
-                                        <b>{prodi.name}</b>?
+                                        <b>{kelas.name}</b>?
                                     </span>
                                 )}
                             </div>
                         </Dialog>
 
                         <Dialog
-                            visible={deleteprodisDialog}
+                            visible={deletekelassDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deleteprodisDialogFooter}
-                            onHide={hideDeleteprodisDialog}
+                            footer={deletekelassDialogFooter}
+                            onHide={hideDeletekelassDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {prodi && (
+                                {kelas && (
                                     <span>
                                         Are you sure you want to delete the
-                                        selected prodis?
+                                        selected kelass?
                                     </span>
                                 )}
                             </div>
@@ -393,4 +399,4 @@ const prodi = () => {
     );
 };
 
-export default prodi;
+export default kelas;

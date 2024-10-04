@@ -66,6 +66,13 @@ Route::middleware('auth')->group(function () {
     Route::put('/prodi/{id}/update', [\App\Http\Controllers\Admin\ProdiController::class, 'update'])->name('prodi.update');
     Route::delete('/prodi/{prodi}/delete', [\App\Http\Controllers\Admin\ProdiController::class, 'destroy'])->name('prodi.destroy');
     Route::delete('/prodi/destroyMultiple', [\App\Http\Controllers\Admin\ProdiController::class, 'destroyMultiple'])->name('prodi.destroyMultiple');
+
+    // Data Kelas
+    Route::get('/kelas', [\App\Http\Controllers\Admin\KelasController::class, 'index'])->name('kelas');
+    Route::post('/kelas/store', [\App\Http\Controllers\Admin\KelasController::class, 'store'])->name('kelas.store');
+    Route::put('/kelas/{id}/update', [\App\Http\Controllers\Admin\KelasController::class, 'update'])->name('kelas.update');
+    Route::delete('/kelas/{kelas}/delete', [\App\Http\Controllers\Admin\KelasController::class, 'destroy'])->name('kelas.destroy');
+    Route::delete('/kelas/destroyMultiple', [\App\Http\Controllers\Admin\KelasController::class, 'destroyMultiple'])->name('kelas.destroyMultiple');
 });
 
 require __DIR__ . '/auth.php';

@@ -3,6 +3,7 @@ import AppMenuitem from './AppMenuitem';
 import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import {Link} from "@inertiajs/react";
+import { IoDocumentAttachOutline } from "react-icons/io5";
 
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
@@ -19,8 +20,9 @@ const AppMenu = () => {
             items: [
                 { label: 'Dosen', icon: 'pi pi-fw pi-user', to: route('dosen') },
                 { label: 'Mahasiswa', icon: 'pi pi-fw pi-users', to: route('mahasiswa') },
-                { label: 'Jurusan', icon: 'pi pi-fw pi-users', to: route('jurusan') },
-                { label: 'Prodi', icon: 'pi pi-fw pi-users', to: route('prodi') },
+                { label: 'Jurusan', icon: 'pi pi-fw pi-file', to: route('jurusan') },
+                { label: 'Prodi', icon: 'pi pi-fw pi-file', to: route('prodi') },
+                { label: 'Kelas', icon: 'pi pi-fw pi-file', to: route('kelas') },
             ]
         },
     ];

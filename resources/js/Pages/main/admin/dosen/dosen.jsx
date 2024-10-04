@@ -25,19 +25,19 @@ const dosen = () => {
     };
 
     const { props } = usePage();
-    const { data_dosen, prodiOptions: initialProdiOptions } = props;
-    const [dosens, setdosens] = useState(false);
+    const { data_dosen, prodiOptions: initialProdiOptions, nextNumber } = props;
+    const [dosens, setdosens] = useState(null);
+    const [selecteddosens, setSelecteddosens] = useState(null);
     const [prodiOptions, setProdiOptions] = useState([]);
     const [dosenDialog, setdosenDialog] = useState(false);
     const [deletedosenDialog, setDeletedosenDialog] = useState(false);
     const [deletedosensDialog, setDeletedosensDialog] = useState(false);
     const [dosen, setdosen] = useState(emptydosen);
-    const [selecteddosens, setSelecteddosens] = useState(null);
     const [submitted, setSubmitted] = useState(false);
-    const [globalFilter, setGlobalFilter] = useState(null);
+    const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
-    // console.log(props)
+    // console.log(props.data_dosen)
 
     useEffect(() => {
         setProdiOptions(initialProdiOptions);
@@ -144,8 +144,7 @@ const dosen = () => {
         try {
 
             if (isCreating) {
-                const existingIds = dosens.map(d => d.id_dosen);
-                _dosen.id_dosen = createId(existingIds);
+                _dosen.id_dosen = nextNumber;
                 await router.post('/dosen/store', _dosen);
             } else {
                 delete _dosen.email;
@@ -200,17 +199,6 @@ const dosen = () => {
         finally {
             setDeletedosenDialog(false);
         }
-    };
-    const createId = (existingIds) => {
-        let id_dosen;
-        const generateUniqueId = () => {
-            return Math.floor(10000 + Math.random() * 90000);
-        };
-        do {
-            id_dosen = generateUniqueId();
-        } while (existingIds.includes(id_dosen));
-
-        return id_dosen;
     };
 
     const confirmDeleteSelected = () => {
@@ -305,7 +293,8 @@ const dosen = () => {
                 <i className="pi pi-search" />
                 <InputText
                     type="search"
-                    onChange={(e) => setGlobalFilter(e.target.value)}
+                    value={globalFilter || ''}
+                    onInput={(e) => setGlobalFilter(e.target.value || '')}
                     placeholder="Search..."
                 />
             </span>
@@ -364,6 +353,7 @@ const dosen = () => {
                         ></Toolbar>
 
                         <DosenDataTable
+                            dt={dt}
                             dosens={dosens}
                             selecteddosens={selecteddosens}
                             setSelecteddosens={setSelecteddosens}

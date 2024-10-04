@@ -87,11 +87,11 @@ const MahasiswaDataTable = ({ mahasiswas, selectedmahasiswas, setSelectedmahasis
             responsiveLayout="scroll"
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="Nama" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="Prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="NIM" header="NIM" body={nimBodyTemplate} sortable></Column>
-            <Column field="Gender" header="Gender" sortable body={genderBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
-            <Column field="Status" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column field="nama_mahasiswa" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_kelas.r_prodi.nama_prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="nim_mahasiswa" header="NIM" body={nimBodyTemplate} sortable></Column>
+            <Column field="gender" header="Gender" sortable body={genderBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
+            <Column field="status_mahasiswa" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

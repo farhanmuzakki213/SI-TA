@@ -21,9 +21,11 @@ class ProdiController extends Controller
     {
         $data_prodi = Prodi::with('r_jurusan')->get();
         $data_jurusan = Jurusan::all();
+        $nextNumber = $this->getCariNomor();
         // dd($data_jurusan->toArray());
         return Inertia::render('main/admin/prodi/prodi', [
             'data_prodi' => $data_prodi,
+            'nextNumber' => $nextNumber,
             'jurusanOptions' => $data_jurusan->map(fn($u) => [
                 'label' => $u->nama_jurusan,
                 'value' => $u->id_jurusan
@@ -167,5 +169,17 @@ class ProdiController extends Controller
         Prodi::whereIn('id_prodi', $ids)->delete();
 
         return to_route('prodi')->with('success', 'Prodi deleted successfully');
+    }
+
+    function getCariNomor()
+    {
+        $id_prodi = Prodi::pluck('id_prodi')->toArray();
+        for ($i = 1;; $i++) {
+            if (!in_array($i, $id_prodi)) {
+                return $i;
+                break;
+            }
+        }
+        return $i;
     }
 }

@@ -27,9 +27,11 @@ class DosenController extends Controller
 
         $prodi = Prodi::all();
         $users = User::all();
+        $nextNumber = $this->getCariNomor();
         // dd($data_dosen->toArray(), $prodi->toArray(), $users->toArray());
         return Inertia::render('main/admin/dosen/dosen', [
             'data_dosen' => $data_dosen,
+            'nextNumber' => $nextNumber,
             'prodiOptions' => $prodi->map(fn($p) => [
                 'label' => $p->nama_prodi,
                 'value' => $p->id_prodi
@@ -54,6 +56,7 @@ class DosenController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'id_dosen' => 'required',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
@@ -172,5 +175,17 @@ class DosenController extends Controller
         Dosen::whereIn('id_dosen', $ids)->delete();
 
         return to_route('dosen')->with('success', 'Selected dosens deleted successfully');
+    }
+
+    function getCariNomor()
+    {
+        $id_dosen = Dosen::pluck('id_dosen')->toArray();
+        for ($i = 1;; $i++) {
+            if (!in_array($i, $id_dosen)) {
+                return $i;
+                break;
+            }
+        }
+        return $i;
     }
 }

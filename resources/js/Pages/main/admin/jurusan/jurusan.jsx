@@ -19,15 +19,15 @@ const jurusan = () => {
     };
 
     const { props } = usePage();
-    const { data_jurusan } = props;
-    const [jurusans, setjurusans] = useState(false);
+    const { data_jurusan, nextNumber } = props;
+    const [jurusans, setjurusans] = useState(null);
     const [jurusanDialog, setjurusanDialog] = useState(false);
     const [deletejurusanDialog, setDeletejurusanDialog] = useState(false);
     const [deletejurusansDialog, setDeletejurusansDialog] = useState(false);
     const [jurusan, setjurusan] = useState(emptyjurusan);
     const [selectedjurusans, setSelectedjurusans] = useState(null);
     const [submitted, setSubmitted] = useState(false);
-    const [globalFilter, setGlobalFilter] = useState(null);
+    const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
     // console.log(props)
@@ -118,8 +118,7 @@ const jurusan = () => {
         try {
 
             if (isCreating) {
-                const existingIds = jurusans.map(d => d.id_jurusan);
-                _jurusan.id_jurusan = createId(existingIds);
+                _jurusan.id_jurusan = nextNumber;
                 await router.post('/jurusan/store', _jurusan);
             } else {
                 await router.put(`/jurusan/${jurusan.id_jurusan}/update`, _jurusan);
@@ -170,17 +169,6 @@ const jurusan = () => {
         finally {
             setDeletejurusanDialog(false);
         }
-    };
-    const createId = (existingIds) => {
-        let id_jurusan;
-        const generateUniqueId = () => {
-            return Math.floor(10000 + Math.random() * 90000);
-        };
-        do {
-            id_jurusan = generateUniqueId();
-        } while (existingIds.includes(id_jurusan));
-
-        return id_jurusan;
     };
 
     const confirmDeleteSelected = () => {
@@ -245,15 +233,10 @@ const jurusan = () => {
     const columns = [
         { header: 'ID', field: 'id_jurusan' },
         {
-            header: 'Name',
+            header: 'Nama Jurusan',
             field: (jurusan) => `"${jurusan.nama_jurusan}"`
         },
-        { header: 'Prodi', field: 'r_prodi.nama_prodi' },
-        { header: 'Gender', field: 'gender' },
-        {
-            header: 'Status',
-            field: (jurusan) => jurusan.status_jurusan === "1" ? "Aktif" : "Tidak Aktif"
-        }
+        { header: 'Kode Jurusan', field: 'kode_jurusan' },
     ];
     const handleImport = (importedData) => {
         setJurusans(prevJurusans => [...prevJurusans, ...importedData]);
@@ -275,7 +258,8 @@ const jurusan = () => {
                 <i className="pi pi-search" />
                 <InputText
                     type="search"
-                    onChange={(e) => setGlobalFilter(e.target.value)}
+                    value={globalFilter || ''}
+                    onInput={(e) => setGlobalFilter(e.target.value || '')}
                     placeholder="Search..."
                 />
             </span>

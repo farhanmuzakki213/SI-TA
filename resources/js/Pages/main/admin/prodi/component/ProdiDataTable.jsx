@@ -69,9 +69,9 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
             responsiveLayout="scroll"
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="Kode" header="Kode" body={kodeBodyTemplate} sortable></Column>
-            <Column field="Nama" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="Jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="kode_prodi" header="Kode" body={kodeBodyTemplate} sortable></Column>
+            <Column field="nama_prodi" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_jurusan.nama_jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

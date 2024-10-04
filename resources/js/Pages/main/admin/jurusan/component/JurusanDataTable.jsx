@@ -60,8 +60,8 @@ const JurusanDataTable = ({ jurusans, selectedjurusans, setSelectedjurusans, glo
             responsiveLayout="scroll"
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="Kode" header="Kode" body={kodeBodyTemplate} sortable></Column>
-            <Column field="Nama" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="kode_jurusan" header="Kode" body={kodeBodyTemplate} sortable></Column>
+            <Column field="nama_jurusan" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

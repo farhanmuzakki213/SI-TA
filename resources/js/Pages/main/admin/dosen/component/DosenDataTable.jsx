@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 
-const DosenDataTable = ({ dosens, selecteddosens, setSelecteddosens, globalFilter, header, editdosen, confirmDeletedosen }) => {
+const DosenDataTable = ({ dosens, selecteddosens, setSelecteddosens, globalFilter, header, editdosen, confirmDeletedosen, dt }) => {
     const namaBodyTemplate = (rowData) => {
         return (
             <>
@@ -71,6 +71,7 @@ const DosenDataTable = ({ dosens, selecteddosens, setSelecteddosens, globalFilte
 
     return (
         <DataTable
+            ref={dt}
             value={dosens}
             selection={selecteddosens}
             onSelectionChange={(e) => setSelecteddosens(e.value)}
@@ -85,13 +86,14 @@ const DosenDataTable = ({ dosens, selecteddosens, setSelecteddosens, globalFilte
             emptyMessage="No dosens found."
             header={header}
             responsiveLayout="scroll"
+            removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="Nama" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="Prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="NIDN" header="NIDN" body={nidnBodyTemplate} sortable></Column>
-            <Column field="Gender" header="Gender" sortable body={genderBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
-            <Column field="Status" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column field="nama_dosen" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_prodi.nama_prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="nidn_dosen" header="NIDN" sortable body={nidnBodyTemplate} ></Column>
+            <Column field="gender" header="Gender" sortable body={genderBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
+            <Column field="status_dosen" header="Status" sortable body={statusBodyTemplate} ></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

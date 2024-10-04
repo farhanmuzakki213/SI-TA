@@ -25,9 +25,11 @@ class MahasiswaController extends Controller
 
         $kelas = Kelas::all();
         $users = User::all();
+        $nextNumber = $this->getCariNomor();
         // dd($data_mahasiswa->toArray(), $kelas->toArray(), $users->toArray());
         return Inertia::render('main/admin/mahasiswa/mahasiswa', [
             'data_mahasiswa' => $data_mahasiswa,
+            'nextNumber' => $nextNumber,
             'kelasOptions' => $kelas->map(fn($p) => [
                 'label' => $p->nama_kelas,
                 'value' => $p->id_kelas
@@ -173,5 +175,17 @@ class MahasiswaController extends Controller
         Mahasiswa::whereIn('id_mahasiswa', $ids)->delete();
 
         return to_route('mahasiswa')->with('success', 'Mahasiswa deleted successfully');
+    }
+
+    function getCariNomor()
+    {
+        $id_mahasiswa = Mahasiswa::pluck('id_mahasiswa')->toArray();
+        for ($i = 1;; $i++) {
+            if (!in_array($i, $id_mahasiswa)) {
+                return $i;
+                break;
+            }
+        }
+        return $i;
     }
 }
