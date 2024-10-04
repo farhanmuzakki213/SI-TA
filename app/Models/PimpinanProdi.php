@@ -21,6 +21,6 @@ class PimpinanProdi extends Model
 
     public function r_dosen()
     {
-        return $this->belongsTo(JabatanPimpinan::class, 'dosen_id');
+        return $this->belongsTo(Dosen::class, 'dosen_id');
     }
 }

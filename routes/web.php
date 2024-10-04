@@ -87,6 +87,13 @@ Route::middleware('auth')->group(function () {
     Route::put('/jabatanpimpinan/{id}/update', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'update'])->name('jabatanpimpinan.update');
     Route::delete('/jabatanpimpinan/{jabatan_pimpinan}/delete', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'destroy'])->name('jabatanpimpinan.destroy');
     Route::delete('/jabatanpimpinan/destroyMultiple', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'destroyMultiple'])->name('jabatanpimpinan.destroyMultiple');
+
+    // Data Pimpinan Jurusan
+    Route::get('/pimpinanjurusan', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'index'])->name('pimpinanjurusan');
+    Route::post('/pimpinanjurusan/store', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'store'])->name('pimpinanjurusan.store');
+    Route::put('/pimpinanjurusan/{id}/update', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'update'])->name('pimpinanjurusan.update');
+    Route::delete('/pimpinanjurusan/{pimpinan_jurusan}/delete', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'destroy'])->name('pimpinanjurusan.destroy');
+    Route::delete('/pimpinanjurusan/destroyMultiple', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'destroyMultiple'])->name('pimpinanjurusan.destroyMultiple');
 });
 
 require __DIR__ . '/auth.php';
