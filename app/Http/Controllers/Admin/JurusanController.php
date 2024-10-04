@@ -89,14 +89,13 @@ class JurusanController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'nama_jurusan' => ['required', 'string', 'max:255', 'unique:' . Jurusan::class],
-            'kode_jurusan' => ['required', 'string', 'max:255', 'unique:' . Jurusan::class],
+            'nama_jurusan' => ['required', 'string', 'max:255'],
+            'kode_jurusan' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
         }
-        // dd($request->nim_mahasiswa);
         DB::beginTransaction();
         try {
             $data = [

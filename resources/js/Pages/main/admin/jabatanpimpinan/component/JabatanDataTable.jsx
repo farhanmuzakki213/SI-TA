@@ -3,12 +3,12 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 
-const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilter, header, editprodi, confirmDeleteprodi, dt }) => {
+const JabatanDataTable = ({ jabatan_pimpinans, selectedjabatan_pimpinans, setSelectedjabatan_pimpinans, globalFilter, header, editjabatan_pimpinan, confirmDeletejabatan_pimpinan, dt }) => {
     const namaBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Nama Prodi</span>
-                {rowData.nama_prodi}
+                <span className="p-column-title">Nama Jabatan Pimpinan</span>
+                {rowData.nama_jabatan_pimpinan}
             </>
         );
     };
@@ -16,17 +16,8 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
     const kodeBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Kode Prodi</span>
-                {rowData.kode_prodi}
-            </>
-        );
-    };
-
-    const jurusanBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Jurusan</span>
-                {rowData.r_jurusan ? rowData.r_jurusan.nama_jurusan : 'N/A'}
+                <span className="p-column-title">Kode Jabatan Pimpinan</span>
+                {rowData.kode_jabatan_pimpinan}
             </>
         );
     };
@@ -39,13 +30,13 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
                     severity="success"
                     rounded
                     className="mr-2"
-                    onClick={() => editprodi(rowData)}
+                    onClick={() => editjabatan_pimpinan(rowData)}
                 />
                 <Button
                     icon="pi pi-trash"
                     severity="warning"
                     rounded
-                    onClick={() => confirmDeleteprodi(rowData)}
+                    onClick={() => confirmDeletejabatan_pimpinan(rowData)}
                 />
             </>
         );
@@ -54,28 +45,27 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
     return (
         <DataTable
             ref={dt}
-            value={prodis}
-            selection={selectedprodis}
-            onSelectionChange={(e) => setSelectedprodis(e.value)}
-            dataKey="id_prodi"
+            value={jabatan_pimpinans}
+            selection={selectedjabatan_pimpinans}
+            onSelectionChange={(e) => setSelectedjabatan_pimpinans(e.value)}
+            dataKey="id_jabatan_pimpinan"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} prodis"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} jabatan_pimpinans"
             globalFilter={globalFilter}
-            emptyMessage="No prodis found."
+            emptyMessage="No jabatan_pimpinans found."
             header={header}
             responsiveLayout="scroll"
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="kode_prodi" header="Kode" body={kodeBodyTemplate} sortable></Column>
-            <Column field="nama_prodi" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_jurusan.nama_jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="kode_jabatan_pimpinan" header="Kode" body={kodeBodyTemplate} sortable></Column>
+            <Column field="nama_jabatan_pimpinan" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );
 };
 
-export default ProdiDataTable;
+export default JabatanDataTable;

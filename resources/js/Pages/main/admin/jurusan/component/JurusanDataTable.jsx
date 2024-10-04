@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 
-const JurusanDataTable = ({ jurusans, selectedjurusans, setSelectedjurusans, globalFilter, header, editjurusan, confirmDeletejurusan }) => {
+const JurusanDataTable = ({ jurusans, selectedjurusans, setSelectedjurusans, globalFilter, header, editjurusan, confirmDeletejurusan, dt }) => {
     const namaBodyTemplate = (rowData) => {
         return (
             <>
@@ -44,6 +44,7 @@ const JurusanDataTable = ({ jurusans, selectedjurusans, setSelectedjurusans, glo
 
     return (
         <DataTable
+            ref={dt}
             value={jurusans}
             selection={selectedjurusans}
             onSelectionChange={(e) => setSelectedjurusans(e.value)}

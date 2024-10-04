@@ -73,6 +73,20 @@ Route::middleware('auth')->group(function () {
     Route::put('/kelas/{id}/update', [\App\Http\Controllers\Admin\KelasController::class, 'update'])->name('kelas.update');
     Route::delete('/kelas/{kelas}/delete', [\App\Http\Controllers\Admin\KelasController::class, 'destroy'])->name('kelas.destroy');
     Route::delete('/kelas/destroyMultiple', [\App\Http\Controllers\Admin\KelasController::class, 'destroyMultiple'])->name('kelas.destroyMultiple');
+
+    // Data Semester dan Tahun Akademik
+    Route::get('/semester', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'index'])->name('semester');
+    Route::post('/semester/store', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'store'])->name('semester.store');
+    Route::put('/semester/{id}/update', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'update'])->name('semester.update');
+    Route::delete('/semester/{smt_thnakd}/delete', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'destroy'])->name('semester.destroy');
+    Route::delete('/semester/destroyMultiple', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'destroyMultiple'])->name('semester.destroyMultiple');
+
+    // Data Jabatan Pimpinan
+    Route::get('/jabatanpimpinan', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'index'])->name('jabatanpimpinan');
+    Route::post('/jabatanpimpinan/store', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'store'])->name('jabatanpimpinan.store');
+    Route::put('/jabatanpimpinan/{id}/update', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'update'])->name('jabatanpimpinan.update');
+    Route::delete('/jabatanpimpinan/{jabatan_pimpinan}/delete', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'destroy'])->name('jabatanpimpinan.destroy');
+    Route::delete('/jabatanpimpinan/destroyMultiple', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'destroyMultiple'])->name('jabatanpimpinan.destroyMultiple');
 });
 
 require __DIR__ . '/auth.php';

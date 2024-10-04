@@ -26,7 +26,7 @@ const mahasiswa = () => {
 
 
     const { props } = usePage();
-    const {data_mahasiswa, kelasOptions: initialKelasOptions, nextNumber } = props;
+    const { data_mahasiswa, kelasOptions: initialKelasOptions, nextNumber } = props;
     const [mahasiswas, setmahasiswas] = useState(null);
     const [kelasOptions, setKelasOptions] = useState([]);
     const [mahasiswaDialog, setmahasiswaDialog] = useState(false);
@@ -169,7 +169,7 @@ const mahasiswa = () => {
                 detail: errorMessage,
                 life: 3000,
             });
-        }finally{
+        } finally {
             setmahasiswa(emptymahasiswa);
             setmahasiswaDialog(false);
         }
@@ -353,6 +353,7 @@ const mahasiswa = () => {
                         ></Toolbar>
 
                         <MahasiswaDataTable
+                            dt={dt}
                             mahasiswas={mahasiswas}
                             selectedmahasiswas={selectedmahasiswas}
                             setSelectedmahasiswas={setSelectedmahasiswas}

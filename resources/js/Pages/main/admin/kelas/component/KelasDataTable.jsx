@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 
-const KelasDataTable = ({ kelass, selectedkelass, setSelectedkelass, globalFilter, header, editkelas, confirmDeletekelas }) => {
+const KelasDataTable = ({ kelass, selectedkelass, setSelectedkelass, globalFilter, header, editkelas, confirmDeletekelas, dt }) => {
     const namaBodyTemplate = (rowData) => {
         return (
             <>
@@ -62,6 +62,7 @@ const KelasDataTable = ({ kelass, selectedkelass, setSelectedkelass, globalFilte
 
     return (
         <DataTable
+            ref={dt}
             value={kelass}
             selection={selectedkelass}
             onSelectionChange={(e) => setSelectedkelass(e.value)}

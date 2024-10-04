@@ -6,26 +6,26 @@ import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import JurusanDataTable from './component/JurusanDataTable';
-import JurusanForm from './component/JurusanForm';
+import SmtDataTable from './component/SmtDataTable';
+import SmtForm from './component/SmtForm';
 import CSVExportComponent from '@/Components/CSVExportComponent';
 import CSVImportComponent from '@/Components/CSVImportComponent';
 
-const jurusan = () => {
-    let emptyjurusan = {
-        id_jurusan: null,
-        nama_jurusan: "",
-        kode_jurusan: ""
+const smt = () => {
+    let emptysmt_thnakd = {
+        id_smt_thnakd: null,
+        nama_smt_thnakd: "",
+        kode_smt_thnakd: "",
     };
 
     const { props } = usePage();
-    const { data_jurusan, nextNumber } = props;
-    const [jurusans, setjurusans] = useState(null);
-    const [jurusanDialog, setjurusanDialog] = useState(false);
-    const [deletejurusanDialog, setDeletejurusanDialog] = useState(false);
-    const [deletejurusansDialog, setDeletejurusansDialog] = useState(false);
-    const [jurusan, setjurusan] = useState(emptyjurusan);
-    const [selectedjurusans, setSelectedjurusans] = useState(null);
+    const { data_smt_thnakd, nextNumber } = props;
+    const [smt_thnakds, setsmt_thnakds] = useState(null);
+    const [smt_thnakdDialog, setsmt_thnakdDialog] = useState(false);
+    const [deletesmt_thnakdDialog, setDeletesmt_thnakdDialog] = useState(false);
+    const [deletesmt_thnakdsDialog, setDeletesmt_thnakdsDialog] = useState(false);
+    const [smt_thnakd, setsmt_thnakd] = useState(emptysmt_thnakd);
+    const [selectedsmt_thnakds, setSelectedsmt_thnakds] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
@@ -33,28 +33,28 @@ const jurusan = () => {
     // console.log(props)
 
     useEffect(() => {
-        setjurusans(data_jurusan);
+        setsmt_thnakds(data_smt_thnakd);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_jurusan, props.flash]);
+    }, [data_smt_thnakd, props.flash]);
 
     const openNew = () => {
-        setjurusan(emptyjurusan);
+        setsmt_thnakd(emptysmt_thnakd);
         setSubmitted(false);
-        setjurusanDialog(true);
+        setsmt_thnakdDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setjurusanDialog(false);
+        setsmt_thnakdDialog(false);
     };
 
-    const hideDeletejurusanDialog = () => {
-        setDeletejurusanDialog(false);
+    const hideDeletesmt_thnakdDialog = () => {
+        setDeletesmt_thnakdDialog(false);
     };
 
-    const hideDeletejurusansDialog = () => {
-        setDeletejurusansDialog(false);
+    const hideDeletesmt_thnakdsDialog = () => {
+        setDeletesmt_thnakdsDialog(false);
     };
 
     const displaySuccessMessage = (successMessage) => {
@@ -81,20 +81,22 @@ const jurusan = () => {
         }
     };
 
-    const saveJurusan = async () => {
+    const savesmt_thnakd = async () => {
         setSubmitted(true);
 
         const requiredFieldsForCreate = [
-            jurusan.nama_jurusan,
-            jurusan.kode_jurusan,
+            smt_thnakd.nama_smt_thnakd,
+            smt_thnakd.kode_smt_thnakd,
+            smt_thnakd.status_smt_thnakd,
         ];
 
         const requiredFieldsForUpdate = [
-            jurusan.nama_jurusan,
-            jurusan.kode_jurusan,
+            smt_thnakd.nama_smt_thnakd,
+            smt_thnakd.kode_smt_thnakd,
+            smt_thnakd.status_smt_thnakd,
         ];
 
-        const isCreating = !jurusan.id_jurusan;
+        const isCreating = !smt_thnakd.id_smt_thnakd;
         let isValid = true;
 
         if (isCreating) {
@@ -113,26 +115,26 @@ const jurusan = () => {
             return;
         }
 
-        let _jurusan = { ...jurusan };
+        let _smt_thnakd = { ...smt_thnakd };
 
         try {
 
             if (isCreating) {
-                _jurusan.id_jurusan = nextNumber;
-                await router.post('/jurusan/store', _jurusan);
+                _smt_thnakd.id_smt_thnakd = nextNumber;
+                await router.post('/semester/store', _smt_thnakd);
             } else {
-                await router.put(`/jurusan/${jurusan.id_jurusan}/update`, _jurusan);
+                await router.put(`/semester/${smt_thnakd.id_smt_thnakd}/update`, _smt_thnakd);
             }
 
             if (isCreating) {
-                setjurusans(prevjurusans => [...prevjurusans, _jurusan]);
+                setsmt_thnakds(prevSmt_thnakds => [...prevSmt_thnakds, _smt_thnakd]);
             } else {
-                setjurusans(prevJurusans =>
-                    prevJurusans.map(d => d.id_jurusan === jurusan.id_jurusan ? _jurusan : d)
+                setsmt_thnakds(prevSmt_thnakds =>
+                    prevSmt_thnakds.map(d => d.id_smt_thnakd === smt_thnakd.id_smt_thnakd ? _smt_thnakd : d)
                 );
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Failed to save jurusan.";
+            const errorMessage = error.response?.data?.message || "Failed to save smt_thnakd.";
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -140,71 +142,71 @@ const jurusan = () => {
                 life: 3000,
             });
         } finally {
-            setjurusan(emptyjurusan);
-            setjurusanDialog(false);
+            setsmt_thnakd(emptysmt_thnakd);
+            setsmt_thnakdDialog(false);
         }
     };
 
-    const editjurusan = (jurusan) => {
-        setjurusan({ ...jurusan });
-        setjurusanDialog(true);
+    const editsmt_thnakd = (smt_thnakd) => {
+        setsmt_thnakd({ ...smt_thnakd });
+        setsmt_thnakdDialog(true);
     };
 
-    const confirmDeletejurusan = (jurusan) => {
-        setjurusan(jurusan);
-        setDeletejurusanDialog(true);
+    const confirmDeletesmt_thnakd = (smt_thnakd) => {
+        setsmt_thnakd(smt_thnakd);
+        setDeletesmt_thnakdDialog(true);
     };
-    const deletejurusan = async () => {
+    const deletesmt_thnakd = async () => {
         try {
-            await router.delete(`/jurusan/${jurusan.id_jurusan}/delete`);
+            await router.delete(`/semester/${smt_thnakd.id_smt_thnakd}/delete`);
         } catch (error) {
-            console.error("Error deleting jurusan:", error);
+            console.error("Error deleting smt_thnakd:", error);
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete jurusan.",
+                detail: "Failed to delete smt_thnakd.",
                 life: 3000,
             });
         }
         finally {
-            setDeletejurusanDialog(false);
+            setDeletesmt_thnakdDialog(false);
         }
     };
 
     const confirmDeleteSelected = () => {
-        setDeletejurusansDialog(true);
+        setDeletesmt_thnakdsDialog(true);
     };
 
-    const deleteSelectedjurusans = async () => {
-        if (!selectedjurusans || selectedjurusans.length === 0) {
+    const deleteSelectedsmt_thnakds = async () => {
+        if (!selectedsmt_thnakds || selectedsmt_thnakds.length === 0) {
             toast.current.show({
                 severity: "warn",
                 summary: "Warning",
-                detail: "No jurusans selected for deletion.",
+                detail: "No smt_thnakds selected for deletion.",
                 life: 3000,
             });
             return;
         }
 
-        const selectedIds = selectedjurusans.map(jurusan => jurusan.id_jurusan);
+        const selectedIds = selectedsmt_thnakds.map(smt_thnakd => smt_thnakd.id_smt_thnakd);
 
         try {
-            await router.delete('/jurusan/destroyMultiple', {
+            await router.delete('/semester/destroyMultiple', {
                 data: {
                     ids: selectedIds,
                 },
             });
         } catch (error) {
-            // console.error("Error deleting selected jurusans:", error);
+            // console.error("Error deleting selected smt_thnakds:", error);
             toast.current.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete selected jurusans.",
+                detail: "Failed to delete selected smt_thnakds.",
                 life: 3000,
             });
         } finally {
-            setDeletejurusansDialog(false);
-            setSelectedjurusans(null);
+            setDeletesmt_thnakdsDialog(false);
+            setSelectedsmt_thnakds(null);
         }
     };
     const leftToolbarTemplate = () => {
@@ -223,7 +225,7 @@ const jurusan = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
-                        disabled={!selectedjurusans || !selectedjurusans.length}
+                        disabled={!selectedsmt_thnakds || !selectedsmt_thnakds.length}
                     />
                 </div>
             </React.Fragment>
@@ -231,29 +233,33 @@ const jurusan = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_jurusan' },
+        { header: 'ID', field: 'id_smt_thnakd' },
+        { header: 'Kode smt_thnakd', field: 'kode_smt_thnakd' },
         {
-            header: 'Nama Jurusan',
-            field: (jurusan) => `"${jurusan.nama_jurusan}"`
+            header: 'Nama smt_thnakd',
+            field: (smt_thnakd) => `"${smt_thnakd.nama_smt_thnakd}"`
         },
-        { header: 'Kode Jurusan', field: 'kode_jurusan' },
+        {
+            header: 'Status',
+            field: (smt_thnakd) => smt_thnakd.status_smt_thnakd === "1" ? "Aktif" : "Tidak Aktif"
+        }
     ];
     const handleImport = (importedData) => {
-        setJurusans(prevJurusans => [...prevJurusans, ...importedData]);
+        setSmt_thnakds(prevSmt_thnakds => [...prevSmt_thnakds, ...importedData]);
     };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <CSVImportComponent onImport={handleImport} toast={toast} />
-                <CSVExportComponent data={jurusans} toast={toast} fileName="jurusan_data.csv" columns={columns} />
+                <CSVExportComponent data={smt_thnakds} toast={toast} fileName="smt_thnakd_data.csv" columns={columns} />
             </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Jurusan</h5>
+            <h5 className="m-0">Semester dan Tahun Akademik</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -266,7 +272,7 @@ const jurusan = () => {
         </div>
     );
 
-    const jurusanDialogFooter = (
+    const smt_thnakdDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -274,33 +280,33 @@ const jurusan = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={saveJurusan} />
+            <Button label="Save" icon="pi pi-check" text onClick={savesmt_thnakd} />
         </>
     );
-    const deletejurusanDialogFooter = (
+    const deletesmt_thnakdDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletejurusanDialog}
+                onClick={hideDeletesmt_thnakdDialog}
             />
-            <Button label="Yes" icon="pi pi-check" text onClick={deletejurusan} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deletesmt_thnakd} />
         </>
     );
-    const deletejurusansDialogFooter = (
+    const deletesmt_thnakdsDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletejurusansDialog}
+                onClick={hideDeletesmt_thnakdsDialog}
             />
             <Button
                 label="Yes"
                 icon="pi pi-check"
                 text
-                onClick={deleteSelectedjurusans}
+                onClick={deleteSelectedsmt_thnakds}
             />
         </>
     );
@@ -317,65 +323,65 @@ const jurusan = () => {
                             right={rightToolbarTemplate}
                         ></Toolbar>
 
-                        <JurusanDataTable
+                        <SmtDataTable
                             dt={dt}
-                            jurusans={jurusans}
-                            selectedjurusans={selectedjurusans}
-                            setSelectedjurusans={setSelectedjurusans}
+                            smt_thnakds={smt_thnakds}
+                            selectedsmt_thnakds={selectedsmt_thnakds}
+                            setSelectedsmt_thnakds={setSelectedsmt_thnakds}
                             globalFilter={globalFilter}
                             header={header}
-                            editjurusan={editjurusan}
-                            confirmDeletejurusan={confirmDeletejurusan}
+                            editsmt_thnakd={editsmt_thnakd}
+                            confirmDeletesmt_thnakd={confirmDeletesmt_thnakd}
                         />
 
-                        <JurusanForm
-                            jurusanDialog={jurusanDialog}
-                            jurusan={jurusan}
-                            setjurusan={setjurusan}
+                        <SmtForm
+                            smt_thnakdDialog={smt_thnakdDialog}
+                            smt_thnakd={smt_thnakd}
+                            setsmt_thnakd={setsmt_thnakd}
                             submitted={submitted}
-                            jurusanDialogFooter={jurusanDialogFooter}
+                            smt_thnakdDialogFooter={smt_thnakdDialogFooter}
                             hideDialog={hideDialog}
                         />
 
                         <Dialog
-                            visible={deletejurusanDialog}
+                            visible={deletesmt_thnakdDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletejurusanDialogFooter}
-                            onHide={hideDeletejurusanDialog}
+                            footer={deletesmt_thnakdDialogFooter}
+                            onHide={hideDeletesmt_thnakdDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {jurusan && (
+                                {smt_thnakd && (
                                     <span>
                                         Are you sure you want to delete{" "}
-                                        <b>{jurusan.name}</b>?
+                                        <b>{smt_thnakd.name}</b>?
                                     </span>
                                 )}
                             </div>
                         </Dialog>
 
                         <Dialog
-                            visible={deletejurusansDialog}
+                            visible={deletesmt_thnakdsDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletejurusansDialogFooter}
-                            onHide={hideDeletejurusansDialog}
+                            footer={deletesmt_thnakdsDialogFooter}
+                            onHide={hideDeletesmt_thnakdsDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {jurusan && (
+                                {smt_thnakd && (
                                     <span>
                                         Are you sure you want to delete the
-                                        selected jurusans?
+                                        selected smt_thnakds?
                                     </span>
                                 )}
                             </div>
@@ -387,4 +393,4 @@ const jurusan = () => {
     );
 };
 
-export default jurusan;
+export default smt;

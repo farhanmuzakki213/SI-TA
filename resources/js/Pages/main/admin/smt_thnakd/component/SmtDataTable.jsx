@@ -3,12 +3,12 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 
-const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilter, header, editprodi, confirmDeleteprodi, dt }) => {
+const SmtDataTable = ({ smt_thnakds, selectedsmt_thnakds, setSelectedsmt_thnakds, globalFilter, header, editsmt_thnakd, confirmDeletesmt_thnakd }) => {
     const namaBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Nama Prodi</span>
-                {rowData.nama_prodi}
+                <span className="p-column-title">Nama Semester dan Tahun Akademik</span>
+                {rowData.nama_smt_thnakd}
             </>
         );
     };
@@ -16,17 +16,17 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
     const kodeBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Kode Prodi</span>
-                {rowData.kode_prodi}
+                <span className="p-column-title">Kode Semester dan Tahun Akademik</span>
+                {rowData.kode_smt_thnakd}
             </>
         );
     };
 
-    const jurusanBodyTemplate = (rowData) => {
+    const statusBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Jurusan</span>
-                {rowData.r_jurusan ? rowData.r_jurusan.nama_jurusan : 'N/A'}
+                <span className="p-column-title">Status</span>
+                {rowData.status_smt_thnakd === "1" ? "Aktif" : "Tidak Aktif"}
             </>
         );
     };
@@ -39,13 +39,13 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
                     severity="success"
                     rounded
                     className="mr-2"
-                    onClick={() => editprodi(rowData)}
+                    onClick={() => editsmt_thnakd(rowData)}
                 />
                 <Button
                     icon="pi pi-trash"
                     severity="warning"
                     rounded
-                    onClick={() => confirmDeleteprodi(rowData)}
+                    onClick={() => confirmDeletesmt_thnakd(rowData)}
                 />
             </>
         );
@@ -53,29 +53,28 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
 
     return (
         <DataTable
-            ref={dt}
-            value={prodis}
-            selection={selectedprodis}
-            onSelectionChange={(e) => setSelectedprodis(e.value)}
-            dataKey="id_prodi"
+            value={smt_thnakds}
+            selection={selectedsmt_thnakds}
+            onSelectionChange={(e) => setSelectedsmt_thnakds(e.value)}
+            dataKey="id_smt_thnakd"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} prodis"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} smt_thnakds"
             globalFilter={globalFilter}
-            emptyMessage="No prodis found."
+            emptyMessage="No smt_thnakds found."
             header={header}
             responsiveLayout="scroll"
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="kode_prodi" header="Kode" body={kodeBodyTemplate} sortable></Column>
-            <Column field="nama_prodi" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_jurusan.nama_jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="kode_smt_thnakd" header="Kode" body={kodeBodyTemplate} sortable></Column>
+            <Column field="nama_smt_thnakd" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="status_smt_thnakd" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );
 };
 
-export default ProdiDataTable;
+export default SmtDataTable;

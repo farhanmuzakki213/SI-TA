@@ -148,7 +148,7 @@ const kelas = () => {
                 detail: errorMessage,
                 life: 3000,
             });
-        }finally {
+        } finally {
             setkelas(emptykelas);
             setkelasDialog(false);
         }
@@ -329,6 +329,7 @@ const kelas = () => {
                         ></Toolbar>
 
                         <KelasDataTable
+                            dt={dt}
                             kelass={kelass}
                             selectedkelass={selectedkelass}
                             setSelectedkelass={setSelectedkelass}

@@ -4,7 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\JabatanPimpinan;
+use App\Models\PimpinanJurusan;
+use App\Models\PimpinanProdi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class JabatanPimpinanController extends Controller
 {
@@ -13,7 +18,13 @@ class JabatanPimpinanController extends Controller
      */
     public function index()
     {
-        //
+        $data_jabatan_pimpinan = JabatanPimpinan::get();
+        $nextNumber = $this->getCariNomor();
+        // dd($data_jabatan_pimpinan->toArray());
+        return Inertia::render('main/admin/jabatanpimpinan/jabatan', [
+            'nextNumber' => $nextNumber,
+            'data_jabatan_pimpinan' => $data_jabatan_pimpinan
+        ]);
     }
 
     /**
@@ -29,7 +40,31 @@ class JabatanPimpinanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'id_jabatan_pimpinan' => 'required',
+            'nama_jabatan_pimpinan' => ['required', 'string', 'max:255', 'unique:' . JabatanPimpinan::class],
+            'kode_jabatan_pimpinan' => ['required', 'string', 'max:255', 'unique:' . JabatanPimpinan::class],
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+
+        DB::beginTransaction();
+        try {
+            JabatanPimpinan::create([
+                'id_jabatan_pimpinan' => $request->id_jabatan_pimpinan,
+                'kode_jabatan_pimpinan' => $request->kode_jabatan_pimpinan,
+                'nama_jabatan_pimpinan' => $request->nama_jabatan_pimpinan,
+            ]);
+            DB::commit();
+
+            return to_route('jabatanpimpinan')->with('success', 'Jabatan Pimpinan created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('jabatanpimpinan')->with('error', 'Jabatan Pimpinan created failed');
+        }
     }
 
     /**
@@ -51,16 +86,89 @@ class JabatanPimpinanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, JabatanPimpinan $jabatanPimpinan)
+    public function update(Request $request, $id)
     {
-        //
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'nama_jabatan_pimpinan' => ['required', 'string', 'max:255'],
+            'kode_jabatan_pimpinan' => ['required', 'string', 'max:255'],
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $data = [
+                'nama_jabatan_pimpinan' => $request->nama_jabatan_pimpinan,
+                'kode_jabatan_pimpinan' => $request->kode_jabatan_pimpinan,
+            ];
+
+            $jabatan_pimpinan = JabatanPimpinan::findOrFail($id);
+            $jabatan_pimpinan->update($data);
+            DB::commit();
+            return to_route('jabatanpimpinan')->with('success', 'Jabatan Pimpinan updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('jabatanpimpinan')->with('error', 'Jabatan Pimpinan updated failed');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(JabatanPimpinan $jabatanPimpinan)
+    public function destroy(JabatanPimpinan $jabatan_pimpinan)
     {
-        //
+        // dd($jurusan->toArray());
+        $jabatan_pimpinan = JabatanPimpinan::findOrFail($jabatan_pimpinan->id_jabatan_pimpinan);
+
+        $existsInPimpinanProdi = PimpinanProdi::where('jabatan_pimpinan_id', $jabatan_pimpinan->id_jabatan_pimpinan)->exists();
+        $existsInPimpinanJurusan = PimpinanJurusan::where('jabatan_pimpinan_id', $jabatan_pimpinan->id_jabatan_pimpinan)->exists();
+
+        if ($existsInPimpinanProdi) {
+            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with some PimpinanProdi.');
+        }
+        if ($existsInPimpinanJurusan) {
+            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with some PimpinanJurusan.');
+        }
+        $jabatan_pimpinan->delete();
+
+        return to_route('jabatanpimpinan')->with('success', 'Jabatan Pimpinan deleted successfully');
+    }
+
+    public function destroyMultiple(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:jabatan_pimpinans,id_jabatan_pimpinan',
+        ]);
+
+        $ids = $request->input('ids');
+
+        $existingPimpinanProdiCount =PimpinanProdi::whereIn('jabatan_pimpinan_id', $ids)->count();
+        $existingPimpinanJurusanCount = PimpinanJurusan::whereIn('jabatan_pimpinan_id', $ids)->count();
+
+        if ($existingPimpinanProdiCount > 0) {
+            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with somePimpinanProdi.');
+        }
+        if ($existingPimpinanJurusanCount > 0) {
+            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with some PimpinanJurusan.');
+        }
+
+        JabatanPimpinan::whereIn('id_jabatan_pimpinan', $ids)->delete();
+
+        return to_route('jabatanpimpinan')->with('success', 'Jabatan Pimpinan deleted successfully');
+    }
+
+    function getCariNomor()
+    {
+        $id_jabatan_pimpinan = JabatanPimpinan::pluck('id_jabatan_pimpinan')->toArray();
+        for ($i = 1;; $i++) {
+            if (!in_array($i, $id_jabatan_pimpinan)) {
+                return $i;
+                break;
+            }
+        }
+        return $i;
     }
 }

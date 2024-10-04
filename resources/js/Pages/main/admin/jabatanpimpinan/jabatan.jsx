@@ -6,26 +6,26 @@ import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import JurusanDataTable from './component/JurusanDataTable';
-import JurusanForm from './component/JurusanForm';
+import JabatanDataTable from './component/JabatanDataTable';
+import JabatanForm from './component/JabatanForm';
 import CSVExportComponent from '@/Components/CSVExportComponent';
 import CSVImportComponent from '@/Components/CSVImportComponent';
 
-const jurusan = () => {
-    let emptyjurusan = {
-        id_jurusan: null,
-        nama_jurusan: "",
-        kode_jurusan: ""
+const jabatan_pimpinan = () => {
+    let emptyjabatan_pimpinan = {
+        id_jabatan_pimpinan: null,
+        nama_jabatan_pimpinan: "",
+        kode_jabatan_pimpinan: ""
     };
 
     const { props } = usePage();
-    const { data_jurusan, nextNumber } = props;
-    const [jurusans, setjurusans] = useState(null);
-    const [jurusanDialog, setjurusanDialog] = useState(false);
-    const [deletejurusanDialog, setDeletejurusanDialog] = useState(false);
-    const [deletejurusansDialog, setDeletejurusansDialog] = useState(false);
-    const [jurusan, setjurusan] = useState(emptyjurusan);
-    const [selectedjurusans, setSelectedjurusans] = useState(null);
+    const { data_jabatan_pimpinan, nextNumber } = props;
+    const [jabatan_pimpinans, setjabatan_pimpinans] = useState(null);
+    const [jabatan_pimpinanDialog, setjabatan_pimpinanDialog] = useState(false);
+    const [deletejabatan_pimpinanDialog, setDeletejabatan_pimpinanDialog] = useState(false);
+    const [deletejabatan_pimpinansDialog, setDeletejabatan_pimpinansDialog] = useState(false);
+    const [jabatan_pimpinan, setjabatan_pimpinan] = useState(emptyjabatan_pimpinan);
+    const [selectedjabatan_pimpinans, setSelectedjabatan_pimpinans] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
@@ -33,28 +33,28 @@ const jurusan = () => {
     // console.log(props)
 
     useEffect(() => {
-        setjurusans(data_jurusan);
+        setjabatan_pimpinans(data_jabatan_pimpinan);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_jurusan, props.flash]);
+    }, [data_jabatan_pimpinan, props.flash]);
 
     const openNew = () => {
-        setjurusan(emptyjurusan);
+        setjabatan_pimpinan(emptyjabatan_pimpinan);
         setSubmitted(false);
-        setjurusanDialog(true);
+        setjabatan_pimpinanDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setjurusanDialog(false);
+        setjabatan_pimpinanDialog(false);
     };
 
-    const hideDeletejurusanDialog = () => {
-        setDeletejurusanDialog(false);
+    const hideDeletejabatan_pimpinanDialog = () => {
+        setDeletejabatan_pimpinanDialog(false);
     };
 
-    const hideDeletejurusansDialog = () => {
-        setDeletejurusansDialog(false);
+    const hideDeletejabatan_pimpinansDialog = () => {
+        setDeletejabatan_pimpinansDialog(false);
     };
 
     const displaySuccessMessage = (successMessage) => {
@@ -81,20 +81,20 @@ const jurusan = () => {
         }
     };
 
-    const saveJurusan = async () => {
+    const savejabatan_pimpinan = async () => {
         setSubmitted(true);
 
         const requiredFieldsForCreate = [
-            jurusan.nama_jurusan,
-            jurusan.kode_jurusan,
+            jabatan_pimpinan.nama_jabatan_pimpinan,
+            jabatan_pimpinan.kode_jabatan_pimpinan,
         ];
 
         const requiredFieldsForUpdate = [
-            jurusan.nama_jurusan,
-            jurusan.kode_jurusan,
+            jabatan_pimpinan.nama_jabatan_pimpinan,
+            jabatan_pimpinan.kode_jabatan_pimpinan,
         ];
 
-        const isCreating = !jurusan.id_jurusan;
+        const isCreating = !jabatan_pimpinan.id_jabatan_pimpinan;
         let isValid = true;
 
         if (isCreating) {
@@ -113,26 +113,26 @@ const jurusan = () => {
             return;
         }
 
-        let _jurusan = { ...jurusan };
+        let _jabatan_pimpinan = { ...jabatan_pimpinan };
 
         try {
 
             if (isCreating) {
-                _jurusan.id_jurusan = nextNumber;
-                await router.post('/jurusan/store', _jurusan);
+                _jabatan_pimpinan.id_jabatan_pimpinan = nextNumber;
+                await router.post('/jabatanpimpinan/store', _jabatan_pimpinan);
             } else {
-                await router.put(`/jurusan/${jurusan.id_jurusan}/update`, _jurusan);
+                await router.put(`/jabatanpimpinan/${jabatan_pimpinan.id_jabatan_pimpinan}/update`, _jabatan_pimpinan);
             }
 
             if (isCreating) {
-                setjurusans(prevjurusans => [...prevjurusans, _jurusan]);
+                setjabatan_pimpinans(prevJabatan_pimpinans => [...prevJabatan_pimpinans, _jabatan_pimpinan]);
             } else {
-                setjurusans(prevJurusans =>
-                    prevJurusans.map(d => d.id_jurusan === jurusan.id_jurusan ? _jurusan : d)
+                setjabatan_pimpinans(prevJabatan_pimpinans =>
+                    prevJabatan_pimpinans.map(d => d.id_jabatan_pimpinan === jabatan_pimpinan.id_jabatan_pimpinan ? _jabatan_pimpinan : d)
                 );
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Failed to save jurusan.";
+            const errorMessage = error.response?.data?.message || "Failed to save jabatan_pimpinan.";
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -140,71 +140,71 @@ const jurusan = () => {
                 life: 3000,
             });
         } finally {
-            setjurusan(emptyjurusan);
-            setjurusanDialog(false);
+            setjabatan_pimpinan(emptyjabatan_pimpinan);
+            setjabatan_pimpinanDialog(false);
         }
     };
 
-    const editjurusan = (jurusan) => {
-        setjurusan({ ...jurusan });
-        setjurusanDialog(true);
+    const editjabatan_pimpinan = (jabatan_pimpinan) => {
+        setjabatan_pimpinan({ ...jabatan_pimpinan });
+        setjabatan_pimpinanDialog(true);
     };
 
-    const confirmDeletejurusan = (jurusan) => {
-        setjurusan(jurusan);
-        setDeletejurusanDialog(true);
+    const confirmDeletejabatan_pimpinan = (jabatan_pimpinan) => {
+        setjabatan_pimpinan(jabatan_pimpinan);
+        setDeletejabatan_pimpinanDialog(true);
     };
-    const deletejurusan = async () => {
+    const deletejabatan_pimpinan = async () => {
         try {
-            await router.delete(`/jurusan/${jurusan.id_jurusan}/delete`);
+            await router.delete(`/jabatanpimpinan/${jabatan_pimpinan.id_jabatan_pimpinan}/delete`);
         } catch (error) {
-            console.error("Error deleting jurusan:", error);
+            console.error("Error deleting jabatan_pimpinan:", error);
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete jurusan.",
+                detail: "Failed to delete jabatan_pimpinan.",
                 life: 3000,
             });
         }
         finally {
-            setDeletejurusanDialog(false);
+            setDeletejabatan_pimpinanDialog(false);
         }
     };
 
     const confirmDeleteSelected = () => {
-        setDeletejurusansDialog(true);
+        setDeletejabatan_pimpinansDialog(true);
     };
 
-    const deleteSelectedjurusans = async () => {
-        if (!selectedjurusans || selectedjurusans.length === 0) {
+    const deleteSelectedjabatan_pimpinans = async () => {
+        if (!selectedjabatan_pimpinans || selectedjabatan_pimpinans.length === 0) {
             toast.current.show({
                 severity: "warn",
                 summary: "Warning",
-                detail: "No jurusans selected for deletion.",
+                detail: "No jabatan_pimpinans selected for deletion.",
                 life: 3000,
             });
             return;
         }
 
-        const selectedIds = selectedjurusans.map(jurusan => jurusan.id_jurusan);
+        const selectedIds = selectedjabatan_pimpinans.map(jabatan_pimpinan => jabatan_pimpinan.id_jabatan_pimpinan);
 
         try {
-            await router.delete('/jurusan/destroyMultiple', {
+            await router.delete('/jabatanpimpinan/destroyMultiple', {
                 data: {
                     ids: selectedIds,
                 },
             });
         } catch (error) {
-            // console.error("Error deleting selected jurusans:", error);
+            // console.error("Error deleting selected jabatan_pimpinans:", error);
             toast.current.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete selected jurusans.",
+                detail: "Failed to delete selected jabatan_pimpinans.",
                 life: 3000,
             });
         } finally {
-            setDeletejurusansDialog(false);
-            setSelectedjurusans(null);
+            setDeletejabatan_pimpinansDialog(false);
+            setSelectedjabatan_pimpinans(null);
         }
     };
     const leftToolbarTemplate = () => {
@@ -223,7 +223,7 @@ const jurusan = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
-                        disabled={!selectedjurusans || !selectedjurusans.length}
+                        disabled={!selectedjabatan_pimpinans || !selectedjabatan_pimpinans.length}
                     />
                 </div>
             </React.Fragment>
@@ -231,29 +231,29 @@ const jurusan = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_jurusan' },
+        { header: 'ID', field: 'id_jabatan_pimpinan' },
         {
-            header: 'Nama Jurusan',
-            field: (jurusan) => `"${jurusan.nama_jurusan}"`
+            header: 'Nama jabatan_pimpinan',
+            field: (jabatan_pimpinan) => `"${jabatan_pimpinan.nama_jabatan_pimpinan}"`
         },
-        { header: 'Kode Jurusan', field: 'kode_jurusan' },
+        { header: 'Kode jabatan_pimpinan', field: 'kode_jabatan_pimpinan' },
     ];
     const handleImport = (importedData) => {
-        setJurusans(prevJurusans => [...prevJurusans, ...importedData]);
+        setjabatan_pimpinans(prevJabatan_pimpinans => [...prevJabatan_pimpinans, ...importedData]);
     };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <CSVImportComponent onImport={handleImport} toast={toast} />
-                <CSVExportComponent data={jurusans} toast={toast} fileName="jurusan_data.csv" columns={columns} />
+                <CSVExportComponent data={jabatan_pimpinans} toast={toast} fileName="jabatan_pimpinan_data.csv" columns={columns} />
             </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Jurusan</h5>
+            <h5 className="m-0">jabatan_pimpinan</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -266,7 +266,7 @@ const jurusan = () => {
         </div>
     );
 
-    const jurusanDialogFooter = (
+    const jabatan_pimpinanDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -274,33 +274,33 @@ const jurusan = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={saveJurusan} />
+            <Button label="Save" icon="pi pi-check" text onClick={savejabatan_pimpinan} />
         </>
     );
-    const deletejurusanDialogFooter = (
+    const deletejabatan_pimpinanDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletejurusanDialog}
+                onClick={hideDeletejabatan_pimpinanDialog}
             />
-            <Button label="Yes" icon="pi pi-check" text onClick={deletejurusan} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deletejabatan_pimpinan} />
         </>
     );
-    const deletejurusansDialogFooter = (
+    const deletejabatan_pimpinansDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletejurusansDialog}
+                onClick={hideDeletejabatan_pimpinansDialog}
             />
             <Button
                 label="Yes"
                 icon="pi pi-check"
                 text
-                onClick={deleteSelectedjurusans}
+                onClick={deleteSelectedjabatan_pimpinans}
             />
         </>
     );
@@ -317,65 +317,65 @@ const jurusan = () => {
                             right={rightToolbarTemplate}
                         ></Toolbar>
 
-                        <JurusanDataTable
+                        <JabatanDataTable
                             dt={dt}
-                            jurusans={jurusans}
-                            selectedjurusans={selectedjurusans}
-                            setSelectedjurusans={setSelectedjurusans}
+                            jabatan_pimpinans={jabatan_pimpinans}
+                            selectedjabatan_pimpinans={selectedjabatan_pimpinans}
+                            setSelectedjabatan_pimpinans={setSelectedjabatan_pimpinans}
                             globalFilter={globalFilter}
                             header={header}
-                            editjurusan={editjurusan}
-                            confirmDeletejurusan={confirmDeletejurusan}
+                            editjabatan_pimpinan={editjabatan_pimpinan}
+                            confirmDeletejabatan_pimpinan={confirmDeletejabatan_pimpinan}
                         />
 
-                        <JurusanForm
-                            jurusanDialog={jurusanDialog}
-                            jurusan={jurusan}
-                            setjurusan={setjurusan}
+                        <JabatanForm
+                            jabatan_pimpinanDialog={jabatan_pimpinanDialog}
+                            jabatan_pimpinan={jabatan_pimpinan}
+                            setjabatan_pimpinan={setjabatan_pimpinan}
                             submitted={submitted}
-                            jurusanDialogFooter={jurusanDialogFooter}
+                            jabatan_pimpinanDialogFooter={jabatan_pimpinanDialogFooter}
                             hideDialog={hideDialog}
                         />
 
                         <Dialog
-                            visible={deletejurusanDialog}
+                            visible={deletejabatan_pimpinanDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletejurusanDialogFooter}
-                            onHide={hideDeletejurusanDialog}
+                            footer={deletejabatan_pimpinanDialogFooter}
+                            onHide={hideDeletejabatan_pimpinanDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {jurusan && (
+                                {jabatan_pimpinan && (
                                     <span>
                                         Are you sure you want to delete{" "}
-                                        <b>{jurusan.name}</b>?
+                                        <b>{jabatan_pimpinan.name}</b>?
                                     </span>
                                 )}
                             </div>
                         </Dialog>
 
                         <Dialog
-                            visible={deletejurusansDialog}
+                            visible={deletejabatan_pimpinansDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletejurusansDialogFooter}
-                            onHide={hideDeletejurusansDialog}
+                            footer={deletejabatan_pimpinansDialogFooter}
+                            onHide={hideDeletejabatan_pimpinansDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {jurusan && (
+                                {jabatan_pimpinan && (
                                     <span>
                                         Are you sure you want to delete the
-                                        selected jurusans?
+                                        selected jabatan_pimpinans?
                                     </span>
                                 )}
                             </div>
@@ -387,4 +387,4 @@ const jurusan = () => {
     );
 };
 
-export default jurusan;
+export default jabatan_pimpinan;

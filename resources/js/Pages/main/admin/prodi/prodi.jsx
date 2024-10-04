@@ -144,7 +144,7 @@ const prodi = () => {
                 detail: errorMessage,
                 life: 3000,
             });
-        }finally {
+        } finally {
             setprodi(emptyprodi);
             setprodiDialog(false);
         }
@@ -324,6 +324,7 @@ const prodi = () => {
                         ></Toolbar>
 
                         <ProdiDataTable
+                            dt={dt}
                             prodis={prodis}
                             selectedprodis={selectedprodis}
                             setSelectedprodis={setSelectedprodis}
