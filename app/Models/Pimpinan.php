@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PimpinanProdi extends Model
+class Pimpinan extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_pimpinan_prodi', 'jabatan_pimpinan_id','dosen_id', 'periode', 'status_pimpinan_prodi'
+        'id_pimpinan', 'jabatan_pimpinan_id','dosen_id', 'periode', 'status_pimpinan'
     ];
-    protected $table = 'pimpinan_prodis';
-    protected $primaryKey = 'id_pimpinan_prodi';
+    protected $table = 'pimpinans';
+    protected $primaryKey = 'id_pimpinan';
 
     public function r_jabatan_pimpinan()
     {

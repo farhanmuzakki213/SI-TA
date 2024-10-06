@@ -59,6 +59,7 @@ const JabatanDataTable = ({ jabatan_pimpinans, selectedjabatan_pimpinans, setSel
             emptyMessage="No jabatan_pimpinans found."
             header={header}
             responsiveLayout="scroll"
+            removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="kode_jabatan_pimpinan" header="Kode" body={kodeBodyTemplate} sortable></Column>

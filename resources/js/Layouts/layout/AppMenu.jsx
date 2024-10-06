@@ -23,7 +23,7 @@ const AppMenu = () => {
                 { label: 'Kelas', icon: 'pi pi-fw pi-file', to: route('kelas') },
                 { label: 'Semester', icon: 'pi pi-fw pi-file', to: route('semester') },
                 { label: 'Jabatan Pimpinan', icon: 'pi pi-fw pi-file', to: route('jabatanpimpinan') },
-                { label: 'Pimpinan Jurusan', icon: 'pi pi-fw pi-file', to: route('pimpinanjurusan') },
+                { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
             ]
         },
     ];

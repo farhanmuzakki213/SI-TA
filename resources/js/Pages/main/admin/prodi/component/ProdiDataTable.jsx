@@ -68,6 +68,7 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
             emptyMessage="No prodis found."
             header={header}
             responsiveLayout="scroll"
+            removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="kode_prodi" header="Kode" body={kodeBodyTemplate} sortable></Column>

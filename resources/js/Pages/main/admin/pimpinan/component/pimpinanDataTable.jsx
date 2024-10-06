@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 
-const pimpinan_jurusanDataTable = ({ pimpinan_jurusans, selectedpimpinan_jurusans, setSelectedpimpinan_jurusans, globalFilter, header, editpimpinan_jurusan, confirmDeletepimpinan_jurusan, dt }) => {
+const pimpinanDataTable = ({ pimpinans, selectedpimpinans, setSelectedpimpinans, globalFilter, header, editpimpinan, confirmDeletepimpinan, dt }) => {
     const namaBodyTemplate = (rowData) => {
         return (
             <>
@@ -22,6 +22,24 @@ const pimpinan_jurusanDataTable = ({ pimpinan_jurusans, selectedpimpinan_jurusan
         );
     };
 
+    const prodiBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Prodi</span>
+                {rowData.r_dosen?.r_prodi?.nama_prodi || 'N/A'}
+            </>
+        );
+    };
+
+    const jabatanBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Jabatan</span>
+                {rowData.r_jabatan_pimpinan?.nama_jabatan_pimpinan || 'N/A'}
+            </>
+        );
+    };
+
     const periodeBodyTemplate = (rowData) => {
         return (
             <>
@@ -35,7 +53,7 @@ const pimpinan_jurusanDataTable = ({ pimpinan_jurusans, selectedpimpinan_jurusan
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status_pimpinan_jurusan === "1" ? "Aktif" : "Tidak Aktif"}
+                {rowData.status_pimpinan === "1" ? "Aktif" : "Tidak Aktif"}
             </>
         );
     };
@@ -48,13 +66,13 @@ const pimpinan_jurusanDataTable = ({ pimpinan_jurusans, selectedpimpinan_jurusan
                     severity="success"
                     rounded
                     className="mr-2"
-                    onClick={() => editpimpinan_jurusan(rowData)}
+                    onClick={() => editpimpinan(rowData)}
                 />
                 <Button
                     icon="pi pi-trash"
                     severity="warning"
                     rounded
-                    onClick={() => confirmDeletepimpinan_jurusan(rowData)}
+                    onClick={() => confirmDeletepimpinan(rowData)}
                 />
             </>
         );
@@ -63,29 +81,32 @@ const pimpinan_jurusanDataTable = ({ pimpinan_jurusans, selectedpimpinan_jurusan
     return (
         <DataTable
             ref={dt}
-            value={pimpinan_jurusans}
-            selection={selectedpimpinan_jurusans}
-            onSelectionChange={(e) => setSelectedpimpinan_jurusans(e.value)}
-            dataKey="id_pimpinan_jurusan"
+            value={pimpinans}
+            selection={selectedpimpinans}
+            onSelectionChange={(e) => setSelectedpimpinans(e.value)}
+            dataKey="id_pimpinan"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} pimpinan_jurusans"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} pimpinans"
             globalFilter={globalFilter}
-            emptyMessage="No pimpinan_jurusans found."
+            emptyMessage="No pimpinans found."
             header={header}
             responsiveLayout="scroll"
+            removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="r_dosen.nama_dosen" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_dosen?.r_prodi?.r_jurusan?.nama_jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_jabatan_pimpinan.nama_jabatan_pimpinan" header="Jabatan" sortable body={jabatanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_dosen.r_prodi.nama_prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_dosen.r_prodi.r_jurusan.nama_jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="periode" header="Periode" body={periodeBodyTemplate} sortable></Column>
-            <Column field="status_pimpinan_jurusan" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column field="status_pimpinan" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );
 };
 
-export default pimpinan_jurusanDataTable;
+export default pimpinanDataTable;

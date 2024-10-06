@@ -67,6 +67,7 @@ const SmtDataTable = ({ smt_thnakds, selectedsmt_thnakds, setSelectedsmt_thnakds
             emptyMessage="No smt_thnakds found."
             header={header}
             responsiveLayout="scroll"
+            removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="kode_smt_thnakd" header="Kode" body={kodeBodyTemplate} sortable></Column>

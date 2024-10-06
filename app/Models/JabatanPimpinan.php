@@ -16,10 +16,6 @@ class JabatanPimpinan extends Model
 
     public function pimpinanjurusans()
     {
-        return $this->hasMany(PimpinanJurusan::class, 'jabatan_pimpinan_id');
-    }
-    public function pimpinanprodis()
-    {
-        return $this->hasMany(PimpinanProdi::class, 'jabatan_pimpinan_id');
+        return $this->hasMany(Pimpinan::class, 'jabatan_pimpinan_id');
     }
 }

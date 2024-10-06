@@ -86,6 +86,7 @@ const MahasiswaDataTable = ({ mahasiswas, selectedmahasiswas, setSelectedmahasis
             emptyMessage="No mahasiswas found."
             header={header}
             responsiveLayout="scroll"
+            removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="nama_mahasiswa" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>

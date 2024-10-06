@@ -89,11 +89,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/jabatanpimpinan/destroyMultiple', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'destroyMultiple'])->name('jabatanpimpinan.destroyMultiple');
 
     // Data Pimpinan Jurusan
-    Route::get('/pimpinanjurusan', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'index'])->name('pimpinanjurusan');
-    Route::post('/pimpinanjurusan/store', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'store'])->name('pimpinanjurusan.store');
-    Route::put('/pimpinanjurusan/{id}/update', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'update'])->name('pimpinanjurusan.update');
-    Route::delete('/pimpinanjurusan/{pimpinan_jurusan}/delete', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'destroy'])->name('pimpinanjurusan.destroy');
-    Route::delete('/pimpinanjurusan/destroyMultiple', [\App\Http\Controllers\Admin\PimpinanJurusanController::class, 'destroyMultiple'])->name('pimpinanjurusan.destroyMultiple');
+    Route::get('/pimpinan', [\App\Http\Controllers\Admin\PimpinanController::class, 'index'])->name('pimpinan');
+    Route::post('/pimpinan/store', [\App\Http\Controllers\Admin\PimpinanController::class, 'store'])->name('pimpinan.store');
+    Route::put('/pimpinan/{id}/update', [\App\Http\Controllers\Admin\PimpinanController::class, 'update'])->name('pimpinan.update');
+    Route::delete('/pimpinan/{pimpinan}/delete', [\App\Http\Controllers\Admin\PimpinanController::class, 'destroy'])->name('pimpinan.destroy');
+    Route::delete('/pimpinan/destroyMultiple', [\App\Http\Controllers\Admin\PimpinanController::class, 'destroyMultiple'])->name('pimpinan.destroyMultiple');
 });
 
 require __DIR__ . '/auth.php';

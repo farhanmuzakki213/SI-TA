@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\JabatanPimpinan;
-use App\Models\PimpinanJurusan;
-use App\Models\PimpinanProdi;
+use App\Models\Pimpinan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -122,14 +121,10 @@ class JabatanPimpinanController extends Controller
         // dd($jurusan->toArray());
         $jabatan_pimpinan = JabatanPimpinan::findOrFail($jabatan_pimpinan->id_jabatan_pimpinan);
 
-        $existsInPimpinanProdi = PimpinanProdi::where('jabatan_pimpinan_id', $jabatan_pimpinan->id_jabatan_pimpinan)->exists();
-        $existsInPimpinanJurusan = PimpinanJurusan::where('jabatan_pimpinan_id', $jabatan_pimpinan->id_jabatan_pimpinan)->exists();
+        $existsInPimpinan = Pimpinan::where('jabatan_pimpinan_id', $jabatan_pimpinan->id_jabatan_pimpinan)->exists();
 
-        if ($existsInPimpinanProdi) {
-            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with some PimpinanProdi.');
-        }
-        if ($existsInPimpinanJurusan) {
-            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with some PimpinanJurusan.');
+        if ($existsInPimpinan) {
+            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with some Pimpinan.');
         }
         $jabatan_pimpinan->delete();
 
@@ -145,14 +140,10 @@ class JabatanPimpinanController extends Controller
 
         $ids = $request->input('ids');
 
-        $existingPimpinanProdiCount =PimpinanProdi::whereIn('jabatan_pimpinan_id', $ids)->count();
-        $existingPimpinanJurusanCount = PimpinanJurusan::whereIn('jabatan_pimpinan_id', $ids)->count();
+        $existingPimpinanCount =Pimpinan::whereIn('jabatan_pimpinan_id', $ids)->count();
 
-        if ($existingPimpinanProdiCount > 0) {
-            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with somePimpinanProdi.');
-        }
-        if ($existingPimpinanJurusanCount > 0) {
-            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with some PimpinanJurusan.');
+        if ($existingPimpinanCount > 0) {
+            return back()->with('error', 'Cannot delete Jabatan Pimpinan, it is still associated with some Pimpinan.');
         }
 
         JabatanPimpinan::whereIn('id_jabatan_pimpinan', $ids)->delete();

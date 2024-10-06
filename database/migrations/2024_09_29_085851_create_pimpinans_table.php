@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pimpinan_prodis', function (Blueprint $table) {
-            $table->bigInteger('id_pimpinan_prodi')->primary()->unsigned();
+        Schema::create('pimpinans', function (Blueprint $table) {
+            $table->bigInteger('id_pimpinan')->primary()->unsigned();
             $table->bigInteger('jabatan_pimpinan_id')->unsigned();
             $table->bigInteger('dosen_id')->unsigned();
             $table->string('periode');
-            $table->enum('status_pimpinan_prodi', ['0', '1'])->default('1');
+            $table->enum('status_pimpinan', ['0', '1'])->default('1');
             $table->timestamps();
         });
 
-        Schema::table('pimpinan_prodis', function (Blueprint $table) {
+        Schema::table('pimpinans', function (Blueprint $table) {
             $table->foreign('jabatan_pimpinan_id')->references('id_jabatan_pimpinan')->on('jabatan_pimpinans')
                 ->onUpdate('cascade');
             $table->foreign('dosen_id')->references('id_dosen')->on('dosens')
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pimpinan_prodis');
+        Schema::dropIfExists('pimpinans');
     }
 };

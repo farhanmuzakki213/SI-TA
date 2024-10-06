@@ -77,6 +77,7 @@ const KelasDataTable = ({ kelass, selectedkelass, setSelectedkelass, globalFilte
             emptyMessage="No kelass found."
             header={header}
             responsiveLayout="scroll"
+            removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="kode_kelas" header="Kode" body={kodeBodyTemplate} sortable></Column>

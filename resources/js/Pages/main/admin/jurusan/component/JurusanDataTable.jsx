@@ -59,6 +59,7 @@ const JurusanDataTable = ({ jurusans, selectedjurusans, setSelectedjurusans, glo
             emptyMessage="No jurusans found."
             header={header}
             responsiveLayout="scroll"
+            removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="kode_jurusan" header="Kode" body={kodeBodyTemplate} sortable></Column>

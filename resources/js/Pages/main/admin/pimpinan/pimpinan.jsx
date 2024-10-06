@@ -6,31 +6,31 @@ import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import PimpinanJDataTable from './component/pimpinanJDataTable';
-import PimpinanJForm from './component/pimpinanJForm';
+import PimpinanDataTable from './component/pimpinanDataTable';
+import PimpinanForm from './component/pimpinanForm';
 import CSVExportComponent from '@/Components/CSVExportComponent';
 import CSVImportComponent from '@/Components/CSVImportComponent';
 
-const pimpinan_jurusan = () => {
-    let emptypimpinan_jurusan = {
-        id_pimpinan_jurusan: null,
+const pimpinan = () => {
+    let emptypimpinan = {
+        id_pimpinan: null,
         dosen_id: null,
         jabatan_pimpinan_id: null,
         periode: "",
-        status_pimpinan_jurusan: ""
+        status_pimpinan: ""
     };
 
 
     const { props } = usePage();
-    const { data_pimpinan_jurusan, dosenOptions: initialDosenOptions, jabatan_pimpinanOptions: initialJabatan_pimpinanOptions, nextNumber } = props;
-    const [pimpinan_jurusans, setpimpinan_jurusans] = useState(null);
+    const { data_pimpinan, dosenOptions: initialDosenOptions, jabatan_pimpinanOptions: initialJabatan_pimpinanOptions, nextNumber } = props;
+    const [pimpinans, setpimpinans] = useState(null);
     const [dosenOptions, setDosenOptions] = useState([]);
     const [jabatan_pimpinanOptions, setJabatan_pimpinanOptions] = useState([]);
-    const [pimpinan_jurusanDialog, setpimpinan_jurusanDialog] = useState(false);
-    const [deletepimpinan_jurusanDialog, setDeletepimpinan_jurusanDialog] = useState(false);
-    const [deletepimpinan_jurusansDialog, setDeletepimpinan_jurusansDialog] = useState(false);
-    const [pimpinan_jurusan, setpimpinan_jurusan] = useState(emptypimpinan_jurusan);
-    const [selectedpimpinan_jurusans, setSelectedpimpinan_jurusans] = useState(null);
+    const [pimpinanDialog, setpimpinanDialog] = useState(false);
+    const [deletepimpinanDialog, setDeletepimpinanDialog] = useState(false);
+    const [deletepimpinansDialog, setDeletepimpinansDialog] = useState(false);
+    const [pimpinan, setpimpinan] = useState(emptypimpinan);
+    const [selectedpimpinans, setSelectedpimpinans] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
@@ -39,28 +39,28 @@ const pimpinan_jurusan = () => {
     useEffect(() => {
         setDosenOptions(initialDosenOptions);
         setJabatan_pimpinanOptions(initialJabatan_pimpinanOptions);
-        setpimpinan_jurusans(data_pimpinan_jurusan);
+        setpimpinans(data_pimpinan);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialDosenOptions, initialJabatan_pimpinanOptions, data_pimpinan_jurusan, props.flash]);
+    }, [initialDosenOptions, initialJabatan_pimpinanOptions, data_pimpinan, props.flash]);
 
     const openNew = () => {
-        setpimpinan_jurusan(emptypimpinan_jurusan);
+        setpimpinan(emptypimpinan);
         setSubmitted(false);
-        setpimpinan_jurusanDialog(true);
+        setpimpinanDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setpimpinan_jurusanDialog(false);
+        setpimpinanDialog(false);
     };
 
-    const hideDeletepimpinan_jurusanDialog = () => {
-        setDeletepimpinan_jurusanDialog(false);
+    const hideDeletepimpinanDialog = () => {
+        setDeletepimpinanDialog(false);
     };
 
-    const hideDeletepimpinan_jurusansDialog = () => {
-        setDeletepimpinan_jurusansDialog(false);
+    const hideDeletepimpinansDialog = () => {
+        setDeletepimpinansDialog(false);
     };
 
     const displaySuccessMessage = (successMessage) => {
@@ -87,36 +87,27 @@ const pimpinan_jurusan = () => {
         }
     };
 
-    const savepimpinan_jurusan = async () => {
+    const savepimpinan = async () => {
         setSubmitted(true);
 
         const requiredFieldsForCreate = [
-            pimpinan_jurusan.dosen_id,
-            pimpinan_jurusan.jabatan_pimpinan_id,
-            pimpinan_jurusan.periode,
+            pimpinan.dosen_id,
+            pimpinan.jabatan_pimpinan_id,
+            pimpinan.periode,
         ];
 
         const requiredFieldsForUpdate = [
-            pimpinan_jurusan.dosen_id,
-            pimpinan_jurusan.jabatan_pimpinan_id,
-            pimpinan_jurusan.periode,
-            pimpinan_jurusan.status_pimpinan_jurusan,
+            pimpinan.dosen_id,
+            pimpinan.jabatan_pimpinan_id,
+            pimpinan.periode,
+            pimpinan.status_pimpinan,
         ];
 
-        const isCreating = !pimpinan_jurusan.id_pimpinan_jurusan;
+        const isCreating = !pimpinan.id_pimpinan;
         let isValid = true;
 
         if (isCreating) {
             isValid = requiredFieldsForCreate.every(field => field);
-            if (isValid && pimpinan_jurusan.password !== pimpinan_jurusan.password_confirmation) {
-                toast.current?.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "Passwords do not match.",
-                    life: 3000,
-                });
-                return;
-            }
         } else {
             isValid = requiredFieldsForUpdate.every(field => field);
         }
@@ -131,30 +122,27 @@ const pimpinan_jurusan = () => {
             return;
         }
 
-        let _pimpinan_jurusan = { ...pimpinan_jurusan };
+        let _pimpinan = { ...pimpinan };
 
         try {
 
             if (isCreating) {
-                _pimpinan_jurusan.id_pimpinan_jurusan = nextNumber;
-                await router.post('/pimpinanjurusan/store', _pimpinan_jurusan);
+                _pimpinan.id_pimpinan = nextNumber;
+                await router.post('/pimpinan/store', _pimpinan);
             } else {
-                delete _pimpinan_jurusan.email;
-                delete _pimpinan_jurusan.password;
-                delete _pimpinan_jurusan.password_confirmation;
 
-                await router.put(`/pimpinanjurusan/${pimpinan_jurusan.id_pimpinan_jurusan}/update`, _pimpinan_jurusan);
+                await router.put(`/pimpinan/${pimpinan.id_pimpinan}/update`, _pimpinan);
             }
 
             if (isCreating) {
-                setpimpinan_jurusans(prevpimpinan_jurusans => [...prevpimpinan_jurusans, _pimpinan_jurusan]);
+                setpimpinans(prevpimpinans => [...prevpimpinans, _pimpinan]);
             } else {
-                setpimpinan_jurusans(prevpimpinan_jurusans =>
-                    prevpimpinan_jurusans.map(d => d.id_pimpinan_jurusan === pimpinan_jurusan.id_pimpinan_jurusan ? _pimpinan_jurusan : d)
+                setpimpinans(prevpimpinans =>
+                    prevpimpinans.map(d => d.id_pimpinan === pimpinan.id_pimpinan ? _pimpinan : d)
                 );
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Failed to save pimpinan_jurusan.";
+            const errorMessage = error.response?.data?.message || "Failed to save pimpinan.";
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -162,70 +150,70 @@ const pimpinan_jurusan = () => {
                 life: 3000,
             });
         } finally {
-            setpimpinan_jurusan(emptypimpinan_jurusan);
-            setpimpinan_jurusanDialog(false);
+            setpimpinan(emptypimpinan);
+            setpimpinanDialog(false);
         }
     };
-    const editpimpinan_jurusan = (pimpinan_jurusan) => {
-        setpimpinan_jurusan({ ...pimpinan_jurusan });
-        setpimpinan_jurusanDialog(true);
+    const editpimpinan = (pimpinan) => {
+        setpimpinan({ ...pimpinan });
+        setpimpinanDialog(true);
     };
 
-    const confirmDeletepimpinan_jurusan = (pimpinan_jurusan) => {
-        setpimpinan_jurusan(pimpinan_jurusan);
-        setDeletepimpinan_jurusanDialog(true);
+    const confirmDeletepimpinan = (pimpinan) => {
+        setpimpinan(pimpinan);
+        setDeletepimpinanDialog(true);
     };
-    const deletepimpinan_jurusan = async () => {
+    const deletepimpinan = async () => {
         try {
-            await router.delete(`/pimpinanjurusan/${pimpinan_jurusan.id_pimpinan_jurusan}/delete`);
+            await router.delete(`/pimpinan/${pimpinan.id_pimpinan}/delete`);
         } catch (error) {
-            console.error("Error deleting pimpinan_jurusan:", error);
+            console.error("Error deleting pimpinan:", error);
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete pimpinan_jurusan.",
+                detail: "Failed to delete pimpinan.",
                 life: 3000,
             });
         }
         finally {
-            setDeletepimpinan_jurusanDialog(false);
+            setDeletepimpinanDialog(false);
         }
     };
 
     const confirmDeleteSelected = () => {
-        setDeletepimpinan_jurusansDialog(true);
+        setDeletepimpinansDialog(true);
     };
 
-    const deleteSelectedpimpinan_jurusans = async () => {
-        if (!selectedpimpinan_jurusans || selectedpimpinan_jurusans.length === 0) {
+    const deleteSelectedpimpinans = async () => {
+        if (!selectedpimpinans || selectedpimpinans.length === 0) {
             toast.current.show({
                 severity: "warn",
                 summary: "Warning",
-                detail: "No pimpinan_jurusans selected for deletion.",
+                detail: "No pimpinans selected for deletion.",
                 life: 3000,
             });
             return;
         }
 
-        const selectedIds = selectedpimpinan_jurusans.map(pimpinan_jurusan => pimpinan_jurusan.id_pimpinan_jurusan);
+        const selectedIds = selectedpimpinans.map(pimpinan => pimpinan.id_pimpinan);
 
         try {
-            await router.delete('/pimpinanjurusan/destroyMultiple', {
+            await router.delete('/pimpinan/destroyMultiple', {
                 data: {
                     ids: selectedIds,
                 },
             });
         } catch (error) {
-            console.error("Error deleting selected pimpinan_jurusans:", error);
+            console.error("Error deleting selected pimpinans:", error);
             toast.current.show({
                 severity: "error",
                 summary: "Error",
-                detail: "Failed to delete selected pimpinan_jurusans.",
+                detail: "Failed to delete selected pimpinans.",
                 life: 3000,
             });
         } finally {
-            setDeletepimpinan_jurusansDialog(false);
-            setSelectedpimpinan_jurusans(null);
+            setDeletepimpinansDialog(false);
+            setSelectedpimpinans(null);
         }
     };
     const leftToolbarTemplate = () => {
@@ -244,7 +232,7 @@ const pimpinan_jurusan = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
-                        disabled={!selectedpimpinan_jurusans || !selectedpimpinan_jurusans.length}
+                        disabled={!selectedpimpinans || !selectedpimpinans.length}
                     />
                 </div>
             </React.Fragment>
@@ -252,35 +240,35 @@ const pimpinan_jurusan = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_pimpinan_jurusan' },
+        { header: 'ID', field: 'id_pimpinan' },
         {
             header: 'Name',
-            field: (pimpinan_jurusan) => `"${pimpinan_jurusan.nama_pimpinan_jurusan}"`
+            field: (pimpinan) => `"${pimpinan.nama_pimpinan}"`
         },
-        { header: 'Nim', field: 'nim_pimpinan_jurusan' },
+        { header: 'Nim', field: 'nim_pimpinan' },
         { header: 'Kelas', field: 'r_kelas.nama_kelas' },
         { header: 'Gender', field: 'gender' },
         {
             header: 'Status',
-            field: (pimpinan_jurusan) => pimpinan_jurusan.status_pimpinan_jurusan === "1" ? "Aktif" : "Tidak Aktif"
+            field: (pimpinan) => pimpinan.status_pimpinan === "1" ? "Aktif" : "Tidak Aktif"
         }
     ];
     const handleImport = (importedData) => {
-        setpimpinan_jurusans(prevpimpinan_jurusans => [...prevpimpinan_jurusans, ...importedData]);
+        setpimpinans(prevpimpinans => [...prevpimpinans, ...importedData]);
     };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <CSVImportComponent onImport={handleImport} toast={toast} />
-                <CSVExportComponent data={pimpinan_jurusans} toast={toast} fileName="pimpinan_jurusan_data.csv" columns={columns} />
+                <CSVExportComponent data={pimpinans} toast={toast} fileName="pimpinan_data.csv" columns={columns} />
             </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">pimpinan_jurusan</h5>
+            <h5 className="m-0">pimpinan</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -293,7 +281,7 @@ const pimpinan_jurusan = () => {
         </div>
     );
 
-    const pimpinan_jurusanDialogFooter = (
+    const pimpinanDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -301,33 +289,33 @@ const pimpinan_jurusan = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={savepimpinan_jurusan} />
+            <Button label="Save" icon="pi pi-check" text onClick={savepimpinan} />
         </>
     );
-    const deletepimpinan_jurusanDialogFooter = (
+    const deletepimpinanDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletepimpinan_jurusanDialog}
+                onClick={hideDeletepimpinanDialog}
             />
-            <Button label="Yes" icon="pi pi-check" text onClick={deletepimpinan_jurusan} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deletepimpinan} />
         </>
     );
-    const deletepimpinan_jurusansDialogFooter = (
+    const deletepimpinansDialogFooter = (
         <>
             <Button
                 label="No"
                 icon="pi pi-times"
                 text
-                onClick={hideDeletepimpinan_jurusansDialog}
+                onClick={hideDeletepimpinansDialog}
             />
             <Button
                 label="Yes"
                 icon="pi pi-check"
                 text
-                onClick={deleteSelectedpimpinan_jurusans}
+                onClick={deleteSelectedpimpinans}
             />
         </>
     );
@@ -344,67 +332,67 @@ const pimpinan_jurusan = () => {
                             right={rightToolbarTemplate}
                         ></Toolbar>
 
-                        <PimpinanJDataTable
+                        <PimpinanDataTable
                             dt={dt}
-                            pimpinan_jurusans={pimpinan_jurusans}
-                            selectedpimpinan_jurusans={selectedpimpinan_jurusans}
-                            setSelectedpimpinan_jurusans={setSelectedpimpinan_jurusans}
+                            pimpinans={pimpinans}
+                            selectedpimpinans={selectedpimpinans}
+                            setSelectedpimpinans={setSelectedpimpinans}
                             globalFilter={globalFilter}
                             header={header}
-                            editpimpinan_jurusan={editpimpinan_jurusan}
-                            confirmDeletepimpinan_jurusan={confirmDeletepimpinan_jurusan}
+                            editpimpinan={editpimpinan}
+                            confirmDeletepimpinan={confirmDeletepimpinan}
                         />
 
-                        <PimpinanJForm
-                            pimpinan_jurusanDialog={pimpinan_jurusanDialog}
-                            pimpinan_jurusan={pimpinan_jurusan}
-                            setpimpinan_jurusan={setpimpinan_jurusan}
+                        <PimpinanForm
+                            pimpinanDialog={pimpinanDialog}
+                            pimpinan={pimpinan}
+                            setpimpinan={setpimpinan}
                             submitted={submitted}
                             dosenOptions={dosenOptions}
                             jabatan_pimpinanOptions={jabatan_pimpinanOptions}
-                            pimpinan_jurusanDialogFooter={pimpinan_jurusanDialogFooter}
+                            pimpinanDialogFooter={pimpinanDialogFooter}
                             hideDialog={hideDialog}
                         />
 
                         <Dialog
-                            visible={deletepimpinan_jurusanDialog}
+                            visible={deletepimpinanDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletepimpinan_jurusanDialogFooter}
-                            onHide={hideDeletepimpinan_jurusanDialog}
+                            footer={deletepimpinanDialogFooter}
+                            onHide={hideDeletepimpinanDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {pimpinan_jurusan && (
+                                {pimpinan && (
                                     <span>
                                         Are you sure you want to delete{" "}
-                                        <b>{pimpinan_jurusan.name}</b>?
+                                        <b>{pimpinan.name}</b>?
                                     </span>
                                 )}
                             </div>
                         </Dialog>
 
                         <Dialog
-                            visible={deletepimpinan_jurusansDialog}
+                            visible={deletepimpinansDialog}
                             style={{ width: "450px" }}
                             header="Confirm"
                             modal
-                            footer={deletepimpinan_jurusansDialogFooter}
-                            onHide={hideDeletepimpinan_jurusansDialog}
+                            footer={deletepimpinansDialogFooter}
+                            onHide={hideDeletepimpinansDialog}
                         >
                             <div className="flex align-items-center justify-content-center">
                                 <i
                                     className="pi pi-exclamation-triangle mr-3"
                                     style={{ fontSize: "2rem" }}
                                 />
-                                {pimpinan_jurusan && (
+                                {pimpinan && (
                                     <span>
                                         Are you sure you want to delete the
-                                        selected pimpinan_jurusans?
+                                        selected pimpinans?
                                     </span>
                                 )}
                             </div>
@@ -416,4 +404,4 @@ const pimpinan_jurusan = () => {
     );
 };
 
-export default pimpinan_jurusan;
+export default pimpinan;
