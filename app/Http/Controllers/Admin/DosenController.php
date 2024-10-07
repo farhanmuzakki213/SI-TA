@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BaseOptionsResource;
+use App\Http\Resources\DosenResource;
 use App\Models\Dosen;
 use App\Models\Prodi;
 use App\Models\User;
@@ -21,25 +23,16 @@ class DosenController extends Controller
      */
     public function index()
     {
-        $data_dosen = Dosen::with('r_user', 'r_prodi')
-            ->orderByDesc('id_dosen')
-            ->get();
-
-        $prodi = Prodi::all();
-        $users = User::all();
         $nextNumber = $this->getCariNomor();
-        // dd($data_dosen->toArray(), $prodi->toArray(), $users->toArray());
         return Inertia::render('main/admin/dosen/dosen', [
-            'data_dosen' => $data_dosen,
+            'data_dosen' => DosenResource::collection( Dosen::with('r_user', 'r_prodi')->get()),
             'nextNumber' => $nextNumber,
-            'prodiOptions' => $prodi->map(fn($p) => [
-                'label' => $p->nama_prodi,
-                'value' => $p->id_prodi
-            ]),
-            'userOptions' => $users->map(fn($u) => [
-                'label' => $u->name,
-                'value' => $u->id
-            ])
+            'userOptions' => BaseOptionsResource::collection(User::all()->map(function ($user) {
+                return new BaseOptionsResource($user, 'name', 'id');
+            })),
+            'prodiOptions' => BaseOptionsResource::collection(Prodi::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_prodi', 'id_prodi');
+            })),
         ]);
     }
 
@@ -58,7 +51,6 @@ class DosenController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'id_dosen' => 'required',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'prodi_id' => 'required|exists:prodis,id_prodi',
@@ -71,12 +63,13 @@ class DosenController extends Controller
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
         }
+        $nextDosenNumber = $this->getCariNomor(Dosen::class, 'id_dosen');
 
         DB::beginTransaction();
         try {
             // Create user
             $user = User::create([
-                'name' => $request->nama_dosen, // Ensure correct field
+                'name' => $request->nama_dosen,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
@@ -86,7 +79,7 @@ class DosenController extends Controller
 
             // Create dosen
             Dosen::create([
-                'id_dosen' => $request->id_dosen,
+                'id_dosen' => $nextDosenNumber,
                 'user_id' => $user_id,
                 'prodi_id' => $request->prodi_id,
                 'nama_dosen' => $request->nama_dosen,

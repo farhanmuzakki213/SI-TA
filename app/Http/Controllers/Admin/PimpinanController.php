@@ -59,6 +59,30 @@ class PimpinanController extends Controller
             'periode' => 'required|string',
         ]);
 
+        $validator->after(function ($validator) use ($request) {
+            if (($request->jabatan_pimpinan_id == 1 || $request->jabatan_pimpinan_id == 2) && $request->status_pimpinan == '1') {
+                $existingJabatan = Pimpinan::where('jabatan_pimpinan_id', $request->jabatan_pimpinan_id)->where('status_pimpinan', '1')->first();
+                if ($existingJabatan) {
+                    $validator->errors()->add('jabatan_pimpinan_id', 'Jabatan sudah diisi oleh dosen lain');
+                }
+            }
+            $prodi = Dosen::where('id_dosen', $request->dosen_id)->pluck('prodi_id')->toArray();
+            if ($request->jabatan_pimpinan_id == 3 && $request->status_pimpinan == '1') {
+                $existingJabatanProdi = Pimpinan::with('r_dosen.r_prodi')
+                    ->whereHas('r_dosen', function ($query) use ($prodi) {
+                        $query->where('prodi_id', $prodi);
+                    })
+                    ->where('jabatan_pimpinan_id', $request->jabatan_pimpinan_id)
+                    ->where('status_pimpinan', '1')
+                    ->get()
+                    ->pluck('r_dosen.r_prodi.nama_prodi')
+                    ->toArray();
+                if ($existingJabatanProdi) {
+                    $validator->errors()->add('jabatan_pimpinan_id', 'Jabatan Koordinator sudah diisi oleh dosen lain');
+                }
+            }
+        });
+
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
         }

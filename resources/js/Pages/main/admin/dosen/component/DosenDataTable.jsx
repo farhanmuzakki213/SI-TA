@@ -17,7 +17,7 @@ const DosenDataTable = ({ dosens, selecteddosens, setSelecteddosens, globalFilte
         return (
             <>
                 <span className="p-column-title">Prodi</span>
-                {rowData.r_prodi ? rowData.r_prodi.nama_prodi : 'N/A'}
+                {rowData.nama_prodi}
             </>
         );
     };
@@ -90,7 +90,7 @@ const DosenDataTable = ({ dosens, selecteddosens, setSelecteddosens, globalFilte
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="nama_dosen" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_prodi.nama_prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="nama_prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nidn_dosen" header="NIDN" sortable body={nidnBodyTemplate} ></Column>
             <Column field="gender" header="Gender" sortable body={genderBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
             <Column field="status_dosen" header="Status" sortable body={statusBodyTemplate} ></Column>

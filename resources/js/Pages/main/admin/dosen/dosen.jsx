@@ -37,7 +37,7 @@ const dosen = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
-    // console.log(props.data_dosen)
+    // console.log(props)
 
     useEffect(() => {
         setProdiOptions(initialProdiOptions);
