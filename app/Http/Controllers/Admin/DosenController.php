@@ -15,13 +15,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Illuminate\Validation\Rules;
+use Inertia\Response;
 
 class DosenController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index() : Response
     {
         $nextNumber = $this->getCariNomor();
         return Inertia::render('main/admin/dosen/dosen', [
