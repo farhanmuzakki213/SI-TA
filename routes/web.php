@@ -25,12 +25,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})
-    ->name('dashboard');
-//    ->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -38,24 +32,86 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::get('/uikit/button', function () {
-    return Inertia::render('main/uikit/button/page');
-})->name('button');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+});
 
-Route::get('/uikit/chart', function () {
-    return Inertia::render('main/uikit/charts/index');
-})->name('chart');
+// Route Super Admin
+Route::group(['middleware' => ['role:superAdmin']], function () {
+    Route::middleware('auth')->group(function () {
+        // Data User
+        Route::get('/user', [\App\Http\Controllers\SuperAdmin\UserController::class, 'index'])->name('user');
 
-Route::get('/uikit/file', function () {
-    return Inertia::render('main/uikit/file/index');
-})->name('file');
+        // Data Role
+        Route::get('/role', [\App\Http\Controllers\SuperAdmin\RoleController::class, 'index'])->name('role');
 
-Route::get('/uikit/table', function () {
-    return Inertia::render('main/uikit/table/index');
-})->name('table');
+        // Data Permission
+        Route::get('/permission', [\App\Http\Controllers\SuperAdmin\PermissionController::class, 'index'])->name('permission');
+    });
+});
 
+// Route Admin
+Route::group(['middleware' => ['role:admin']], function () {
+    // Data Master : Dosen, Mahasiswa, Jurusan, Prodi, Kelas, Semester dan Tahun Akademik
+    Route::middleware('auth')->group(function () {
+        // Data Dosen
+        Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');
+        Route::post('/dosen/store', [\App\Http\Controllers\Admin\DosenController::class, 'store'])->name('dosen.store');
+        Route::put('/dosen/{id}/update', [\App\Http\Controllers\Admin\DosenController::class, 'update'])->name('dosen.update');
+        Route::delete('/dosen/{dosen}/delete', [\App\Http\Controllers\Admin\DosenController::class, 'destroy'])->name('dosen.destroy');
+        Route::delete('/dosen/destroyMultiple', [\App\Http\Controllers\Admin\DosenController::class, 'destroyMultiple'])->name('dosen.destroyMultiple');
 
+        // Data Mahasiswa
+        Route::get('/mahasiswa', [\App\Http\Controllers\Admin\MahasiswaController::class, 'index'])->name('mahasiswa');
+        Route::post('/mahasiswa/store', [\App\Http\Controllers\Admin\MahasiswaController::class, 'store'])->name('mahasiswa.store');
+        Route::put('/mahasiswa/{id}/update', [\App\Http\Controllers\Admin\MahasiswaController::class, 'update'])->name('mahasiswa.update');
+        Route::delete('/mahasiswa/{mahasiswa}/delete', [\App\Http\Controllers\Admin\MahasiswaController::class, 'destroy'])->name('mahasiswa.destroy');
+        Route::delete('/mahasiswa/destroyMultiple', [\App\Http\Controllers\Admin\MahasiswaController::class, 'destroyMultiple'])->name('mahasiswa.destroyMultiple');
 
+        // Data Jurusan
+        Route::get('/jurusan', [\App\Http\Controllers\Admin\JurusanController::class, 'index'])->name('jurusan');
+        Route::post('/jurusan/store', [\App\Http\Controllers\Admin\JurusanController::class, 'store'])->name('jurusan.store');
+        Route::put('/jurusan/{id}/update', [\App\Http\Controllers\Admin\JurusanController::class, 'update'])->name('jurusan.update');
+        Route::delete('/jurusan/{jurusan}/delete', [\App\Http\Controllers\Admin\JurusanController::class, 'destroy'])->name('jurusan.destroy');
+        Route::delete('/jurusan/destroyMultiple', [\App\Http\Controllers\Admin\JurusanController::class, 'destroyMultiple'])->name('jurusan.destroyMultiple');
 
+        // Data Prodi
+        Route::get('/prodi', [\App\Http\Controllers\Admin\ProdiController::class, 'index'])->name('prodi');
+        Route::post('/prodi/store', [\App\Http\Controllers\Admin\ProdiController::class, 'store'])->name('prodi.store');
+        Route::put('/prodi/{id}/update', [\App\Http\Controllers\Admin\ProdiController::class, 'update'])->name('prodi.update');
+        Route::delete('/prodi/{prodi}/delete', [\App\Http\Controllers\Admin\ProdiController::class, 'destroy'])->name('prodi.destroy');
+        Route::delete('/prodi/destroyMultiple', [\App\Http\Controllers\Admin\ProdiController::class, 'destroyMultiple'])->name('prodi.destroyMultiple');
 
-require __DIR__.'/auth.php';
+        // Data Kelas
+        Route::get('/kelas', [\App\Http\Controllers\Admin\KelasController::class, 'index'])->name('kelas');
+        Route::post('/kelas/store', [\App\Http\Controllers\Admin\KelasController::class, 'store'])->name('kelas.store');
+        Route::put('/kelas/{id}/update', [\App\Http\Controllers\Admin\KelasController::class, 'update'])->name('kelas.update');
+        Route::delete('/kelas/{kelas}/delete', [\App\Http\Controllers\Admin\KelasController::class, 'destroy'])->name('kelas.destroy');
+        Route::delete('/kelas/destroyMultiple', [\App\Http\Controllers\Admin\KelasController::class, 'destroyMultiple'])->name('kelas.destroyMultiple');
+
+        // Data Semester dan Tahun Akademik
+        Route::get('/semester', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'index'])->name('semester');
+        Route::post('/semester/store', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'store'])->name('semester.store');
+        Route::put('/semester/{id}/update', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'update'])->name('semester.update');
+        Route::delete('/semester/{smt_thnakd}/delete', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'destroy'])->name('semester.destroy');
+        Route::delete('/semester/destroyMultiple', [\App\Http\Controllers\Admin\SmtThnakdController::class, 'destroyMultiple'])->name('semester.destroyMultiple');
+
+        // Data Jabatan Pimpinan
+        Route::get('/jabatanpimpinan', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'index'])->name('jabatanpimpinan');
+        Route::post('/jabatanpimpinan/store', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'store'])->name('jabatanpimpinan.store');
+        Route::put('/jabatanpimpinan/{id}/update', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'update'])->name('jabatanpimpinan.update');
+        Route::delete('/jabatanpimpinan/{jabatan_pimpinan}/delete', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'destroy'])->name('jabatanpimpinan.destroy');
+        Route::delete('/jabatanpimpinan/destroyMultiple', [\App\Http\Controllers\Admin\JabatanPimpinanController::class, 'destroyMultiple'])->name('jabatanpimpinan.destroyMultiple');
+
+        // Data Pimpinan Jurusan
+        Route::get('/pimpinan', [\App\Http\Controllers\Admin\PimpinanController::class, 'index'])->name('pimpinan');
+        Route::post('/pimpinan/store', [\App\Http\Controllers\Admin\PimpinanController::class, 'store'])->name('pimpinan.store');
+        Route::put('/pimpinan/{id}/update', [\App\Http\Controllers\Admin\PimpinanController::class, 'update'])->name('pimpinan.update');
+        Route::delete('/pimpinan/{pimpinan}/delete', [\App\Http\Controllers\Admin\PimpinanController::class, 'destroy'])->name('pimpinan.destroy');
+        Route::delete('/pimpinan/destroyMultiple', [\App\Http\Controllers\Admin\PimpinanController::class, 'destroyMultiple'])->name('pimpinan.destroyMultiple');
+    });
+});
+
+require __DIR__ . '/auth.php';

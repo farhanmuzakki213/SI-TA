@@ -1,33 +1,57 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import AppMenuitem from './AppMenuitem';
-import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
-import {Link} from "@inertiajs/react";
+import { usePermission } from './composables/permission';
 
 const AppMenu = () => {
-    const { layoutConfig } = useContext(LayoutContext);
-
-    const model = [
-        {
-            label: 'Home',
-            items: [
-                { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: route('dashboard') },
-                { label: 'Button', icon: 'pi pi-fw pi-id-card', to: route('button') },
-                { label: 'chart', icon: 'pi pi-fw pi-apple', to: route('chart') },
-                { label: 'file', icon: 'pi pi-fw pi-file', to: route('file') },
-                { label: 'table', icon: 'pi pi-fw pi-table', to: route('table') },
-            ]
-        },
-    ];
-
+    const { hasRole } = usePermission();
     return (
         <MenuProvider>
             <ul className="layout-menu">
-                {model.map((item, i) => {
-                    return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
-                })}
+                {/* Home Menu Item */}
+                <AppMenuitem
+                    item={{
+                        label: 'Home',
+                        items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: route('dashboard') }]
+                    }}
+                    root={true}
+                    index={0}
+                />
 
+                {/* Data User, Role, Permission */}
+                {hasRole('superAdmin') && (<AppMenuitem
+                    item={{
+                        label: 'Data Master',
+                        items: [
+                            { label: 'User', icon: 'pi pi-fw pi-user', to: route('user') },
+                            { label: 'Role', icon: 'pi pi-fw pi-users', to: route('role') },
+                            { label: 'Permission', icon: 'pi pi-fw pi-file', to: route('permission') },
+                        ]
+                    }}
+                    root={true}
+                    index={1}
+                />
+                )}
 
+                {/* Data Master Menu Item */}
+                {hasRole('admin') && (<AppMenuitem
+                    item={{
+                        label: 'Data Master',
+                        items: [
+                            { label: 'Dosen', icon: 'pi pi-fw pi-user', to: route('dosen') },
+                            { label: 'Mahasiswa', icon: 'pi pi-fw pi-users', to: route('mahasiswa') },
+                            { label: 'Jurusan', icon: 'pi pi-fw pi-file', to: route('jurusan') },
+                            { label: 'Prodi', icon: 'pi pi-fw pi-file', to: route('prodi') },
+                            { label: 'Kelas', icon: 'pi pi-fw pi-file', to: route('kelas') },
+                            { label: 'Semester', icon: 'pi pi-fw pi-file', to: route('semester') },
+                            { label: 'Jabatan Pimpinan', icon: 'pi pi-fw pi-file', to: route('jabatanpimpinan') },
+                            { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
+                        ]
+                    }}
+                    root={true}
+                    index={1}
+                />
+                )}
             </ul>
         </MenuProvider>
     );
