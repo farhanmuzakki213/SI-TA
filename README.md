@@ -1,5 +1,4 @@
 ## Getting Started
-
 ## Frontend
 ```shell
 $ npm install
