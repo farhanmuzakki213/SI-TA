@@ -52,9 +52,20 @@ Route::group(['middleware' => ['role:superAdmin']], function () {
     });
 });
 
+// Route Kepala Prodi
+Route::group(['middleware' => ['role:pimpinanProdi']], function () {
+    Route::middleware('auth')->group(function () {
+         // Data Jadwal Ruangan
+        Route::get('/booking', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'index'])->name('booking');
+        Route::post('/booking/store', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'store'])->name('booking.store');
+        Route::put('/booking/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'update'])->name('booking.update');
+        Route::delete('/booking/{booking}/delete', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'destroy'])->name('booking.destroy');
+        Route::delete('/booking/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'destroyMultiple'])->name('booking.destroyMultiple');
+    });
+});
 // Route Admin
 Route::group(['middleware' => ['role:admin']], function () {
-    // Data Master : Dosen, Mahasiswa, Jurusan, Prodi, Kelas, Semester dan Tahun Akademik
+    // Data Master : Dosen, Mahasiswa, Jurusan, Prodi, Kelas, Semester dan Tahun Akademik, Jabatan Pimpinan, Ruangan dan Sesi
     Route::middleware('auth')->group(function () {
         // Data Dosen
         Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');
@@ -111,6 +122,20 @@ Route::group(['middleware' => ['role:admin']], function () {
         Route::put('/pimpinan/{id}/update', [\App\Http\Controllers\Admin\PimpinanController::class, 'update'])->name('pimpinan.update');
         Route::delete('/pimpinan/{pimpinan}/delete', [\App\Http\Controllers\Admin\PimpinanController::class, 'destroy'])->name('pimpinan.destroy');
         Route::delete('/pimpinan/destroyMultiple', [\App\Http\Controllers\Admin\PimpinanController::class, 'destroyMultiple'])->name('pimpinan.destroyMultiple');
+
+        // Data Ruangan
+        Route::get('/ruangan', [\App\Http\Controllers\Admin\RuanganController::class, 'index'])->name('ruangan');
+        Route::post('/ruangan/store', [\App\Http\Controllers\Admin\RuanganController::class, 'store'])->name('ruangan.store');
+        Route::put('/ruangan/{id}/update', [\App\Http\Controllers\Admin\RuanganController::class, 'update'])->name('ruangan.update');
+        Route::delete('/ruangan/{ruangan}/delete', [\App\Http\Controllers\Admin\RuanganController::class, 'destroy'])->name('ruangan.destroy');
+        Route::delete('/ruangan/destroyMultiple', [\App\Http\Controllers\Admin\RuanganController::class, 'destroyMultiple'])->name('ruangan.destroyMultiple');
+
+        // Data Sesi
+        Route::get('/sesi', [\App\Http\Controllers\Admin\SesiController::class, 'index'])->name('sesi');
+        Route::post('/sesi/store', [\App\Http\Controllers\Admin\SesiController::class, 'store'])->name('sesi.store');
+        Route::put('/sesi/{id}/update', [\App\Http\Controllers\Admin\SesiController::class, 'update'])->name('sesi.update');
+        Route::delete('/sesi/{sesi}/delete', [\App\Http\Controllers\Admin\SesiController::class, 'destroy'])->name('sesi.destroy');
+        Route::delete('/sesi/destroyMultiple', [\App\Http\Controllers\Admin\SesiController::class, 'destroyMultiple'])->name('sesi.destroyMultiple');
     });
 });
 
