@@ -24,5 +24,10 @@ class Mahasiswa extends Model
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'mahasiswa_id');
+    }
+
     protected $guarded = [];
 }

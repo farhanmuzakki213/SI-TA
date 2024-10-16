@@ -46,6 +46,20 @@ const AppMenu = () => {
                             { label: 'Semester', icon: 'pi pi-fw pi-file', to: route('semester') },
                             { label: 'Jabatan Pimpinan', icon: 'pi pi-fw pi-file', to: route('jabatanpimpinan') },
                             { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
+                            { label: 'Ruangan', icon: 'pi pi-fw pi-file', to: route('ruangan') },
+                            { label: 'Sesi', icon: 'pi pi-fw pi-file', to: route('sesi') },
+                        ]
+                    }}
+                    root={true}
+                    index={1}
+                />
+                )}
+                {/* Data User, Role, Permission */}
+                {hasRole('pimpinanProdi') && (<AppMenuitem
+                    item={{
+                        label: 'Data Master',
+                        items: [
+                            { label: 'Jadwal Ruangan', icon: 'pi pi-fw pi-file', to: route('booking') },
                         ]
                     }}
                     root={true}
