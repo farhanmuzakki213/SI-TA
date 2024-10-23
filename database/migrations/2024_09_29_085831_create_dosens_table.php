@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigInteger('id_dosen')->primary()->unsigned();
             $table->bigInteger('user_id')->unsigned()->unique();
             $table->bigInteger('prodi_id')->unsigned();
+            $table->bigInteger('golongan_id')->unsigned();
             $table->string('nama_dosen');
             $table->string('nidn_dosen');
             $table->enum('gender', ['laki-laki', 'perempuan']);
@@ -26,6 +27,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('cascade');
             $table->foreign('prodi_id')->references('id_prodi')->on('prodis')
+                ->onUpdate('cascade');
+            $table->foreign('golongan_id')->references('id_golongan')->on('golongans')
                 ->onUpdate('cascade');
         });
     }

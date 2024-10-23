@@ -15,6 +15,7 @@ const DosenForm = ({
     dosenDialogFooter,
     hideDialog,
     setdosen,
+    golonganOptions,
 }) => {
     const [passwordError, setPasswordError] = useState('');
     const [passwordsError, setPasswordsError] = useState('');
@@ -244,6 +245,23 @@ const DosenForm = ({
                 />
                 {submitted && !dosen.prodi_id && (
                     <small className="p-invalid">Prodi is required.</small>
+                )}
+            </div>
+
+            {/* Golongan ID */}
+            <div className="field">
+                <label htmlFor="golongan_id">Golongan</label>
+                <Dropdown
+                    id="golongan_id"
+                    value={dosen.golongan_id || ''}
+                    onChange={(e) => onInputChange(e, "golongan_id")}
+                    options={golonganOptions}
+                    placeholder="Select a Golongan"
+                    optionLabel="label"
+                    required
+                />
+                {submitted && !dosen.golongan_id && (
+                    <small className="p-invalid">Golongan is required.</small>
                 )}
             </div>
 
