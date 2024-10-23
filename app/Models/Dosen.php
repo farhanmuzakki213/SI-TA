@@ -9,7 +9,7 @@ class Dosen extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_dosen', 'user_id', 'prodi_id', 'nama_dosen' ,'nidn_dosen', 'gender', 'status_dosen'
+        'id_dosen', 'user_id', 'prodi_id', 'golongan_id', 'nama_dosen' ,'nidn_dosen', 'gender', 'status_dosen'
     ];
     protected $table = 'dosens';
     protected $primaryKey = 'id_dosen';
@@ -22,6 +22,11 @@ class Dosen extends Model
     public function r_prodi()
     {
         return $this->belongsTo(Prodi::class, 'prodi_id');
+    }
+
+    public function r_golongan()
+    {
+        return $this->belongsTo(golongan::class, 'golongan_id');
     }
 
 }

@@ -15,6 +15,7 @@ const dosen = () => {
     let emptydosen = {
         id_dosen: null,
         prodi_id: null,
+        golongan: null,
         email: "",
         password: "",
         password_confirmation: "",
@@ -25,10 +26,11 @@ const dosen = () => {
     };
 
     const { props } = usePage();
-    const { data_dosen, prodiOptions: initialProdiOptions, nextNumber } = props;
+    const { data_dosen, prodiOptions: initialProdiOptions, golonganOptions: initialGolonganOptions, nextNumber } = props;
     const [dosens, setdosens] = useState(null);
     const [selecteddosens, setSelecteddosens] = useState(null);
     const [prodiOptions, setProdiOptions] = useState([]);
+    const [golonganOptions, setGolonganOptions] = useState([]);
     const [dosenDialog, setdosenDialog] = useState(false);
     const [deletedosenDialog, setDeletedosenDialog] = useState(false);
     const [deletedosensDialog, setDeletedosensDialog] = useState(false);
@@ -37,14 +39,15 @@ const dosen = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
-    // console.log(props)
+    // console.log(props.data_dosen)
 
     useEffect(() => {
         setProdiOptions(initialProdiOptions);
+        setGolonganOptions(initialGolonganOptions);
         setdosens(data_dosen);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialProdiOptions, data_dosen, props.flash]);
+    }, [initialProdiOptions, initialGolonganOptions, data_dosen, props.flash]);
 
     const openNew = () => {
         setdosen(emptydosen);
@@ -95,6 +98,7 @@ const dosen = () => {
         const requiredFieldsForCreate = [
             dosen.nama_dosen,
             dosen.prodi_id,
+            dosen.golongan_id,
             dosen.nidn_dosen,
             dosen.gender,
             dosen.status_dosen,
@@ -106,6 +110,7 @@ const dosen = () => {
         const requiredFieldsForUpdate = [
             dosen.nama_dosen,
             dosen.prodi_id,
+            dosen.golongan_id,
             dosen.nidn_dosen,
             dosen.gender,
             dosen.status_dosen,
@@ -369,6 +374,7 @@ const dosen = () => {
                             setdosen={setdosen}
                             submitted={submitted}
                             prodiOptions={prodiOptions}
+                            golonganOptions={golonganOptions}
                             dosenDialogFooter={dosenDialogFooter}
                             hideDialog={hideDialog}
                         />

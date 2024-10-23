@@ -31,6 +31,15 @@ const DosenDataTable = ({ dosens, selecteddosens, setSelecteddosens, globalFilte
         );
     };
 
+    const golonganBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Golongan</span>
+                {rowData.nama_golongan}
+            </>
+        );
+    };
+
     const genderBodyTemplate = (rowData) => {
         return (
             <>
@@ -92,6 +101,7 @@ const DosenDataTable = ({ dosens, selecteddosens, setSelecteddosens, globalFilte
             <Column field="nama_dosen" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nama_prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nidn_dosen" header="NIDN" sortable body={nidnBodyTemplate} ></Column>
+            <Column field="nama_golongan" header="Golongan" sortable body={golonganBodyTemplate} ></Column>
             <Column field="gender" header="Gender" sortable body={genderBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
             <Column field="status_dosen" header="Status" sortable body={statusBodyTemplate} ></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>

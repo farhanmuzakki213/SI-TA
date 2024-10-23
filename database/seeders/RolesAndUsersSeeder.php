@@ -48,20 +48,20 @@ class RolesAndUsersSeeder extends Seeder
 
         // Data dosen yang akan dibuat
         $dosenData = [
-            [14, 2, 'ALDO ERIANDA, M.T, S.ST', '003078904', 'Laki-laki', '1'],
-            [40, 2, 'CIPTO PRABOWO, S.T, M.T', '0002037410', 'Laki-laki', '1'],
-            [46, 2, 'DEDDY PRAYAMA, S.Kom, M.ISD', '0015048105', 'Laki-laki', '1'],
-            [50, 2, 'DEFNI, S.Si, M.Kom', '0007128104', 'Perempuan', '1'],
-            [52, 2, 'DENI SATRIA, S.Kom, M.Kom', '0028097803', 'Laki-laki', '1'],
-            [66, 2, 'DWINY MEIDELFI, S.Kom, M.Cs', '0009058601', 'Perempuan', '1'],
-            [85, 2, 'ERVAN ASRI, S.Kom, M.Kom', '0001097802', 'Laki-laki', '1'],
+            [14, 2,  1,'ALDO ERIANDA, M.T, S.ST', '003078904', 'Laki-laki', '1'],
+            [40, 2,  2,'CIPTO PRABOWO, S.T, M.T', '0002037410', 'Laki-laki', '1'],
+            [46, 2,  3,'DEDDY PRAYAMA, S.Kom, M.ISD', '0015048105', 'Laki-laki', '1'],
+            [50, 2,  4,'DEFNI , S.Si, M.Kom', '0007128104', 'Perempuan', '1'],
+            [52, 2,  1,'DENI SATRIA, S.Kom, M.Kom', '0028097803', 'Laki-laki', '1'],
+            [66, 2,  2,'DWINY MEIDELFI, S.Kom, M.Cs', '0009058601', 'Perempuan', '1'],
+            [85, 2,  3,'ERVAN ASRI, S.Kom, M.Kom', '0001097802', 'Laki-laki', '1'],
         ];
 
         // Membuat data dosen dan mengisi 'user_id' secara otomatis
         foreach ($dosenData as $data) {
             $user = User::firstOrCreate(
-                ['email' => generateEmail($data[2])],
-                ['name' => $data[2], 'password' => Hash::make('password')]
+                ['email' => generateEmail($data[3])],
+                ['name' => $data[3], 'password' => Hash::make('password')]
             );
 
             Dosen::updateOrCreate(
@@ -69,10 +69,11 @@ class RolesAndUsersSeeder extends Seeder
                 [
                     'user_id' => $user->id,
                     'prodi_id' => $data[1],
-                    'nama_dosen' => $data[2],
-                    'nidn_dosen' => $data[3],
-                    'gender' => $data[4],
-                    'status_dosen' => $data[5]
+                    'golongan_id' => $data[2],
+                    'nama_dosen' => $data[3],
+                    'nidn_dosen' => $data[4],
+                    'gender' => $data[5],
+                    'status_dosen' => $data[6]
                 ]
             );
         }
