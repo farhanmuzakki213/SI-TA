@@ -43,6 +43,7 @@ Route::group(['middleware' => ['role:superAdmin']], function () {
     Route::middleware('auth')->group(function () {
         // Data User
         Route::get('/user', [\App\Http\Controllers\SuperAdmin\UserController::class, 'index'])->name('user');
+        Route::put('/user/{id}/update', [\App\Http\Controllers\SuperAdmin\UserController::class, 'update'])->name('user.update');
 
         // Data Role
         Route::get('/role', [\App\Http\Controllers\SuperAdmin\RoleController::class, 'index'])->name('role');
