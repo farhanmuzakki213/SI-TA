@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
 use App\Models\JabatanPimpinan;
 use App\Models\Pimpinan;
@@ -17,12 +18,9 @@ class JabatanPimpinanController extends Controller
      */
     public function index()
     {
-        $data_jabatan_pimpinan = JabatanPimpinan::get();
-        $nextNumber = $this->getCariNomor();
-        // dd($data_jabatan_pimpinan->toArray());
         return Inertia::render('main/admin/jabatanpimpinan/jabatan', [
-            'nextNumber' => $nextNumber,
-            'data_jabatan_pimpinan' => $data_jabatan_pimpinan
+            'nextNumber' => CariNomor::getCariNomor(JabatanPimpinan::class, 'id_jabatan_pimpinan'),
+            'data_jabatan_pimpinan' => JabatanPimpinan::get(),
         ]);
     }
 
@@ -149,17 +147,5 @@ class JabatanPimpinanController extends Controller
         JabatanPimpinan::whereIn('id_jabatan_pimpinan', $ids)->delete();
 
         return to_route('jabatanpimpinan')->with('success', 'Jabatan Pimpinan deleted successfully');
-    }
-
-    function getCariNomor()
-    {
-        $id_jabatan_pimpinan = JabatanPimpinan::pluck('id_jabatan_pimpinan')->toArray();
-        for ($i = 1;; $i++) {
-            if (!in_array($i, $id_jabatan_pimpinan)) {
-                return $i;
-                break;
-            }
-        }
-        return $i;
     }
 }

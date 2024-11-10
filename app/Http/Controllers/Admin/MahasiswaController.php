@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BaseOptionsResource;
 use App\Models\Kelas;
 use App\Models\Mahasiswa;
 use App\Models\User;
@@ -22,22 +23,16 @@ class MahasiswaController extends Controller
     public function index()
     {
         $data_mahasiswa = Mahasiswa::with('r_user', 'r_kelas.r_prodi')->orderBy('id_mahasiswa')->get();
-
-        $kelas = Kelas::all();
-        $users = User::all();
         $nextNumber = $this->getCariNomor();
-        // dd($data_mahasiswa->toArray(), $kelas->toArray(), $users->toArray());
         return Inertia::render('main/admin/mahasiswa/mahasiswa', [
             'data_mahasiswa' => $data_mahasiswa,
             'nextNumber' => $nextNumber,
-            'kelasOptions' => $kelas->map(fn($p) => [
-                'label' => $p->nama_kelas,
-                'value' => $p->id_kelas
-            ]),
-            'userOptions' => $users->map(fn($u) => [
-                'label' => $u->name,
-                'value' => $u->id
-            ])
+            'kelasOptions' => BaseOptionsResource::collection(Kelas::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_kelas', 'id_kelas');
+            })),
+            'userOptions' => BaseOptionsResource::collection(User::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'name', 'id');
+            })),
         ]);
     }
 

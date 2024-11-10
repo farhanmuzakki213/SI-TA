@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BaseOptionsResource;
 use App\Models\Dosen;
 use App\Models\JabatanPimpinan;
 use App\Models\Pimpinan;
@@ -19,22 +20,16 @@ class PimpinanController extends Controller
     public function index()
     {
         $data_pimpinan = Pimpinan::with('r_dosen.r_prodi.r_jurusan', 'r_jabatan_pimpinan')->orderBy('id_pimpinan')->get();
-
-        $dosen = Dosen::with('r_prodi.r_jurusan')->get();
-        $jabatan_pimpinan = JabatanPimpinan::all();
         $nextNumber = $this->getCariNomor();
-        // dd($data_pimpinan->toArray(), $dosen->toArray(), $jabatan_pimpinan->toArray());
         return Inertia::render('main/admin/pimpinan/pimpinan', [
             'data_pimpinan' => $data_pimpinan,
             'nextNumber' => $nextNumber,
-            'dosenOptions' => $dosen->map(fn($p) => [
-                'label' => $p->nama_dosen,
-                'value' => $p->id_dosen
-            ]),
-            'jabatan_pimpinanOptions' => $jabatan_pimpinan->map(fn($u) => [
-                'label' => $u->nama_jabatan_pimpinan,
-                'value' => $u->id_jabatan_pimpinan
-            ])
+            'dosenOptions' => BaseOptionsResource::collection(Dosen::with('r_prodi.r_jurusan')->get()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_dosen', 'id_dosen');
+            })),
+            'jabatan_pimpinanOptions' => BaseOptionsResource::collection(JabatanPimpinan::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_jabatan_pimpinan', 'id_jabatan_pimpinan');
+            })),
         ]);
     }
 

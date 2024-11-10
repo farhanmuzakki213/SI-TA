@@ -2,7 +2,13 @@
     "name": "dashboard/template",
     "type": "project",
     "description": "The free inertia react dashboard template",
-    "keywords": ["laravel", "framework", "inertia", "dashboard", "template"],
+    "keywords": [
+        "laravel",
+        "framework",
+        "inertia",
+        "dashboard",
+        "template"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.1",
@@ -29,7 +35,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/CariNomor.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

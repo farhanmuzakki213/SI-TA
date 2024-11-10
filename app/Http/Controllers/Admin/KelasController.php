@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BaseOptionsResource;
 use App\Models\Kelas;
 use App\Models\Mahasiswa;
 use App\Models\Prodi;
@@ -19,22 +21,15 @@ class KelasController extends Controller
      */
     public function index()
     {
-        $data_kelas = Kelas::with('r_prodi', 'r_smt_thnakd')->get();
-        $data_prodi = Prodi::all();
-        $data_smt_thnakd = Smt_thnakd::all();
-        $nextNumber = $this->getCariNomor();
-        // dd($data_kelas->toArray(), $data_prodi->toArray(), $data_smt_thnakd->toArray());
         return Inertia::render('main/admin/kelas/kelas', [
-            'data_kelas' => $data_kelas,
-            'nextNumber' => $nextNumber,
-            'prodiOptions' => $data_prodi->map(fn($u) => [
-                'label' => $u->nama_prodi,
-                'value' => $u->id_prodi
-            ]),
-            'smt_thnakdOptions' => $data_smt_thnakd->map(fn($u) => [
-                'label' => $u->nama_smt_thnakd,
-                'value' => $u->id_smt_thnakd
-            ])
+            'data_kelas' => Kelas::with('r_prodi', 'r_smt_thnakd')->get(),
+            'nextNumber' => CariNomor::getCariNomor(Kelas::class, 'id_kelas'),
+            'prodiOptions' => BaseOptionsResource::collection(Prodi::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_prodi', 'id_prodi');
+            })),
+            'smt_thnakdOptions' => BaseOptionsResource::collection(Smt_thnakd::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_smt_thnakd', 'id_smt_thnakd');
+            })),
         ]);
     }
 
@@ -170,17 +165,5 @@ class KelasController extends Controller
         Kelas::whereIn('id_kelas', $ids)->delete();
 
         return to_route('kelas')->with('success', 'Kelas deleted successfully');
-    }
-
-    function getCariNomor()
-    {
-        $id_kelas = Kelas::pluck('id_kelas')->toArray();
-        for ($i = 1;; $i++) {
-            if (!in_array($i, $id_kelas)) {
-                return $i;
-                break;
-            }
-        }
-        return $i;
     }
 }

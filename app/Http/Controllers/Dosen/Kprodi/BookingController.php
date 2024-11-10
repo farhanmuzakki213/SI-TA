@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Dosen\Kprodi;
 
+use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BaseOptionsResource;
 use App\Models\Booking;
 use App\Models\Mahasiswa;
 use App\Models\Ruangan;
@@ -20,27 +22,18 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $data_booking = Booking::with('r_sesi', 'r_ruangan', 'r_mahasiswa')->get();
-
-        $ruangan = Ruangan::all();
-        $sesi = Sesi::all();
-        $mahasiswa = Mahasiswa::all();
-        $nextNumber = $this->getCariNomor();
         return Inertia::render('main/kaprodi/booking/booking', [
-            'data_booking' => $data_booking,
-            'nextNumber' => $nextNumber,
-            'ruanganOptions' => $ruangan->map(fn($p) => [
-                'label' => $p->kode_ruangan,
-                'value' => $p->id_ruangan
-            ]),
-            'mahasiswaOptions' => $mahasiswa->map(fn($p) => [
-                'label' => $p->nama_mahasiswa,
-                'value' => $p->id_mahasiswa
-            ]),
-            'sesiOptions' => $sesi->map(fn($u) => [
-                'label' => $u->periode_sesi,
-                'value' => $u->id_sesi
-            ])
+            'data_booking' => Booking::with('r_sesi', 'r_ruangan', 'r_mahasiswa')->get(),
+            'nextNumber' => CariNomor::getCariNomor(Booking::class, 'id_booking'),
+            'ruanganOptions' => BaseOptionsResource::collection(Ruangan::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'kode_ruangan', 'id_ruangan');
+            })),
+            'sesiOptions' => BaseOptionsResource::collection(Sesi::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'periode_sesi', 'id_sesi');
+            })),
+            'mahasiswaOptions' => BaseOptionsResource::collection(Mahasiswa::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_mahasiswa', 'id_mahasiswa');
+            })),
         ]);
     }
 
@@ -186,17 +179,5 @@ class BookingController extends Controller
         Booking::whereIn('id_booking', $ids)->delete();
 
         return to_route('booking')->with('success', 'Jadwal Ruangan deleted successfully');
-    }
-
-    function getCariNomor()
-    {
-        $id_booking = Booking::pluck('id_booking')->toArray();
-        for ($i = 1;; $i++) {
-            if (!in_array($i, $id_booking)) {
-                return $i;
-                break;
-            }
-        }
-        return $i;
     }
 }

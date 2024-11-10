@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
 use App\Models\Ruangan;
-use App\Models\RuanganTersedia;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -17,11 +18,9 @@ class RuanganController extends Controller
      */
     public function index()
     {
-        $data_ruangan = Ruangan::get();
-        $nextNumber = $this->getCariNomor();
         return Inertia::render('main/admin/ruangan/ruangan', [
-            'nextNumber' => $nextNumber,
-            'data_ruangan' => $data_ruangan
+            'nextNumber' => CariNomor::getCariNomor(Ruangan::class, 'id_ruangan'),
+            'data_ruangan' => Ruangan::get(),
         ]);
     }
 
@@ -116,9 +115,9 @@ class RuanganController extends Controller
         // dd($ruangan->toArray());
         $ruangan = Ruangan::findOrFail($ruangan->id_ruangan);
 
-        $existsInProdi = RuanganTersedia::where('ruangan_id', $ruangan->id_ruangan)->exists();
+        $existsInBooking = Booking::where('ruangan_id', $ruangan->id_ruangan)->exists();
 
-        if ($existsInProdi) {
+        if ($existsInBooking) {
             return back()->with('error', 'Cannot delete ruangan, it is still associated with some table.');
         }
         $ruangan->delete();
@@ -135,26 +134,14 @@ class RuanganController extends Controller
 
         $ids = $request->input('ids');
 
-        $existingProdiCount = RuanganTersedia::whereIn('ruangan_id', $ids)->count();
+        $existingBookingCount = Booking::whereIn('ruangan_id', $ids)->count();
 
-        if ($existingProdiCount > 0) {
+        if ($existingBookingCount > 0) {
             return back()->with('error', 'Cannot delete ruangan, it is still associated with some table.');
         }
 
         Ruangan::whereIn('id_ruangan', $ids)->delete();
 
         return to_route('ruangan')->with('success', 'Ruangan deleted successfully');
-    }
-
-    function getCariNomor()
-    {
-        $id_ruangan = Ruangan::pluck('id_ruangan')->toArray();
-        for ($i = 1;; $i++) {
-            if (!in_array($i, $id_ruangan)) {
-                return $i;
-                break;
-            }
-        }
-        return $i;
     }
 }

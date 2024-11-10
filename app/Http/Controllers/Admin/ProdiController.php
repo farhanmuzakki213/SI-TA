@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BaseOptionsResource;
 use App\Models\Dosen;
 use App\Models\Jurusan;
 use App\Models\Kelas;
@@ -20,16 +21,13 @@ class ProdiController extends Controller
     public function index()
     {
         $data_prodi = Prodi::with('r_jurusan')->get();
-        $data_jurusan = Jurusan::all();
         $nextNumber = $this->getCariNomor();
-        // dd($data_jurusan->toArray());
         return Inertia::render('main/admin/prodi/prodi', [
             'data_prodi' => $data_prodi,
             'nextNumber' => $nextNumber,
-            'jurusanOptions' => $data_jurusan->map(fn($u) => [
-                'label' => $u->nama_jurusan,
-                'value' => $u->id_jurusan
-            ])
+            'jurusanOptions' => BaseOptionsResource::collection(Jurusan::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_jurusan', 'id_jurusan');
+            })),
         ]);
     }
 
