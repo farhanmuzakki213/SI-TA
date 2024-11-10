@@ -48,6 +48,7 @@ const AppMenu = () => {
                             { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
                             { label: 'Ruangan', icon: 'pi pi-fw pi-file', to: route('ruangan') },
                             { label: 'Sesi', icon: 'pi pi-fw pi-file', to: route('sesi') },
+                            { label: 'lowongan', icon: 'pi pi-fw pi-file', to: route('lowongan') },
                         ]
                     }}
                     root={true}

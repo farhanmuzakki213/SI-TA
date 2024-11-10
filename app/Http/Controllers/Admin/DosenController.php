@@ -24,6 +24,11 @@ class DosenController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function indexlowongan() : Response
+    {
+        return Inertia::render('main/admin/lowongan/lowongan');
+    }
     public function index() : Response
     {
         return Inertia::render('main/admin/dosen/dosen', [
