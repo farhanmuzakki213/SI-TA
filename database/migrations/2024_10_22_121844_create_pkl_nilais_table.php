@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pkl_nilais', function (Blueprint $table) {
-            $table->bigInteger('pkl_sidang_id')->unsigned();
+            $table->bigInteger('pkl_mhs_id')->primary()->unsigned();
             $table->bigInteger('dosen_id')->unsigned();
             $table->text('nilai');
-            $table->enum('sebagai', ['pembimbing', 'penguji']);
+            $table->enum('sebagai', ['pembimbing', 'penguji', 'pembimbing_pkl']);
             $table->timestamps();
         });
 
         Schema::table('pkl_nilais', function (Blueprint $table) {
-            $table->foreign('pkl_sidang_id')->references('id_pkl_sidang')->on('pkl_sidangs')
+            $table->foreign('pkl_mhs_id')->references('id_pkl_mhs')->on('pkl_mhs')
                 ->onUpdate('cascade');
             $table->foreign('dosen_id')->references('id_dosen')->on('dosens')
                 ->onUpdate('cascade');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use App\Models\Smt_thnakd;
@@ -17,12 +18,9 @@ class SmtThnakdController extends Controller
      */
     public function index()
     {
-        $data_smt_thnakd = Smt_thnakd::get();
-        $nextNumber = $this->getCariNomor();
-        // dd($data_smt_thnakd->toArray());
         return Inertia::render('main/admin/smt_thnakd/smt', [
-            'nextNumber' => $nextNumber,
-            'data_smt_thnakd' => $data_smt_thnakd
+            'nextNumber' => CariNomor::getCariNomor(Smt_thnakd::class, 'id_smt_thnakd'),
+            'data_smt_thnakd' => Smt_thnakd::get()
         ]);
     }
 
@@ -153,17 +151,5 @@ class SmtThnakdController extends Controller
         Smt_thnakd::whereIn('id_smt_thnakd', $ids)->delete();
 
         return to_route('semester')->with('success', 'Semester deleted successfully');
-    }
-
-    function getCariNomor()
-    {
-        $id_smt_thnakd = Smt_thnakd::pluck('id_smt_thnakd')->toArray();
-        for ($i = 1;; $i++) {
-            if (!in_array($i, $id_smt_thnakd)) {
-                return $i;
-                break;
-            }
-        }
-        return $i;
     }
 }

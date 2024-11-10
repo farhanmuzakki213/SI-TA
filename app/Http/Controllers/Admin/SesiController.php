@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
-use App\Models\RuanganTersedia;
+use App\Models\Booking;
 use App\Models\Sesi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,11 +18,9 @@ class SesiController extends Controller
      */
     public function index()
     {
-        $data_sesi = Sesi::get();
-        $nextNumber = $this->getCariNomor();
         return Inertia::render('main/admin/sesi/sesi', [
-            'nextNumber' => $nextNumber,
-            'data_sesi' => $data_sesi
+            'nextNumber' => CariNomor::getCariNomor(Sesi::class, 'id_sesi'),
+            'data_sesi' => Sesi::get(),
         ]);
     }
 
@@ -116,9 +115,9 @@ class SesiController extends Controller
         // dd($sesi->toArray());
         $sesi = Sesi::findOrFail($sesi->id_sesi);
 
-        $existsInRuangantersedia = RuanganTersedia::where('sesi_id', $sesi->id_sesi)->exists();
+        $existsInBooking = Booking::where('sesi_id', $sesi->id_sesi)->exists();
 
-        if ($existsInRuangantersedia) {
+        if ($existsInBooking) {
             return back()->with('error', 'Cannot delete sesi, it is still associated with some table.');
         }
         $sesi->delete();
@@ -135,26 +134,14 @@ class SesiController extends Controller
 
         $ids = $request->input('ids');
 
-        $existingRuangantersediaCount = RuanganTersedia::whereIn('sesi_id', $ids)->count();
+        $existingBookingCount = Booking::whereIn('sesi_id', $ids)->count();
 
-        if ($existingRuangantersediaCount > 0) {
+        if ($existingBookingCount > 0) {
             return back()->with('error', 'Cannot delete sesi, it is still associated with some table.');
         }
 
         Sesi::whereIn('id_sesi', $ids)->delete();
 
         return to_route('sesi')->with('success', 'Sesi deleted successfully');
-    }
-
-    function getCariNomor()
-    {
-        $id_sesi = Sesi::pluck('id_sesi')->toArray();
-        for ($i = 1;; $i++) {
-            if (!in_array($i, $id_sesi)) {
-                return $i;
-                break;
-            }
-        }
-        return $i;
     }
 }
