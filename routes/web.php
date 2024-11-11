@@ -52,6 +52,16 @@ Route::group(['middleware' => ['role:superAdmin']], function () {
     });
 });
 
+// Route Mahasiswa
+Route::group(['middleware' => ['role:mahasiswa']], function () {
+    Route::middleware('auth')->group(function () {
+         // Data Tempat PKL
+        Route::get('/tempatpkl', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'index'])->name('tempatpkl');
+        Route::post('/tempatpkl/store', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'store'])->name('tempatpkl.store');
+        Route::put('/tempatpkl/{id}/update', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'update'])->name('tempatpkl.update');
+    });
+});
+
 // Route Kepala Prodi
 Route::group(['middleware' => ['role:pimpinanProdi']], function () {
     Route::middleware('auth')->group(function () {

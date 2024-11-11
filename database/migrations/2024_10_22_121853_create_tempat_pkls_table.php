@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('nama_perusahaan');
             $table->string('alamat_perusahaan');
             $table->string('nomor_telepon_perusahaan');
-            $table->bigInteger('kuota');
-            $table->enum('status_tempat_pkl', ['0', '1'])->default('1');
             $table->timestamps();
         });
     }

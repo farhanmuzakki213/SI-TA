@@ -29,5 +29,11 @@ class Mahasiswa extends Model
         return $this->hasMany(Booking::class, 'mahasiswa_id');
     }
 
+
+    public function usulans()
+    {
+        return $this->hasMany(UsulanTempatPkl::class, 'mahasiswa_id');
+    }
+
     protected $guarded = [];
 }

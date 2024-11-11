@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('usulan_tempat_pkls', function (Blueprint $table) {
             $table->bigInteger('id_usulan')->primary()->unsigned();
-            $table->bigInteger('tempat_pkl_id')->unsigned();
+            $table->bigInteger('role_tempat_pkl_id')->unsigned();
             $table->bigInteger('mahasiswa_id')->unsigned();
             $table->date('tgl_awal_pkl');
             $table->date('tgl_akhir_pkl');
-            $table->longText('komentar');
+            $table->longText('komentar')->nullable();
             $table->enum('status_usulan', ['0', '1', '2'])->default('1');
             $table->timestamps();
         });
 
         Schema::table('usulan_tempat_pkls', function (Blueprint $table) {
-            $table->foreign('tempat_pkl_id')->references('id_tempat_pkl')->on('tempat_pkls')
+            $table->foreign('role_tempat_pkl_id')->references('id_role_tempat_pkl')->on('role_tempat_pkls')
                 ->onUpdate('cascade');
             $table->foreign('mahasiswa_id')->references('id_mahasiswa')->on('mahasiswas')
                 ->onUpdate('cascade');

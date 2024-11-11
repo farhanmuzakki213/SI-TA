@@ -54,12 +54,24 @@ const AppMenu = () => {
                     index={1}
                 />
                 )}
-                {/* Data User, Role, Permission */}
+                {/* Data Jadwal Ruangan */}
                 {hasRole('pimpinanProdi') && (<AppMenuitem
                     item={{
                         label: 'Data Master',
                         items: [
                             { label: 'Jadwal Ruangan', icon: 'pi pi-fw pi-file', to: route('booking') },
+                        ]
+                    }}
+                    root={true}
+                    index={1}
+                />
+                )}
+                {/* Data User, Role, Permission */}
+                {hasRole('mahasiswa') && (<AppMenuitem
+                    item={{
+                        label: 'Data',
+                        items: [
+                            { label: 'Usulan Tempat Pkl', icon: 'pi pi-fw pi-file', to: route('tempatpkl') },
                         ]
                     }}
                     root={true}
