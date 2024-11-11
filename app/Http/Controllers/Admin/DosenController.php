@@ -17,18 +17,23 @@ use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Illuminate\Validation\Rules;
 use Inertia\Response;
+use App\Helpers\CariNomor;
 
 class DosenController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    public function indexlowongan() : Response
+    {
+        return Inertia::render('main/admin/lowongan/lowongan');
+    }
     public function index() : Response
     {
-        $nextNumber = $this->getCariNomor();
         return Inertia::render('main/admin/dosen/dosen', [
             'data_dosen' => DosenResource::collection( Dosen::with('r_user', 'r_prodi', 'r_golongan')->get()),
-            'nextNumber' => $nextNumber,
+            'nextNumber' => CariNomor::getCariNomor(Dosen::class, 'id_dosen'),
             'prodiOptions' => BaseOptionsResource::collection(Prodi::all()->map(function ($p) {
                 return new BaseOptionsResource($p, 'nama_prodi', 'id_prodi');
             })),
@@ -174,17 +179,5 @@ class DosenController extends Controller
         Dosen::whereIn('id_dosen', $ids)->delete();
 
         return to_route('dosen')->with('success', 'Selected dosens deleted successfully');
-    }
-
-    function getCariNomor()
-    {
-        $id_dosen = Dosen::pluck('id_dosen')->toArray();
-        for ($i = 1;; $i++) {
-            if (!in_array($i, $id_dosen)) {
-                return $i;
-                break;
-            }
-        }
-        return $i;
     }
 }

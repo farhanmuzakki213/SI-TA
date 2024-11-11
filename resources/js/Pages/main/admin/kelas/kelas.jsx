@@ -34,7 +34,6 @@ const kelas = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
-    // console.log(props.smt_thnakdOptions)
 
     useEffect(() => {
         setkelass(data_kelas);

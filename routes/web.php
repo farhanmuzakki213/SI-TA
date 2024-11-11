@@ -43,6 +43,7 @@ Route::group(['middleware' => ['role:superAdmin']], function () {
     Route::middleware('auth')->group(function () {
         // Data User
         Route::get('/user', [\App\Http\Controllers\SuperAdmin\UserController::class, 'index'])->name('user');
+        Route::put('/user/{id}/update', [\App\Http\Controllers\SuperAdmin\UserController::class, 'update'])->name('user.update');
 
         // Data Role
         Route::get('/role', [\App\Http\Controllers\SuperAdmin\RoleController::class, 'index'])->name('role');
@@ -78,6 +79,7 @@ Route::group(['middleware' => ['role:admin']], function () {
     // Data Master : Dosen, Mahasiswa, Jurusan, Prodi, Kelas, Semester dan Tahun Akademik, Jabatan Pimpinan, Ruangan dan Sesi
     Route::middleware('auth')->group(function () {
         // Data Dosen
+        Route::get('/lowongan', [\App\Http\Controllers\Admin\DosenController::class, 'indexlowongan'])->name('lowongan');
         Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');
         Route::post('/dosen/store', [\App\Http\Controllers\Admin\DosenController::class, 'store'])->name('dosen.store');
         Route::put('/dosen/{id}/update', [\App\Http\Controllers\Admin\DosenController::class, 'update'])->name('dosen.update');

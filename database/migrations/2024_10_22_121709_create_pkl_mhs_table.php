@@ -11,20 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pkl_sidangs', function (Blueprint $table) {
-            $table->bigInteger('id_pkl_sidang')->primary()->unsigned();
-            $table->bigInteger('pkl_ver_id')->unsigned();
+        Schema::create('pkl_mhs', function (Blueprint $table) {
+            $table->bigInteger('id_pkl_mhs')->primary()->unsigned();
             $table->bigInteger('pembimbing_id')->unsigned();
             $table->bigInteger('penguji_id')->unsigned();
+            $table->bigInteger('usulan_tempat_pkl_id')->unsigned();
+            $table->string('pembimbing_pkl')->nullable();
+            $table->string('dokumen_pkl')->nullable();
+            $table->string('judul')->nullable();
+            $table->string('dokumen_nilai_industri')->nullable();
+            $table->enum('status_ver_pkl', ['0', '1', '2'])->default('0')->nullable();
             $table->timestamps();
         });
 
-        Schema::table('pkl_sidangs', function (Blueprint $table) {
-            $table->foreign('pkl_ver_id')->references('id_pkl_ver')->on('pkl_vers')
-                ->onUpdate('cascade');
+        Schema::table('pkl_mhs', function (Blueprint $table) {
             $table->foreign('pembimbing_id')->references('id_dosen')->on('dosens')
                 ->onUpdate('cascade');
             $table->foreign('penguji_id')->references('id_dosen')->on('dosens')
+                ->onUpdate('cascade');
+            $table->foreign('usulan_tempat_pkl_id')->references('id_usulan')->on('usulan_tempat_pkls')
                 ->onUpdate('cascade');
         });
     }
@@ -34,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pkl_sidangs');
+        Schema::dropIfExists('pkl_mhs');
     }
 };
