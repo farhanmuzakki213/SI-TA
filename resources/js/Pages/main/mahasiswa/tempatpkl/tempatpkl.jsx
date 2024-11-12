@@ -1,12 +1,12 @@
-import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { Toast } from "primereact/toast";
-import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
-import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import TempatPklDataTable from './component/TempatPklDataTable';
-import TempatPklForm from './component/TempatPklForm';
+import JobItem from "./component/jobItem";
+import JobDetails from "./component/jobdetail";
+import CompanyDetail from "./component/companydetail";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
+import { router, usePage } from "@inertiajs/react";
+import TempatPklForm from "./component/TempatPklForm";
 
 const tempatpkl = () => {
     let emptytempatpkl = {
@@ -20,7 +20,7 @@ const tempatpkl = () => {
 
 
     const { props } = usePage();
-    const { data_usulan, roleOptions: initialRoleOptions, tempatOptions: initialTempatOptions, mahasiswaOptions: initialMahasiswaOptions, nextNumber } = props;
+    const { data_usulan, data_tempats,  roleOptions: initialRoleOptions, tempatOptions: initialTempatOptions, mahasiswaOptions: initialMahasiswaOptions, nextNumber } = props;
     const [tempatpkls, settempatpkls] = useState(null);
     const [roleOptions, setRoleOptions] = useState([]);
     const [tempatOptions, setTempatOptions] = useState([]);
@@ -31,6 +31,7 @@ const tempatpkl = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+    console.log(props);
 
     useEffect(() => {
         setRoleOptions(initialRoleOptions);
@@ -84,20 +85,7 @@ const tempatpkl = () => {
             tempatpkl.tgl_akhir_pkl,
         ];
 
-        const requiredFieldsForUpdate = [
-            tempatpkl.role_tempat_pkl_id,
-            tempatpkl.tgl_awal_pkl,
-            tempatpkl.tgl_akhir_pkl,
-        ];
-
-        const isCreating = !tempatpkl.id_usulan;
-        let isValid = true;
-
-        if (isCreating) {
-            isValid = requiredFieldsForCreate.every(field => field);
-        } else {
-            isValid = requiredFieldsForUpdate.every(field => field);
-        }
+        const isValid = requiredFieldsForCreate.every(field => field);
 
         if (!isValid) {
             toast.current?.show({
@@ -106,32 +94,17 @@ const tempatpkl = () => {
                 detail: "Please fill in all required fields.",
                 life: 3000,
             });
-
             return;
         }
 
         let _tempatpkl = { ...tempatpkl };
 
         try {
-
-            if (isCreating) {
-                _tempatpkl.id_usulan = nextNumber;
-                await router.post('/tempatpkl/store', _tempatpkl);
-            } else {
-
-                await router.put(`/tempatpkl/${tempatpkl.id_usulan}/update`, _tempatpkl);
-            }
-
+            _tempatpkl.id_usulan = nextNumber;
+            await router.post('/tempatpkl/store', _tempatpkl);
             settempatpkls((prevtempatpkls) => {
                 const tempatpklsArray = Array.isArray(prevtempatpkls) ? prevtempatpkls : [];
-
-                if (isCreating) {
-                    return [...tempatpklsArray, _tempatpkl];
-                } else {
-                    return tempatpklsArray.map((d) =>
-                        d.id_usulan === tempatpkl.id_usulan ? _tempatpkl : d
-                    );
-                }
+                return [...tempatpklsArray, _tempatpkl];
             });
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Failed to save Jadwal Ruangan.";
@@ -146,41 +119,7 @@ const tempatpkl = () => {
             settempatpklDialog(false);
         }
     };
-    const edittempatpkl = (tempatpkl) => {
-        settempatpkl({ ...tempatpkl });
-        settempatpklDialog(true);
-    };
-    // console.log(props.data_usulan[0]?.status_usulan);
-    const leftToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <div className="my-2">
-                    <Button
-                        label="New"
-                        icon="pi pi-plus"
-                        severity="success"
-                        className="mr-2"
-                        onClick={openNew}
-                    />
-                </div>
-            </React.Fragment>
-        );
-    };
 
-    const header = (
-        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Jadwal Ruangan</h5>
-            <span className="block mt-2 md:mt-0 p-input-icon-left">
-                <i className="pi pi-search" />
-                <InputText
-                    type="search"
-                    value={globalFilter || ''}
-                    onInput={(e) => setGlobalFilter(e.target.value || '')}
-                    placeholder="Search..."
-                />
-            </span>
-        </div>
-    );
 
     const tempatpklDialogFooter = (
         <>
@@ -193,30 +132,115 @@ const tempatpkl = () => {
             <Button label="Save" icon="pi pi-check" text onClick={savetempatpkl} />
         </>
     );
+    // const jobs = [
+    //     {
+    //         id: 1,
+    //         title: "Quality Control & Gemstone Production",
+    //         company: "PT Sehat Jaya Selalu",
+    //         location: "Kota Surakarta (WFO)",
+    //         duration: "6 bulan",
+    //         type: "Mandiri",
+    //         new: true,
+    //         type: "Teknologi Informasi",
+    //         link: "www.SehatJayaSelalu.com",
+    //         employe: "10-20",
+    //         logo: "https://placehold.co/50x50?text=Logo+1"
+    //     },
+    //     {
+    //         id: 2,
+    //         title: "Curriculum Development Internship",
+    //         company: "CV DB KLIK",
+    //         location: "Kota Surabaya (WFO)",
+    //         duration: "3 bulan",
+    //         type: "Mandiri",
+    //         new: true,
+    //         type: "Teknologi Informasi",
+    //         link: "www.DBKLIK.com",
+    //         employe: "10-30",
+    //         logo: "https://placehold.co/50x50?text=Logo+2"
+    //     },
+    //     {
+    //         id: 3,
+    //         title: "Digital Marketing (Copy Writer)",
+    //         company: "CV DB KLIK",
+    //         location: "Kota Surabaya (WFO)",
+    //         duration: "3 bulan",
+    //         type: "Mandiri",
+    //         new: true,
+    //         type: "Edukasi",
+    //         link: "www.DBKLIK.com",
+    //         employe: "30-50",
+    //         logo: "https://placehold.co/50x50?text=Logo+3"
+    //     },
+    //     {
+    //         id: 4,
+    //         title: "Cyber Security",
+    //         company: "PT Menara Indonesia",
+    //         location: "Kota Tangerang Selatan (HYBRID)",
+    //         duration: "5 bulan",
+    //         type: "Mandiri",
+    //         new: true,
+    //         type: "Teknologi Informasi",
+    //         link: "www.MenaraIndonesia.com",
+    //         employe: "30-60",
+    //         logo: "https://placehold.co/50x50?text=Logo+4"
+    //     },
+    //     {
+    //         id: 5,
+    //         title: "Server Jaringan",
+    //         company: "PT Menara Indonesia",
+    //         location: "Kota Tangerang Selatan (HYBRID)",
+    //         duration: "5 bulan",
+    //         type: "Mandiri",
+    //         new: true,
+    //         type: "Teknologi Informasi",
+    //         link: "www.MenaraIndonesia.com",
+    //         employe: "50-60",
+    //         logo: "https://placehold.co/50x50?text=Logo+5"
+    //     },
+    //     {
+    //         id: 6,
+    //         title: "Digital Marketing (Desain Grafis)",
+    //         company: "CV DB KLIK",
+    //         location: "Kota Surabaya (WFO)",
+    //         duration: "3 bulan",
+    //         type: "Mandiri",
+    //         new: true,
+    //         type: "Lainnya",
+    //         link: "www.DBKLIK.com",
+    //         employe: "30-50",
+    //         logo: "https://placehold.co/50x50?text=Logo+6"
+    //     },
+    //     {
+    //         id: 7,
+    //         title: "Admin Trade Promo Intern",
+    //         company: "PT Borden Eagle Indonesia",
+    //         location: "Kota Tangerang Selatan (WFO)",
+    //         duration: "6 bulan",
+    //         type: "Mandiri",
+    //         new: true,
+    //         type: "Teknologi Informasi",
+    //         link: "www.BordenEagleIndonesia.com",
+    //         employe: "10-20",
+    //         logo: "https://placehold.co/50x50?text=Logo+7"
+    //     }
+    // ];
+
+    const [selectedJob, setSelectedJob] = useState(data_tempats[0]);
 
     return (
         <Layout>
-            <div className="grid crud-demo">
+            <div className="grip">
                 <div className="col-12">
                     <div className="card">
                         <Toast ref={toast} />
-                        {data_usulan[0]?.status_usulan === "0" && (
-                        <Toolbar
-                            className="mb-4"
-                            left={leftToolbarTemplate}
-                        ></Toolbar>
-                        )}
-
-                        <TempatPklDataTable
-                            dt={dt}
-                            tempatpkls={tempatpkls}
-                            selectedtempatpkls={selectedtempatpkls}
-                            setSelectedtempatpkls={setSelectedtempatpkls}
-                            globalFilter={globalFilter}
-                            header={header}
-                            edittempatpkl={edittempatpkl}
-                        />
-
+                        <h5>Lowongan</h5>
+                        <Button
+                        label="Tambah Lowongan"
+                        className="p-button-primary mr-2 mb-2"
+                        icon="pi pi-plus"
+                        severity="success"
+                        onClick={openNew}/>
                         <TempatPklForm
                             tempatpklDialog={tempatpklDialog}
                             tempatpkl={tempatpkl}
@@ -230,7 +254,30 @@ const tempatpkl = () => {
                     </div>
                 </div>
             </div>
-        </Layout>
+            <div className="flex justify-between">
+                <div class="col-12 xl:col-5">
+                    <div className="card">
+                        {data_tempats.map(data_tempat => (
+                            <JobItem key={data_tempat.id_role_tempat_pkl} data_tempat={data_tempat} onSelect={setSelectedJob} isSelected={data_tempat.id_role_tempat_pkl === selectedJob.id_role_tempat_pkl}/>
+                        ))}
+                    </div>
+                </div>
+                <div class="col-12 xl:col-7">
+                    <div className="grid gap-2">
+                        <div className="col-12">
+                            <div className="card">
+                                <JobDetails job={selectedJob} />
+                            </div>
+                        </div>
+                        <div className="col-12">
+                            <div className="card">
+                                <CompanyDetail job={selectedJob} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Layout >
     );
 };
 

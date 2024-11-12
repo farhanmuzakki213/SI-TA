@@ -10,7 +10,7 @@ class RoleTempatPkl extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id_role_tempat_pkl', 'tempat_pkl_id', 'role_tempat_pkl' , 'kuota', 'status_tempat_pkl'
+        'id_role_tempat_pkl', 'tempat_pkl_id', 'nama_role' , 'kuota', 'decription', 'tgl_awal_pkl', 'tgl_akhir_pkl', 'status_tempat_pkl'
     ];
     protected $table = 'role_tempat_pkls';
     protected $primaryKey = 'id_role_tempat_pkl';

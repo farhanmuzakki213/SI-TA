@@ -79,7 +79,6 @@ Route::group(['middleware' => ['role:admin']], function () {
     // Data Master : Dosen, Mahasiswa, Jurusan, Prodi, Kelas, Semester dan Tahun Akademik, Jabatan Pimpinan, Ruangan dan Sesi
     Route::middleware('auth')->group(function () {
         // Data Dosen
-        Route::get('/lowongan', [\App\Http\Controllers\Admin\DosenController::class, 'indexlowongan'])->name('lowongan');
         Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');
         Route::post('/dosen/store', [\App\Http\Controllers\Admin\DosenController::class, 'store'])->name('dosen.store');
         Route::put('/dosen/{id}/update', [\App\Http\Controllers\Admin\DosenController::class, 'update'])->name('dosen.update');

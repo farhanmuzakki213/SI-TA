@@ -10,7 +10,7 @@ const CompanyDetail = ({ job }) => {
 
     return (
         <div className="flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg">
+            <div className="p-6 rounded-lg">
                 <h1 className="text-xl font-bold mb-4">Tentang Perusahaan</h1>
                 <div className="flex items-center mb-4">
                     <Avatar image={job.logo} className="mr-3" size="xlarge" />

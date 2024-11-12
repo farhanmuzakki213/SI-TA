@@ -21,11 +21,13 @@ class UsulanTempatPklController extends Controller
         $id_user = auth()->user()->id;
         $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
         $data_usulan = UsulanTempatPkl::with('r_mahasiswa', 'r_roleTempatPkls.r_tempatPkls')->where('mahasiswa_id', $id_mahasiswa)->get();
+        $data_tempat = RoleTempatPkl::with("r_tempatPkls")->get();
         // dd($data_usulan->toArray());
         $nextNumber = $this->getCariNomor();
         return Inertia::render('main/mahasiswa/tempatpkl/tempatpkl', [
             'nextNumber' => $nextNumber,
             'data_usulan' => $data_usulan,
+            'data_tempats' => $data_tempat,
             'roleOptions' => $data_role->map(fn($u) => [
                 'label' => $u->role_tempat_pkl,
                 'value' => $u->id_role_tempat_pkl,

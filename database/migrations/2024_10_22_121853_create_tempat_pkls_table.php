@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('tempat_pkls', function (Blueprint $table) {
             $table->bigInteger('id_tempat_pkl')->primary()->unsigned();
-            $table->string('nama_perusahaan');
-            $table->string('alamat_perusahaan');
-            $table->string('nomor_telepon_perusahaan');
+            $table->string('nama_tempat_pkl');
+            $table->string('kode_tempat_pkl')->nullable();
+            $table->string('alamat_tempat_pkl');
+            $table->string('tipe_tempat_pkl');
+            $table->text('logo_tempat_pkl')->nullable();
+            $table->string('detail_info_tempat_pkl')->nullable();
             $table->timestamps();
         });
     }

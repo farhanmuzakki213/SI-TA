@@ -15,8 +15,6 @@ return new class extends Migration
             $table->bigInteger('id_usulan')->primary()->unsigned();
             $table->bigInteger('role_tempat_pkl_id')->unsigned();
             $table->bigInteger('mahasiswa_id')->unsigned();
-            $table->date('tgl_awal_pkl');
-            $table->date('tgl_akhir_pkl');
             $table->longText('komentar')->nullable();
             $table->enum('status_usulan', ['0', '1', '2'])->default('1');
             $table->timestamps();

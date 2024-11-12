@@ -20,7 +20,7 @@ const JobDetails = ({ job }) => {
                 </div>
             </div>
             <div className="flex flex-wrap mb-4">
-                <Button label="Ajukan" className="p-button-success mr-2 mb-2" />
+                <Button label="Ajukan" className="p-button-primary mr-2 mb-2" />
             </div>
             <div className="mb-4">
                 <div className="font-bold mb-2">Tentang Posisi</div>

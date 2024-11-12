@@ -14,8 +14,11 @@ return new class extends Migration
         Schema::create('role_tempat_pkls', function (Blueprint $table) {
             $table->bigInteger('id_role_tempat_pkl')->primary()->unsigned();
             $table->bigInteger('tempat_pkl_id')->unsigned();
-            $table->string('role_tempat_pkl');
-            $table->bigInteger('kuota');
+            $table->string('nama_role');
+            $table->bigInteger('kuota')->nullable();
+            $table->longText('decription')->nullable();
+            $table->date('tgl_awal_pkl');
+            $table->date('tgl_akhir_pkl');
             $table->enum('status_tempat_pkl', ['0', '1'])->default('1');
             $table->timestamps();
         });
