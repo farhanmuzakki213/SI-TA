@@ -59,7 +59,16 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
          // Data Tempat PKL
         Route::get('/tempatpkl', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'index'])->name('tempatpkl');
         Route::post('/tempatpkl/store', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'store'])->name('tempatpkl.store');
+        Route::post('/tempatpkl/storeAjuan', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'storeAjuan'])->name('tempatpkl.storeajuan');
         Route::put('/tempatpkl/{id}/update', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'update'])->name('tempatpkl.update');
+        Route::delete('/tempatpkl/delete', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'destroy'])->name('tempatpkl.destroy');
+
+        // Data Log Book MHS PKL / Laporan MHS PKL
+        Route::get('/logbookmhs', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'index'])->name('logbookmhs');
+        Route::post('/logbookmhs/store', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'store'])->name('logbookmhs.store');
+        Route::put('/logbookmhs/{id}/update', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'update'])->name('logbookmhs.update');
+        Route::delete('/logbookmhs/{laporanpkl}/delete', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'destroy'])->name('logbookmhs.destroy');
+        Route::delete('/logbookmhs/destroyMultiple', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'destroyMultiple'])->name('logbookmhs.destroyMultiple');
     });
 });
 
@@ -72,6 +81,31 @@ Route::group(['middleware' => ['role:pimpinanProdi']], function () {
         Route::put('/booking/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'update'])->name('booking.update');
         Route::delete('/booking/{booking}/delete', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'destroy'])->name('booking.destroy');
         Route::delete('/booking/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'destroyMultiple'])->name('booking.destroyMultiple');
+
+        // Data Ruangan
+        Route::get('/ruangan', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'index'])->name('ruangan');
+        Route::post('/ruangan/store', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'store'])->name('ruangan.store');
+        Route::put('/ruangan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'update'])->name('ruangan.update');
+        Route::delete('/ruangan/{ruangan}/delete', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'destroy'])->name('ruangan.destroy');
+        Route::delete('/ruangan/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'destroyMultiple'])->name('ruangan.destroyMultiple');
+
+        // Data Sesi
+        Route::get('/sesi', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'index'])->name('sesi');
+        Route::post('/sesi/store', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'store'])->name('sesi.store');
+        Route::put('/sesi/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'update'])->name('sesi.update');
+        Route::delete('/sesi/{sesi}/delete', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroy'])->name('sesi.destroy');
+        Route::delete('/sesi/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroyMultiple'])->name('sesi.destroyMultiple');
+
+        // Persetujuan Tempat PKL
+        Route::get('/usulanpkl', [\App\Http\Controllers\Dosen\Kprodi\UsulanPklController::class, 'index'])->name('usulanpkl');
+        Route::put('/usulanpkl/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\UsulanPklController::class, 'update'])->name('usulanpkl.update');
+
+        // Data MHS PKL
+        Route::get('/mhspkl', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'index'])->name('mhspkl');
+        Route::post('/mhspkl/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'store'])->name('mhspkl.store');
+        Route::put('/mhspkl/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'update'])->name('mhspkl.update');
+        Route::delete('/mhspkl/{mhspkl}/delete', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroy'])->name('mhspkl.destroy');
+        Route::delete('/mhspkl/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroyMultiple'])->name('mhspkl.destroyMultiple');
     });
 });
 // Route Admin
@@ -133,20 +167,6 @@ Route::group(['middleware' => ['role:admin']], function () {
         Route::put('/pimpinan/{id}/update', [\App\Http\Controllers\Admin\PimpinanController::class, 'update'])->name('pimpinan.update');
         Route::delete('/pimpinan/{pimpinan}/delete', [\App\Http\Controllers\Admin\PimpinanController::class, 'destroy'])->name('pimpinan.destroy');
         Route::delete('/pimpinan/destroyMultiple', [\App\Http\Controllers\Admin\PimpinanController::class, 'destroyMultiple'])->name('pimpinan.destroyMultiple');
-
-        // Data Ruangan
-        Route::get('/ruangan', [\App\Http\Controllers\Admin\RuanganController::class, 'index'])->name('ruangan');
-        Route::post('/ruangan/store', [\App\Http\Controllers\Admin\RuanganController::class, 'store'])->name('ruangan.store');
-        Route::put('/ruangan/{id}/update', [\App\Http\Controllers\Admin\RuanganController::class, 'update'])->name('ruangan.update');
-        Route::delete('/ruangan/{ruangan}/delete', [\App\Http\Controllers\Admin\RuanganController::class, 'destroy'])->name('ruangan.destroy');
-        Route::delete('/ruangan/destroyMultiple', [\App\Http\Controllers\Admin\RuanganController::class, 'destroyMultiple'])->name('ruangan.destroyMultiple');
-
-        // Data Sesi
-        Route::get('/sesi', [\App\Http\Controllers\Admin\SesiController::class, 'index'])->name('sesi');
-        Route::post('/sesi/store', [\App\Http\Controllers\Admin\SesiController::class, 'store'])->name('sesi.store');
-        Route::put('/sesi/{id}/update', [\App\Http\Controllers\Admin\SesiController::class, 'update'])->name('sesi.update');
-        Route::delete('/sesi/{sesi}/delete', [\App\Http\Controllers\Admin\SesiController::class, 'destroy'])->name('sesi.destroy');
-        Route::delete('/sesi/destroyMultiple', [\App\Http\Controllers\Admin\SesiController::class, 'destroyMultiple'])->name('sesi.destroyMultiple');
     });
 });
 

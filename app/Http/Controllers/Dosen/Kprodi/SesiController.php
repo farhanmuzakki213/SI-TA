@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Dosen\Kprodi;
 
 use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
-use App\Models\Ruangan;
 use App\Models\Booking;
+use App\Models\Sesi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
-class RuanganController extends Controller
+class SesiController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('main/admin/ruangan/ruangan', [
-            'nextNumber' => CariNomor::getCariNomor(Ruangan::class, 'id_ruangan'),
-            'data_ruangan' => Ruangan::get(),
+        return Inertia::render('main/kaprodi/sesi/sesi', [
+            'nextNumber' => CariNomor::getCariNomor(Sesi::class, 'id_sesi'),
+            'data_sesi' => Sesi::get(),
         ]);
     }
 
@@ -39,8 +39,8 @@ class RuanganController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'id_ruangan' => 'required',
-            'kode_ruangan' => ['required', 'string', 'max:255', 'unique:' . Ruangan::class],
+            'id_sesi' => 'required',
+            'periode_sesi' => ['required', 'string', 'max:255', 'unique:' . Sesi::class],
         ]);
 
         if ($validator->fails()) {
@@ -49,16 +49,16 @@ class RuanganController extends Controller
 
         DB::beginTransaction();
         try {
-            Ruangan::create([
-                'id_ruangan' => $request->id_ruangan,
-                'kode_ruangan' => $request->kode_ruangan,
+            Sesi::create([
+                'id_sesi' => $request->id_sesi,
+                'periode_sesi' => $request->periode_sesi,
             ]);
             DB::commit();
 
-            return to_route('ruangan')->with('success', 'Ruangan created successfully');
+            return to_route('sesi')->with('success', 'Sesi created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('ruangan')->with('error', 'Ruangan created failed');
+            return to_route('sesi')->with('error', 'Sesi created failed controller');
         }
     }
 
@@ -85,7 +85,7 @@ class RuanganController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'kode_ruangan' => ['required', 'string', 'max:255'],
+            'periode_sesi' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -94,54 +94,54 @@ class RuanganController extends Controller
         DB::beginTransaction();
         try {
             $data = [
-                'kode_ruangan' => $request->kode_ruangan,
+                'periode_sesi' => $request->periode_sesi,
             ];
 
-            $ruangan = Ruangan::findOrFail($id);
-            $ruangan->update($data);
+            $sesi = Sesi::findOrFail($id);
+            $sesi->update($data);
             DB::commit();
-            return to_route('ruangan')->with('success', 'Ruangan updated successfully');
+            return to_route('sesi')->with('success', 'Sesi updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('ruangan')->with('error', 'Ruangan updated failed');
+            return to_route('sesi')->with('error', 'Sesi updated failed');
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ruangan $ruangan)
+    public function destroy(Sesi $sesi)
     {
-        // dd($ruangan->toArray());
-        $ruangan = Ruangan::findOrFail($ruangan->id_ruangan);
+        // dd($sesi->toArray());
+        $sesi = Sesi::findOrFail($sesi->id_sesi);
 
-        $existsInBooking = Booking::where('ruangan_id', $ruangan->id_ruangan)->exists();
+        $existsInBooking = Booking::where('sesi_id', $sesi->id_sesi)->exists();
 
         if ($existsInBooking) {
-            return back()->with('error', 'Cannot delete ruangan, it is still associated with some table.');
+            return back()->with('error', 'Cannot delete sesi, it is still associated with some table.');
         }
-        $ruangan->delete();
+        $sesi->delete();
 
-        return to_route('ruangan')->with('success', 'Ruangan deleted successfully');
+        return to_route('sesi')->with('success', 'Sesi deleted successfully');
     }
 
     public function destroyMultiple(Request $request)
     {
         $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'exists:ruangan,id_ruangan',
+            'ids.*' => 'exists:sesi,id_sesi',
         ]);
 
         $ids = $request->input('ids');
 
-        $existingBookingCount = Booking::whereIn('ruangan_id', $ids)->count();
+        $existingBookingCount = Booking::whereIn('sesi_id', $ids)->count();
 
         if ($existingBookingCount > 0) {
-            return back()->with('error', 'Cannot delete ruangan, it is still associated with some table.');
+            return back()->with('error', 'Cannot delete sesi, it is still associated with some table.');
         }
 
-        Ruangan::whereIn('id_ruangan', $ids)->delete();
+        Sesi::whereIn('id_sesi', $ids)->delete();
 
-        return to_route('ruangan')->with('success', 'Ruangan deleted successfully');
+        return to_route('sesi')->with('success', 'Sesi deleted successfully');
     }
 }

@@ -46,8 +46,6 @@ const AppMenu = () => {
                             { label: 'Semester', icon: 'pi pi-fw pi-file', to: route('semester') },
                             { label: 'Jabatan Pimpinan', icon: 'pi pi-fw pi-file', to: route('jabatanpimpinan') },
                             { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
-                            { label: 'Ruangan', icon: 'pi pi-fw pi-file', to: route('ruangan') },
-                            { label: 'Sesi', icon: 'pi pi-fw pi-file', to: route('sesi') },
                         ]
                     }}
                     root={true}
@@ -57,21 +55,38 @@ const AppMenu = () => {
                 {/* Data Jadwal Ruangan */}
                 {hasRole('pimpinanProdi') && (<AppMenuitem
                     item={{
-                        label: 'Data Master',
+                        label: 'Penjadwalan Sidang',
                         items: [
+                            { label: 'Ruangan', icon: 'pi pi-fw pi-file', to: route('ruangan') },
+                            { label: 'Sesi', icon: 'pi pi-fw pi-file', to: route('sesi') },
                             { label: 'Jadwal Ruangan', icon: 'pi pi-fw pi-file', to: route('booking') },
-                        ]
+                        ],
                     }}
                     root={true}
                     index={1}
                 />
+
+                )}
+                {hasRole('pimpinanProdi') && (<AppMenuitem
+                    item={{
+                        label: 'PKL',
+                        items: [
+                            { label: 'Usulan Tempat Pkl', icon: 'pi pi-fw pi-file', to: route('usulanpkl') },
+                            { label: 'Mahasiswa Pkl', icon: 'pi pi-fw pi-file', to: route('mhspkl') },
+                        ],
+                    }}
+                    root={true}
+                    index={1}
+                />
+
                 )}
                 {/* Data User, Role, Permission */}
                 {hasRole('mahasiswa') && (<AppMenuitem
                     item={{
-                        label: 'Data',
+                        label: 'PKL',
                         items: [
-                            { label: 'Usulan Tempat Pkl', icon: 'pi pi-fw pi-file', to: route('tempatpkl') },
+                            { label: 'Usulan Tempat', icon: 'pi pi-fw pi-file', to: route('tempatpkl') },
+                            { label: 'Laporan', icon: 'pi pi-fw pi-file', to: route('logbookmhs') },
                         ]
                     }}
                     root={true}

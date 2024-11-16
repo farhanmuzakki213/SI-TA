@@ -21,6 +21,7 @@ class UsulanTempatPklController extends Controller
         $id_user = auth()->user()->id;
         $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
         $data_usulan = UsulanTempatPkl::with('r_mahasiswa', 'r_roleTempatPkls.r_tempatPkls')->where('mahasiswa_id', $id_mahasiswa)->get();
+        // dd($data_usulan);
         $data_tempat = RoleTempatPkl::with("r_tempatPkls")->get();
         // dd($data_usulan->toArray());
         $nextNumber = $this->getCariNomor();
@@ -39,6 +40,7 @@ class UsulanTempatPklController extends Controller
             ])
         ]);
     }
+
 
     public function store(Request $request)
     {
@@ -73,6 +75,55 @@ class UsulanTempatPklController extends Controller
             DB::rollBack();
             return to_route('tempatpkl')->with('error', 'Usulan Tempat Pkl created failed');
         }
+    }
+
+    public function storeAjuan(Request $request)
+    {
+        // dd($request->all());
+        $id_user = auth()->user()->id;
+        $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
+        $validator = Validator::make($request->all(), [
+            'id_usulan' => 'required',
+            'job_id' => 'required|exists:role_tempat_pkls,id_role_tempat_pkl',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        // dd($id_mahasiswa);
+
+        DB::beginTransaction();
+        try {
+            UsulanTempatPkl::create([
+                'id_usulan' => $request->id_usulan,
+                'role_tempat_pkl_id' => $request->job_id,
+                'mahasiswa_id' => $id_mahasiswa,
+            ]);
+            DB::commit();
+
+            return to_route('tempatpkl')->with('success', 'Usulan Tempat Pkl created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('tempatpkl')->with('error', 'Usulan Tempat Pkl created failed');
+        }
+    }
+
+    public function destroy(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'id_usulan' => 'required|integer',
+            'id_role_tempat_pkl' => 'required|integer',
+        ]);
+
+        // Retrieve the Usulan record by id_usulan and role_tempat_pkl_id
+        $usulan = UsulanTempatPkl::where('id_usulan', $request->id_usulan)
+            ->where('role_tempat_pkl_id', $request->id_role_tempat_pkl)
+            ->first();
+
+        $usulan->delete();
+
+        return to_route('tempatpkl')->with('success', 'Usulan deleted successfully');
     }
 
     // public function update(Request $request, $id)

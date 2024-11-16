@@ -7,20 +7,20 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { router, usePage } from "@inertiajs/react";
 import TempatPklForm from "./component/TempatPklForm";
+import { Scrollbar } from 'react-scrollbars-custom';
+
 
 const tempatpkl = () => {
     let emptytempatpkl = {
         id_usulan: null,
         role_tempat_pkl_id: null,
-        tempat_pkl_id: null,
-        tgl_awal_pkl: "",
-        tgl_akhir_pkl: "",
+        mahasiswa_id: null,
         status_usulan: "",
     };
 
 
     const { props } = usePage();
-    const { data_usulan, data_tempats,  roleOptions: initialRoleOptions, tempatOptions: initialTempatOptions, mahasiswaOptions: initialMahasiswaOptions, nextNumber } = props;
+    const { data_usulan, data_tempats, roleOptions: initialRoleOptions, tempatOptions: initialTempatOptions, mahasiswaOptions: initialMahasiswaOptions, nextNumber } = props;
     const [tempatpkls, settempatpkls] = useState(null);
     const [roleOptions, setRoleOptions] = useState([]);
     const [tempatOptions, setTempatOptions] = useState([]);
@@ -31,22 +31,24 @@ const tempatpkl = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
-    console.log(props);
+    const detailsRef = useRef(null);
+    const companyRef = useRef(null);
+    // console.log(props.data_usulan);
 
     useEffect(() => {
         setRoleOptions(initialRoleOptions);
         setTempatOptions(initialTempatOptions);
-        settempatpkls(data_usulan);
+        settempatpkls(data_tempats);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialRoleOptions, initialTempatOptions, initialMahasiswaOptions, data_usulan, props.flash]);
+    }, [initialRoleOptions, initialTempatOptions, initialMahasiswaOptions, data_tempats, props.flash]);
 
     const openNew = () => {
         settempatpkl(emptytempatpkl);
         setSubmitted(false);
         settempatpklDialog(true);
     };
-
+    // console.log(props);
     const hideDialog = () => {
         setSubmitted(false);
         settempatpklDialog(false);
@@ -132,6 +134,19 @@ const tempatpkl = () => {
             <Button label="Save" icon="pi pi-check" text onClick={savetempatpkl} />
         </>
     );
+
+    const calculateMonthDifference = (startDateString, endDateString) => {
+        const startDate = new Date(startDateString);
+        const endDate = new Date(endDateString);
+
+        const yearsDifference = endDate.getFullYear() - startDate.getFullYear();
+        const monthsDifference = endDate.getMonth() - startDate.getMonth();
+        const totalMonths = yearsDifference * 12 + monthsDifference;
+
+        return totalMonths;
+    };
+
+
     // const jobs = [
     //     {
     //         id: 1,
@@ -236,11 +251,11 @@ const tempatpkl = () => {
                         <Toast ref={toast} />
                         <h5>Lowongan</h5>
                         <Button
-                        label="Tambah Lowongan"
-                        className="p-button-primary mr-2 mb-2"
-                        icon="pi pi-plus"
-                        severity="success"
-                        onClick={openNew}/>
+                            label="Tambah Lowongan"
+                            className="p-button-primary mr-2 mb-2"
+                            icon="pi pi-plus"
+                            severity="primary"
+                            onClick={openNew} />
                         <TempatPklForm
                             tempatpklDialog={tempatpklDialog}
                             tempatpkl={tempatpkl}
@@ -255,30 +270,77 @@ const tempatpkl = () => {
                 </div>
             </div>
             <div className="flex justify-between">
-                <div class="col-12 xl:col-5">
-                    <div className="card">
-                        {data_tempats.map(data_tempat => (
-                            <JobItem key={data_tempat.id_role_tempat_pkl} data_tempat={data_tempat} onSelect={setSelectedJob} isSelected={data_tempat.id_role_tempat_pkl === selectedJob.id_role_tempat_pkl}/>
-                        ))}
-                    </div>
-                </div>
-                <div class="col-12 xl:col-7">
-                    <div className="grid gap-2">
-                        <div className="col-12">
-                            <div className="card">
-                                <JobDetails job={selectedJob} />
-                            </div>
-                        </div>
-                        <div className="col-12">
-                            <div className="card">
-                                <CompanyDetail job={selectedJob} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <JobItemContainer
+                    data_tempats={data_tempats}
+                    calculateMonthDifference={calculateMonthDifference}
+                    setSelectedJob={setSelectedJob}
+                    selectedJob={selectedJob}
+                    detailsRef={detailsRef}
+                    companyRef={companyRef}
+                />
+                <JobDetailsContainer
+                    selectedJob={selectedJob}
+                    calculateMonthDifference={calculateMonthDifference}
+                    detailsRef={detailsRef}
+                    companyRef={companyRef}
+                    nextNumber={nextNumber}
+                    data_usulan={data_usulan}
+                    toast={toast}
+                />
             </div>
         </Layout >
     );
 };
+
+const JobItemContainer = ({ data_tempats, calculateMonthDifference, setSelectedJob, selectedJob, detailsRef, companyRef }) => {
+    const [jobItemHeight, setJobItemHeight] = useState('auto');
+
+    useEffect(() => {
+        const updateHeight = () => {
+            const combinedHeight = (detailsRef.current?.clientHeight || 0) + (companyRef.current?.clientHeight || 0);
+            setJobItemHeight(combinedHeight);
+        };
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+        return () => window.removeEventListener('resize', updateHeight);
+    }, [detailsRef, companyRef]);
+
+    console.log(data_tempats);
+
+    return (
+        <div className="col-12 xl:col-5">
+            <Scrollbar style={{ height: jobItemHeight, width: 'auto' }}>
+                <div className="card">
+                    {data_tempats.map(data_tempat => (
+                        <JobItem
+                            key={data_tempat.id_role_tempat_pkl}
+                            calculateMonthDifference={calculateMonthDifference}
+                            data_tempat={data_tempat}
+                            onSelect={setSelectedJob}
+                            isSelected={data_tempat.id_role_tempat_pkl === selectedJob.id_role_tempat_pkl}
+                        />
+                    ))}
+                </div>
+            </Scrollbar>
+        </div>
+    );
+};
+
+const JobDetailsContainer = ({ selectedJob, calculateMonthDifference, detailsRef, companyRef, nextNumber, data_usulan, toast }) => (
+    <div className="col-12 xl:col-7">
+        <div className="grid gap-2">
+            <div className="col-12" ref={detailsRef}>
+                <div className="card">
+                    <JobDetails job={selectedJob} calculateMonthDifference={calculateMonthDifference} nextNumber={nextNumber} data_usulan={data_usulan} toast={toast}/>
+                </div>
+            </div>
+            <div className="col-12" ref={companyRef}>
+                <div className="card">
+                    <CompanyDetail job={selectedJob} />
+                </div>
+            </div>
+        </div>
+    </div>
+);
 
 export default tempatpkl;
