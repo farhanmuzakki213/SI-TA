@@ -19,7 +19,7 @@ return new class extends Migration
             $table->longText('decription')->nullable();
             $table->date('tgl_awal_pkl');
             $table->date('tgl_akhir_pkl');
-            $table->enum('status_tempat_pkl', ['0', '1'])->default('1');
+            $table->enum('status_tempat_pkl', ['0', '1', '2'])->default('1');
             $table->timestamps();
         });
 

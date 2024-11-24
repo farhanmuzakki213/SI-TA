@@ -52,28 +52,28 @@ class RolesAndUsersSeeder extends Seeder
 
         // Data dosen yang akan dibuat
         $dosenData = [
-            [13, 35,  2, 'ALDE ALANDA, S.Kom, M.T', '0025088802', 'Laki-laki', '1'],
+            [13, 38,  2, 'ALDE ALANDA, S.Kom, M.T', '0025088802', 'Laki-laki', '1'],
             [14, 35,  2, 'ALDO ERIANDA, M.T, S.ST', '003078904', 'Laki-laki', '1'],
-            [40, 35,  2, 'CIPTO PRABOWO, S.T, M.T', '0002037410', 'Laki-laki', '1'],
-            [46, 35,  2, 'DEDDY PRAYAMA, S.Kom, M.ISD', '0015048105', 'Laki-laki', '1'],
+            [40, 38,  2, 'CIPTO PRABOWO, S.T, M.T', '0002037410', 'Laki-laki', '1'],
+            [46, 38,  2, 'DEDDY PRAYAMA, S.Kom, M.ISD', '0015048105', 'Laki-laki', '1'],
             [50, 35,  2, 'DEFNI, S.Si, M.Kom', '0007128104', 'Perempuan', '1'],
             [52, 35,  2, 'DENI SATRIA, S.Kom, M.Kom', '0028097803', 'Laki-laki', '1'],
             [66, 42,  2, 'DWINY MEIDELFI, S.Kom, M.Cs', '0009058601', 'Perempuan', '1'],
             [85, 35,  2, 'ERVAN ASRI, S.Kom, M.Kom', '0001097802', 'Laki-laki', '1'],
-            [91, 35,  2, 'FAZROL ROZI, M.Sc.', '0021078601', 'Laki-laki', '1'],
-            [103, 35, 2, 'FITRI NOVA, M.T, S.ST', '1029058502', 'Perempuan', '1'],
-            [109, 35, 3, 'Ir. HANRIYAWAN ADNAN MOODUTO, M.Kom.', '0010056606', 'Laki-laki', '1'],
+            [91, 38,  2, 'FAZROL ROZI, M.Sc.', '0021078601', 'Laki-laki', '1'],
+            [103, 38, 2, 'FITRI NOVA, M.T, S.ST', '1029058502', 'Perempuan', '1'],
+            [109, 38, 3, 'Ir. HANRIYAWAN ADNAN MOODUTO, M.Kom.', '0010056606', 'Laki-laki', '1'],
             [116, 20,  3, 'Ir. Hendrick, ST.,MT.,Ph.D', '0002127705', 'Laki-laki', '1'],
             [121, 35, 2, 'HIDRA AMNUR, S.E., S.Kom, M.Kom', '0015048209', 'Laki-laki', '1'],
             [122, 42, 3, 'HUMAIRA, S.T, M.T', '0019038103', 'Perempuan', '1'],
-            [127, 35, 2, 'IKHSAN YUSDA PRIMA PUTRA, S.H., LL.M', '0001107505', 'Laki-laki', '1'],
+            [127, 38, 2, 'IKHSAN YUSDA PRIMA PUTRA, S.H., LL.M', '0001107505', 'Laki-laki', '1'],
             [132, 42, 2, 'INDRI RAHMAYUNI, S.T, M.T', '0025068301', 'Perempuan', '1'],
             [160, 35, 3, 'MERI AZMI, S.T, M.Cs', '0029068102', 'Perempuan', '1'],
             [198, 42, 3, 'Ir. Rahmat Hidayat, S.T, M.Sc.IT', '1015047801', 'Laki-laki', '1'],
             [206, 35, 3, 'RASYIDAH, S.Si, M.M.', '0001067407', 'Perempuan', '1'],
             [212, 42, 2, 'RIKA IDMAYANTI, S.T, M.Kom', '0022017806', 'Perempuan', '1'],
             [220, 35, 2, 'RITA AFYENNI, S.Kom, M.Kom', '0018077099', 'Perempuan', '1'],
-            [223, 35, 3, 'RONAL HADI, S.T, M.Kom', '0029017603', 'Laki-laki', '1'],
+            [223, 38, 3, 'RONAL HADI, S.T, M.Kom', '0029017603', 'Laki-laki', '1'],
             [258, 35, 2, 'TAUFIK GUSMAN, S.S.T, M.Ds', '0010088805', 'Laki-laki', '1'],
             [277, 35, 3, 'YANCE SONATHA, S.Kom, M.T', '0029128003', 'Perempuan', '1'],
             [289, 35, 3, 'Dr. Ir. YUHEFIZAR, S.Kom., M.Kom', '0020025008', 'Laki-laki', '1'],
@@ -82,26 +82,26 @@ class RolesAndUsersSeeder extends Seeder
             [311, 42, 2, 'Fanni Sukma, S.ST., M.T', '0006069009', 'Perempuan', '1'],
             [312, 42, 1, 'Andre Febrian Kasmar, S.T., M.T.', '0020028804', 'Laki-laki', '1'],
             [351, 35, 2, 'RONI PUTRA, S.Kom, M.T ', '0022078607', 'Laki-laki', '1'],
-            [352, 35, 1, 'Ardi Syawaldipa, S.Kom.,M.T.', '0029058909', 'Laki-laki', '1'],
-            [353, 35, 1, 'Harfebi Fryonanda, S.Kom., M.Kom', '0310119101', 'Laki-laki', '1'],
-            [354, 42, 1, 'Ideva Gaputra, S.Kom., M.Kom', '0012098808', 'Laki-laki', '1'],
-            [355, 35, 1, 'Yulia Jihan Sy, S.Kom., M.Kom', '1017078904', 'Perempuan', '1'],
+            [352, 38, 1, 'Ardi Syawaldipa, S.Kom.,M.T.', '0029058909', 'Laki-laki', '1'],
+            [353, 42, 1, 'Harfebi Fryonanda, S.Kom., M.Kom', '0310119101', 'Laki-laki', '1'],
+            [354, 38, 1, 'Ideva Gaputra, S.Kom., M.Kom', '0012098808', 'Laki-laki', '1'],
+            [355, 38, 1, 'Yulia Jihan Sy, S.Kom., M.Kom', '1017078904', 'Perempuan', '1'],
             [356, 35, 2, 'Andrew Kurniawan Vadreas, S.Kom., M.T ', '1021028702', 'Laki-laki', '1'],
             [357, 35, 1, 'YORI ADI ATMA, S.Pd., M.Kom', '2010059001', 'Laki-laki', '1'],
             [358, 42, 2, 'Dr. Ulya Ilhami Arsyah, S.Kom., M.Kom', '0130039101', 'Laki-laki', '1'],
             [359, 35, 1, 'Hendra Rotama, S.Pd., M.Sn', '0218068801', 'Laki-laki', '1'],
-            [360, 35, 1, 'Sumema, S.Ds., M.Ds', '0008069103', 'Perempuan', '1'],
-            [361, 35, 1, 'Raemon Syaljumairi, S.Kom., M.Kom', '0017078407', 'Laki-laki', '1'],
+            [360, 38, 1, 'Sumema, S.Ds., M.Ds', '0008069103', 'Perempuan', '1'],
+            [361, 38, 1, 'Raemon Syaljumairi, S.Kom., M.Kom', '0017078407', 'Laki-laki', '1'],
             [362, 42, 1, 'Mutia Rahmi Dewi, S.Kom., M.Kom', '0004099601', 'Perempuan', '1'],
-            [363, 35, 1, 'Novi, S.Kom., M.T', '0001118611', 'Perempuan', '1'],
-            [364, 35, 1, 'Rahmi Putri Kurnia, S.Kom., M.Kom', '0027089303', 'Perempuan', '1']
+            [363, 38, 1, 'Novi, S.Kom., M.T', '0001118611', 'Perempuan', '1'],
+            [364, 38, 1, 'Rahmi Putri Kurnia, S.Kom., M.Kom', '0027089303', 'Perempuan', '1']
         ];
 
         // Membuat data dosen dan mengisi 'user_id' secara otomatis
         foreach ($dosenData as $data) {
             $user = User::firstOrCreate(
                 ['email' => generateEmail($data[3])],
-                ['name' => $data[3], 'password' => Hash::make('password')]
+                ['name' => $data[3], 'password' => Hash::make('12345678')]
             );
             $user->assignRole(['dosenPembimbing', 'dosenPenguji']);
 
@@ -235,7 +235,7 @@ class RolesAndUsersSeeder extends Seeder
             [112, 2, '2111082027', 'Muhammad Bintang', 'Laki-laki', '1'],
             [113, 2, '2111082036', 'Noverino Ramadhan', 'Laki-laki', '1'],
             [114, 2, '2111082045', 'Teguh Yasti Putra', 'Laki-laki', '1'],
-            [115, 2, '2111083005', 'Dhiwa\' Thatsbih Azzaraqi', 'Laki-laki', '1'],
+            [115, 2, '2111083005', 'Dhiwa Thatsbih Azzaraqi', 'Laki-laki', '1'],
             [116, 2, '2111083006', 'Farhan Abyu', 'Laki-laki', '1'],
             [117, 2, '2111083008', 'Ferdiansyah Irawan', 'Laki-laki', '1'],
             [118, 2, '2111083009', 'Githani Rizkyka Pasya', 'Perempuan', '1'],
@@ -250,7 +250,7 @@ class RolesAndUsersSeeder extends Seeder
         foreach ($data_mahasiswa as $data) {
             $user = User::firstOrCreate(
                 ['email' => generateEmail($data[3])],
-                ['name' => $data[3], 'password' => Hash::make('password')]
+                ['name' => $data[3], 'password' => Hash::make('12345678')]
             );
             $user->assignRole('mahasiswa');
 
@@ -268,11 +268,11 @@ class RolesAndUsersSeeder extends Seeder
         }
 
         $PJData = [
-            [1, 1, 223, '2022-2026', '1'],
-            [2, 2, 122, '2022-2026', '1'],
-            [3, 3, 160, '2022-2026', '1'],
-            [4, 3, 351, '2022-2026', '1'],
-            [5, 3, 312, '2022-2026', '1'],
+            [1, 1, 223, 38, '2022-2026', '1'],
+            [2, 2, 122, 42, '2022-2026', '1'],
+            [3, 3, 160, 42, '2022-2026', '1'],
+            [4, 3, 351, 35, '2022-2026', '1'],
+            [5, 3, 312, 38, '2022-2026', '1'],
         ];
 
         foreach ($PJData as $data) {
@@ -280,8 +280,9 @@ class RolesAndUsersSeeder extends Seeder
                 'id_pimpinan' => $data[0],
                 'jabatan_pimpinan_id' => $data[1],
                 'dosen_id' => $data[2],
-                'periode' => $data[3],
-                'status_pimpinan' => $data[4]
+                'prodi_id' => $data[3],
+                'periode' => $data[4],
+                'status_pimpinan' => $data[5]
             ]);
         }
 

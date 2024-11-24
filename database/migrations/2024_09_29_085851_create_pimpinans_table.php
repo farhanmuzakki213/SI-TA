@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigInteger('id_pimpinan')->primary()->unsigned();
             $table->bigInteger('jabatan_pimpinan_id')->unsigned();
             $table->bigInteger('dosen_id')->unsigned();
+            $table->bigInteger('prodi_id')->unsigned();
             $table->string('periode');
             $table->enum('status_pimpinan', ['0', '1'])->default('1');
             $table->timestamps();
@@ -24,6 +25,8 @@ return new class extends Migration
             $table->foreign('jabatan_pimpinan_id')->references('id_jabatan_pimpinan')->on('jabatan_pimpinans')
                 ->onUpdate('cascade');
             $table->foreign('dosen_id')->references('id_dosen')->on('dosens')
+                ->onUpdate('cascade');
+            $table->foreign('prodi_id')->references('id_prodi')->on('prodis')
                 ->onUpdate('cascade');
         });
     }

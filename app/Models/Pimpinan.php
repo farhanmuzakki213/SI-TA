@@ -9,7 +9,7 @@ class Pimpinan extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_pimpinan', 'jabatan_pimpinan_id','dosen_id', 'periode', 'status_pimpinan'
+        'id_pimpinan', 'jabatan_pimpinan_id','dosen_id', 'prodi_id', 'periode', 'status_pimpinan'
     ];
     protected $table = 'pimpinans';
     protected $primaryKey = 'id_pimpinan';
@@ -22,5 +22,10 @@ class Pimpinan extends Model
     public function r_dosen()
     {
         return $this->belongsTo(Dosen::class, 'dosen_id');
+    }
+
+    public function r_prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'prodi_id');
     }
 }

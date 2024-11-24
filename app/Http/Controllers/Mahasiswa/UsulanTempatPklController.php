@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
 use App\Models\Mahasiswa;
 use App\Models\RoleTempatPkl;
@@ -26,7 +27,7 @@ class UsulanTempatPklController extends Controller
         // dd($data_usulan->toArray());
         $nextNumber = $this->getCariNomor();
         return Inertia::render('main/mahasiswa/tempatpkl/tempatpkl', [
-            'nextNumber' => $nextNumber,
+            'nextNumber' => CariNomor::getCariNomor(UsulanTempatPkl::class, 'id_usulan'),
             'data_usulan' => $data_usulan,
             'data_tempats' => $data_tempat,
             'roleOptions' => $data_role->map(fn($u) => [
@@ -106,65 +107,5 @@ class UsulanTempatPklController extends Controller
             DB::rollBack();
             return to_route('tempatpkl')->with('error', 'Usulan Tempat Pkl created failed');
         }
-    }
-
-    public function destroy(Request $request)
-    {
-        // dd($request->all());
-        $request->validate([
-            'id_usulan' => 'required|integer',
-            'id_role_tempat_pkl' => 'required|integer',
-        ]);
-
-        // Retrieve the Usulan record by id_usulan and role_tempat_pkl_id
-        $usulan = UsulanTempatPkl::where('id_usulan', $request->id_usulan)
-            ->where('role_tempat_pkl_id', $request->id_role_tempat_pkl)
-            ->first();
-
-        $usulan->delete();
-
-        return to_route('tempatpkl')->with('success', 'Usulan deleted successfully');
-    }
-
-    // public function update(Request $request, $id)
-    // {
-    //     // dd($request->all());
-    //     $validator = Validator::make($request->all(), [
-    //         'nama_prodi' => ['required', 'string', 'max:255'],
-    //         'kode_prodi' => ['required', 'string', 'max:255'],
-    //         'jurusan_id' => 'required|exists:jurusans,id_jurusan',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return back()->with('error', $validator->errors()->first());
-    //     }
-    //     DB::beginTransaction();
-    //     try {
-    //         $data = [
-    //             'kode_prodi' => $request->kode_prodi,
-    //             'nama_prodi' => $request->nama_prodi,
-    //             'jurusan_id' => $request->jurusan_id,
-    //         ];
-
-    //         $prodi = Prodi::findOrFail($id);
-    //         $prodi->update($data);
-    //         DB::commit();
-    //         return to_route('prodi')->with('success', 'Prodi updated successfully');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return to_route('prodi')->with('error', 'Prodi updated failed');
-    //     }
-    // }
-
-    function getCariNomor()
-    {
-        $id_usulan = UsulanTempatPkl::pluck('id_usulan')->toArray();
-        for ($i = 1;; $i++) {
-            if (!in_array($i, $id_usulan)) {
-                return $i;
-                break;
-            }
-        }
-        return $i;
     }
 }

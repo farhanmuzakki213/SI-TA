@@ -22,9 +22,10 @@ const pimpinan = () => {
 
 
     const { props } = usePage();
-    const { data_pimpinan, dosenOptions: initialDosenOptions, jabatan_pimpinanOptions: initialJabatan_pimpinanOptions, nextNumber } = props;
+    const { data_pimpinan, dosenOptions: initialDosenOptions, jabatan_pimpinanOptions: initialJabatan_pimpinanOptions, prodiOptions: initialProdiOptions, nextNumber } = props;
     const [pimpinans, setpimpinans] = useState(null);
     const [dosenOptions, setDosenOptions] = useState([]);
+    const [prodiOptions, setProdiOptions] = useState([]);
     const [jabatan_pimpinanOptions, setJabatan_pimpinanOptions] = useState([]);
     const [pimpinanDialog, setpimpinanDialog] = useState(false);
     const [deletepimpinanDialog, setDeletepimpinanDialog] = useState(false);
@@ -38,11 +39,12 @@ const pimpinan = () => {
 
     useEffect(() => {
         setDosenOptions(initialDosenOptions);
+        setProdiOptions(initialProdiOptions);
         setJabatan_pimpinanOptions(initialJabatan_pimpinanOptions);
         setpimpinans(data_pimpinan);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialDosenOptions, initialJabatan_pimpinanOptions, data_pimpinan, props.flash]);
+    }, [initialDosenOptions, initialJabatan_pimpinanOptions, initialProdiOptions, data_pimpinan, props.flash]);
 
     const openNew = () => {
         setpimpinan(emptypimpinan);
@@ -349,6 +351,7 @@ const pimpinan = () => {
                             setpimpinan={setpimpinan}
                             submitted={submitted}
                             dosenOptions={dosenOptions}
+                            prodiOptions={prodiOptions}
                             jabatan_pimpinanOptions={jabatan_pimpinanOptions}
                             pimpinanDialogFooter={pimpinanDialogFooter}
                             hideDialog={hideDialog}

@@ -46,6 +46,7 @@ const AppMenu = () => {
                             { label: 'Semester', icon: 'pi pi-fw pi-file', to: route('semester') },
                             { label: 'Jabatan Pimpinan', icon: 'pi pi-fw pi-file', to: route('jabatanpimpinan') },
                             { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
+                            { label: 'Usulan Sidang PKL', icon: 'pi pi-fw pi-file', to: route('usulansidangpkl') },
                         ]
                     }}
                     root={true}
@@ -87,6 +88,7 @@ const AppMenu = () => {
                         items: [
                             { label: 'Usulan Tempat', icon: 'pi pi-fw pi-file', to: route('tempatpkl') },
                             { label: 'Laporan', icon: 'pi pi-fw pi-file', to: route('logbookmhs') },
+                            { label: 'Pengajuan Sidang', icon: 'pi pi-fw pi-file', to: route('ajukansidang') },
                         ]
                     }}
                     root={true}

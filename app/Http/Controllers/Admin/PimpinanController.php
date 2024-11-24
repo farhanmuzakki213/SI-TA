@@ -7,6 +7,7 @@ use App\Http\Resources\BaseOptionsResource;
 use App\Models\Dosen;
 use App\Models\JabatanPimpinan;
 use App\Models\Pimpinan;
+use App\Models\Prodi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +20,7 @@ class PimpinanController extends Controller
      */
     public function index()
     {
-        $data_pimpinan = Pimpinan::with('r_dosen.r_prodi.r_jurusan', 'r_jabatan_pimpinan')->orderBy('id_pimpinan')->get();
+        $data_pimpinan = Pimpinan::with('r_dosen.r_prodi.r_jurusan', 'r_jabatan_pimpinan', 'r_prodi')->orderBy('id_pimpinan')->get();
         $nextNumber = $this->getCariNomor();
         return Inertia::render('main/admin/pimpinan/pimpinan', [
             'data_pimpinan' => $data_pimpinan,
@@ -29,6 +30,9 @@ class PimpinanController extends Controller
             })),
             'jabatan_pimpinanOptions' => BaseOptionsResource::collection(JabatanPimpinan::all()->map(function ($p) {
                 return new BaseOptionsResource($p, 'nama_jabatan_pimpinan', 'id_jabatan_pimpinan');
+            })),
+            'prodiOptions' => BaseOptionsResource::collection(Prodi::all()->map(function ($p) {
+                return new BaseOptionsResource($p, 'nama_prodi', 'id_jabatan_pimpinan');
             })),
         ]);
     }
@@ -50,6 +54,7 @@ class PimpinanController extends Controller
         $validator = Validator::make($request->all(), [
             'id_pimpinan' => 'required',
             'dosen_id' => 'required|exists:dosens,id_dosen',
+            'prodi_id' => 'required|exists:prodis,id_prodi',
             'jabatan_pimpinan_id' => 'required|exists:jabatan_pimpinans,id_jabatan_pimpinan',
             'periode' => 'required|string',
         ]);
@@ -89,6 +94,7 @@ class PimpinanController extends Controller
                 'id_pimpinan' => $request->id_pimpinan,
                 'dosen_id' => $request->dosen_id,
                 'jabatan_pimpinan_id' => $request->jabatan_pimpinan_id,
+                'prodi_id' => $request->prodi_id,
                 'periode' => $request->periode,
                 'status_pimpinan' => $status_pimpinan,
             ]);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Dosen\Kprodi;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dosen;
+use App\Models\Pimpinan;
 use App\Models\UsulanTempatPkl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,8 +15,17 @@ class UsulanPklController extends Controller
 {
     public function index()
     {
+        $id_user = auth()->user()->id;
+        $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
+        $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
+        $usulan = UsulanTempatPkl::with('r_mahasiswa', 'r_roleTempatPkls.r_tempatPkls')
+            ->whereHas('r_mahasiswa.r_kelas', function ($query) use ($kaprodi) {
+                $query->where('prodi_id', $kaprodi);
+            })
+            ->get();
+            // dd($kaprodi, $usulan);
         return Inertia::render('main/kaprodi/usulanpkl/usulanpkl', [
-            'data_usulanpkl' => UsulanTempatPkl::with('r_mahasiswa', 'r_roleTempatPkls.r_tempatPkls')->get(),
+            'data_usulanpkl' => $usulan,
         ]);
     }
 

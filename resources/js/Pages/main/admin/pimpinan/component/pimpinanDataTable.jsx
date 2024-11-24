@@ -17,7 +17,7 @@ const pimpinanDataTable = ({ pimpinans, selectedpimpinans, setSelectedpimpinans,
         return (
             <>
                 <span className="p-column-title">Jurusan</span>
-                {rowData.r_dosen?.r_prodi?.r_jurusan?.nama_jurusan || 'N/A'}
+                {rowData.r_prodi?.r_jurusan?.nama_jurusan || 'N/A'}
             </>
         );
     };
@@ -26,7 +26,7 @@ const pimpinanDataTable = ({ pimpinans, selectedpimpinans, setSelectedpimpinans,
         return (
             <>
                 <span className="p-column-title">Prodi</span>
-                {rowData.r_dosen?.r_prodi?.nama_prodi || 'N/A'}
+                {rowData.r_prodi?.nama_prodi || 'N/A'}
             </>
         );
     };
@@ -100,8 +100,8 @@ const pimpinanDataTable = ({ pimpinans, selectedpimpinans, setSelectedpimpinans,
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="r_dosen.nama_dosen" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="r_jabatan_pimpinan.nama_jabatan_pimpinan" header="Jabatan" sortable body={jabatanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_dosen.r_prodi.nama_prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_dosen.r_prodi.r_jurusan.nama_jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_prodi.nama_prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_prodi.r_jurusan.nama_jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="periode" header="Periode" body={periodeBodyTemplate} sortable></Column>
             <Column field="status_pimpinan" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>

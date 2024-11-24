@@ -4,41 +4,51 @@ import { FileUpload } from 'primereact/fileupload';
 import { ProgressBar } from 'primereact/progressbar';
 import { Button } from 'primereact/button';
 
-const FileUploadC = ({ name, onFileSelect }) => {
+const FileUploadC = ({ multiple = false, name = 'file', onFileSelect }) => {
     const toast = useRef(null);
     const [totalSize, setTotalSize] = useState(0);
+    const [selectedFiles, setSelectedFiles] = useState([]);
     const fileUploadRef = useRef(null);
 
     const onTemplateSelect = (e) => {
         let _totalSize = totalSize;
-        let files = e.files;
+        let files = Array.from(e.files);
 
-        Object.keys(files).forEach((key) => {
-            _totalSize += files[key].size || 0;
+        files.forEach((file) => {
+            _totalSize += file.size || 0;
         });
 
         setTotalSize(_totalSize);
-        // Kirim file yang dipilih ke parent
-        if (onFileSelect) {
-            onFileSelect(files[0]); // Ambil file pertama
+
+        if (multiple) {
+            setSelectedFiles((prev) => [...prev, ...files]);
+            if (onFileSelect) onFileSelect([...selectedFiles, ...files]); // Kirim semua file yang dipilih
+        } else {
+            const file = files[0];
+            setSelectedFiles([file]);
+            if (onFileSelect) onFileSelect(file); // Kirim hanya satu file
         }
     };
 
     const onTemplateRemove = (file, callback) => {
         setTotalSize(totalSize - file.size);
+        setSelectedFiles((prev) => prev.filter((f) => f !== file));
+        if (onFileSelect) {
+            const updatedFiles = selectedFiles.filter((f) => f !== file);
+            onFileSelect(multiple ? updatedFiles : null);
+        }
         callback();
     };
 
     const onTemplateClear = () => {
         setTotalSize(0);
-        if (onFileSelect) {
-            onFileSelect(null); // Kosongkan file di parent
-        }
+        setSelectedFiles([]);
+        if (onFileSelect) onFileSelect(multiple ? [] : null);
     };
 
     const headerTemplate = (options) => {
         const { className, chooseButton, cancelButton } = options;
-        const value = totalSize / 100000;
+        const value = totalSize / 100000; // Representasi progress bar
         const formattedValue = fileUploadRef?.current?.formatSize(totalSize) || '0 B';
 
         return (
@@ -85,7 +95,7 @@ const FileUploadC = ({ name, onFileSelect }) => {
             <FileUpload
                 ref={fileUploadRef}
                 name={name}
-                multiple={false}
+                multiple={multiple}
                 maxFileSize={10000000}
                 onSelect={onTemplateSelect}
                 onClear={onTemplateClear}

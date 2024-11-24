@@ -18,7 +18,7 @@ class KelasSeeder extends Seeder
             [2, 42, 4, '4-TRPL-B', '4-Rekayasa Perangkat Lunak-B'],
             [3, 42, 4, '3-TRPL-C', '3-Rekayasa Perangkat Lunak-C'],
             [4, 35, 4, '3-MI-A', '3-Manajemen Informatika-A'],
-            [5, 35, 4, '3-TK-A', '3-Teknik Komputer-A'],
+            [5, 38, 4, '3-TK-A', '3-Teknik Komputer-A'],
         ];
 
         foreach ($data_kelas as $data) {
