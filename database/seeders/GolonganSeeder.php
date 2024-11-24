@@ -15,8 +15,8 @@ class GolonganSeeder extends Seeder
     {
         $data_golongan = [
             [1, 'Asissten Ahli'],
-            [2, 'Rektor'],
-            [3, 'Rektor Kepala'],
+            [2, 'Lektor'],
+            [3, 'Lektor Kepala'],
             [4, 'Guru Besar'],
         ];
         foreach ($data_golongan as $data) {

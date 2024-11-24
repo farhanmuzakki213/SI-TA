@@ -20,20 +20,24 @@ class RolesAndUsersSeeder extends Seeder
      */
     public function run(): void
     {
-        // Membuat peran secara otomatis jika belum ada
         $roles = ['pimpinanJurusan', 'dosenPembimbing', 'pimpinanProdi', 'dosenPenguji', 'superAdmin', 'mahasiswa', 'admin'];
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role]);
         }
 
-        // Fungsi untuk mengambil email dari nama depan
         function generateEmail($name)
         {
-            $firstName = explode(' ', trim($name))[0]; // Ambil nama pertama
-            return strtolower($firstName) . '@example.com'; // Membuat email dengan nama pertama
+            $titles = ['Ir.', 'Dr.', 'S.T', 'S.Si', 'M.T', 'M.Kom', 'M.Kom.', 'S.Kom'];
+            $name = strtolower($name);
+            foreach ($titles as $title) {
+                $name = str_replace(strtolower($title), '', $name);
+            }
+            $name = str_replace(' ', '', $name);
+            $nameParts = explode(',', trim($name));
+            $firstName = trim($nameParts[0]);
+            return strtolower($firstName) . '@pnp.ac.id';
         }
 
-        // Mengaitkan peran dengan pengguna secara otomatis
         $adminUser = User::firstOrCreate(
             ['email' => generateEmail('Admin')],
             ['name' => 'Admin User', 'password' => Hash::make('12345678')]
@@ -48,13 +52,49 @@ class RolesAndUsersSeeder extends Seeder
 
         // Data dosen yang akan dibuat
         $dosenData = [
-            [14, 2,  1,'ALDO ERIANDA, M.T, S.ST', '003078904', 'Laki-laki', '1'],
-            [40, 2,  2,'CIPTO PRABOWO, S.T, M.T', '0002037410', 'Laki-laki', '1'],
-            [46, 2,  3,'DEDDY PRAYAMA, S.Kom, M.ISD', '0015048105', 'Laki-laki', '1'],
-            [50, 2,  4,'DEFNI , S.Si, M.Kom', '0007128104', 'Perempuan', '1'],
-            [52, 2,  1,'DENI SATRIA, S.Kom, M.Kom', '0028097803', 'Laki-laki', '1'],
-            [66, 2,  2,'DWINY MEIDELFI, S.Kom, M.Cs', '0009058601', 'Perempuan', '1'],
-            [85, 2,  3,'ERVAN ASRI, S.Kom, M.Kom', '0001097802', 'Laki-laki', '1'],
+            [13, 35,  2, 'ALDE ALANDA, S.Kom, M.T', '0025088802', 'Laki-laki', '1'],
+            [14, 35,  2, 'ALDO ERIANDA, M.T, S.ST', '003078904', 'Laki-laki', '1'],
+            [40, 35,  2, 'CIPTO PRABOWO, S.T, M.T', '0002037410', 'Laki-laki', '1'],
+            [46, 35,  2, 'DEDDY PRAYAMA, S.Kom, M.ISD', '0015048105', 'Laki-laki', '1'],
+            [50, 35,  2, 'DEFNI, S.Si, M.Kom', '0007128104', 'Perempuan', '1'],
+            [52, 35,  2, 'DENI SATRIA, S.Kom, M.Kom', '0028097803', 'Laki-laki', '1'],
+            [66, 42,  2, 'DWINY MEIDELFI, S.Kom, M.Cs', '0009058601', 'Perempuan', '1'],
+            [85, 35,  2, 'ERVAN ASRI, S.Kom, M.Kom', '0001097802', 'Laki-laki', '1'],
+            [91, 35,  2, 'FAZROL ROZI, M.Sc.', '0021078601', 'Laki-laki', '1'],
+            [103, 35, 2, 'FITRI NOVA, M.T, S.ST', '1029058502', 'Perempuan', '1'],
+            [109, 35, 3, 'Ir. HANRIYAWAN ADNAN MOODUTO, M.Kom.', '0010056606', 'Laki-laki', '1'],
+            [116, 20,  3, 'Ir. Hendrick, ST.,MT.,Ph.D', '0002127705', 'Laki-laki', '1'],
+            [121, 35, 2, 'HIDRA AMNUR, S.E., S.Kom, M.Kom', '0015048209', 'Laki-laki', '1'],
+            [122, 42, 3, 'HUMAIRA, S.T, M.T', '0019038103', 'Perempuan', '1'],
+            [127, 35, 2, 'IKHSAN YUSDA PRIMA PUTRA, S.H., LL.M', '0001107505', 'Laki-laki', '1'],
+            [132, 42, 2, 'INDRI RAHMAYUNI, S.T, M.T', '0025068301', 'Perempuan', '1'],
+            [160, 35, 3, 'MERI AZMI, S.T, M.Cs', '0029068102', 'Perempuan', '1'],
+            [198, 42, 3, 'Ir. Rahmat Hidayat, S.T, M.Sc.IT', '1015047801', 'Laki-laki', '1'],
+            [206, 35, 3, 'RASYIDAH, S.Si, M.M.', '0001067407', 'Perempuan', '1'],
+            [212, 42, 2, 'RIKA IDMAYANTI, S.T, M.Kom', '0022017806', 'Perempuan', '1'],
+            [220, 35, 2, 'RITA AFYENNI, S.Kom, M.Kom', '0018077099', 'Perempuan', '1'],
+            [223, 35, 3, 'RONAL HADI, S.T, M.Kom', '0029017603', 'Laki-laki', '1'],
+            [258, 35, 2, 'TAUFIK GUSMAN, S.S.T, M.Ds', '0010088805', 'Laki-laki', '1'],
+            [277, 35, 3, 'YANCE SONATHA, S.Kom, M.T', '0029128003', 'Perempuan', '1'],
+            [289, 35, 3, 'Dr. Ir. YUHEFIZAR, S.Kom., M.Kom', '0020025008', 'Laki-laki', '1'],
+            [292, 42, 2, 'YULHERNIWATI, S.Kom, M.T', '0019077609', 'Perempuan', '1'],
+            [310, 35, 1, 'TRI LESTARI, S.Pd.,M.Eng.', '0005039205', 'Perempuan', '1'],
+            [311, 42, 2, 'Fanni Sukma, S.ST., M.T', '0006069009', 'Perempuan', '1'],
+            [312, 42, 1, 'Andre Febrian Kasmar, S.T., M.T.', '0020028804', 'Laki-laki', '1'],
+            [351, 35, 2, 'RONI PUTRA, S.Kom, M.T ', '0022078607', 'Laki-laki', '1'],
+            [352, 35, 1, 'Ardi Syawaldipa, S.Kom.,M.T.', '0029058909', 'Laki-laki', '1'],
+            [353, 35, 1, 'Harfebi Fryonanda, S.Kom., M.Kom', '0310119101', 'Laki-laki', '1'],
+            [354, 42, 1, 'Ideva Gaputra, S.Kom., M.Kom', '0012098808', 'Laki-laki', '1'],
+            [355, 35, 1, 'Yulia Jihan Sy, S.Kom., M.Kom', '1017078904', 'Perempuan', '1'],
+            [356, 35, 2, 'Andrew Kurniawan Vadreas, S.Kom., M.T ', '1021028702', 'Laki-laki', '1'],
+            [357, 35, 1, 'YORI ADI ATMA, S.Pd., M.Kom', '2010059001', 'Laki-laki', '1'],
+            [358, 42, 2, 'Dr. Ulya Ilhami Arsyah, S.Kom., M.Kom', '0130039101', 'Laki-laki', '1'],
+            [359, 35, 1, 'Hendra Rotama, S.Pd., M.Sn', '0218068801', 'Laki-laki', '1'],
+            [360, 35, 1, 'Sumema, S.Ds., M.Ds', '0008069103', 'Perempuan', '1'],
+            [361, 35, 1, 'Raemon Syaljumairi, S.Kom., M.Kom', '0017078407', 'Laki-laki', '1'],
+            [362, 42, 1, 'Mutia Rahmi Dewi, S.Kom., M.Kom', '0004099601', 'Perempuan', '1'],
+            [363, 35, 1, 'Novi, S.Kom., M.T', '0001118611', 'Perempuan', '1'],
+            [364, 35, 1, 'Rahmi Putri Kurnia, S.Kom., M.Kom', '0027089303', 'Perempuan', '1']
         ];
 
         // Membuat data dosen dan mengisi 'user_id' secara otomatis
@@ -63,6 +103,7 @@ class RolesAndUsersSeeder extends Seeder
                 ['email' => generateEmail($data[3])],
                 ['name' => $data[3], 'password' => Hash::make('password')]
             );
+            $user->assignRole(['dosenPembimbing', 'dosenPenguji']);
 
             Dosen::updateOrCreate(
                 ['id_dosen' => $data[0]],
@@ -80,13 +121,130 @@ class RolesAndUsersSeeder extends Seeder
 
         // Data mahasiswa yang akan dibuat
         $data_mahasiswa = [
-            [1, 1, '1701091031', 'Wara Ulan Saputri', 'perempuan', '1'],
-            [2, 1, '1701081035', 'Silvia Angraini', 'perempuan', '1'],
-            [3, 1, '1701091033', 'Dea Annona Prayetno Putri', 'perempuan', '1'],
-            [4, 1, '1701091018', 'Yulia Ramadhani', 'perempuan', '1'],
-            [6, 1, '1701081027', 'Syahrul Gusti Hafendi', 'laki-laki', '1'],
-            [7, 1, '1701082019', 'Rendhika Aditya', 'laki-laki', '1'],
+            [1, 5, '2201081001', 'Andre Ferdinan', 'Laki-laki', '1'],
+            [2, 5, '2201081002', 'Andre Fransisko', 'Laki-laki', '1'],
+            [3, 5, '2201081004', 'Asrivo Maha Kurnia Pitama', 'Perempuan', '1'],
+            [4, 5, '2201081005', 'Dhea Safira', 'Perempuan', '1'],
+            [5, 5, '2201081006', 'Dini Damayanti', 'Perempuan', '1'],
+            [6, 5, '2201081007', 'Hafizhoh Viarma', 'Perempuan', '1'],
+            [7, 5, '2201081008', 'Keisya Triandara Mawaddah', 'Perempuan', '1'],
+            [8, 5, '2201081009', 'Muhammad Fajrin Lubis', 'Laki-laki', '1'],
+            [9, 5, '2201081011', 'Rasis Al Zailany Hasibuan', 'Laki-laki', '1'],
+            [10, 5, '2201082001', 'Amalia Yosandra', 'Perempuan', '1'],
+            [11, 5, '2201082003', 'Abdullah Adam', 'Laki-laki', '1'],
+            [12, 5, '2201082004', 'Farrell Aydin Mhasood', 'Laki-laki', '1'],
+            [13, 5, '2201082006', 'Fidia Rahmatunnisa', 'Perempuan', '1'],
+            [14, 5, '2201082007', 'Julian Fadhillah', 'Laki-laki', '1'],
+            [15, 5, '2201082008', 'Melida Sari', 'Perempuan', '1'],
+            [16, 5, '2201082012', 'Muhammad Irfan', 'Laki-laki', '1'],
+            [17, 5, '2201082020', 'Afiq Nur Effendi', 'Laki-laki', '1'],
+            [18, 5, '2201082021', 'Alif Nur Samudra', 'Laki-laki', '1'],
+            [19, 5, '2201082022', 'Azzammil Akbar Ramadhan', 'Laki-laki', '1'],
+            [20, 5, '2201082024', 'Della Putri Herman', 'Perempuan', '1'],
+            [21, 5, '2201082025', 'Dion Pratama Putra', 'Laki-laki', '1'],
+            [22, 5, '2201082026', 'Erlian Fir Dhani', 'Laki-laki', '1'],
+            [23, 5, '2201082027', 'Farhan Sahida', 'Laki-laki', '1'],
+            [24, 5, '2201082028', 'Farig Muhammad Taqy', 'Laki-laki', '1'],
+            [25, 5, '2201082029', 'Khalilul Rahman', 'Laki-laki', '1'],
+            [26, 4, '2201091001', 'Anjeli Masrizal Putri', 'Perempuan', '1'],
+            [27, 4, '2201091002', 'Aria Mardiah', 'Perempuan', '1'],
+            [28, 4, '2201091004', 'Mauizati Hasanah', 'Perempuan', '1'],
+            [29, 4, '2201091006', 'Hafiz Alek Sandro', 'Laki-laki', '1'],
+            [30, 4, '2201091007', 'Heru Rizaldi', 'Laki-laki', '1'],
+            [31, 4, '2201091010', 'Nadya Kusuma Wardani', 'Perempuan', '1'],
+            [32, 4, '2201091018', 'Khalisha Salsabila', 'Perempuan', '1'],
+            [33, 4, '2201092003', 'Baihaqi Alfarizi Darnas', 'Laki-laki', '1'],
+            [34, 4, '2201092005', 'Aditya Swandy', 'Laki-laki', '1'],
+            [35, 4, '2201092007', 'Fachrul Ihsan', 'Laki-laki', '1'],
+            [36, 4, '2201092008', 'Fauzan Syakhira', 'Laki-laki', '1'],
+            [37, 4, '2201092011', 'Heru Rafki Ramadhan', 'Laki-laki', '1'],
+            [38, 4, '2201092021', 'Bimo Surya Prima', 'Laki-laki', '1'],
+            [39, 4, '2201092027', 'Radiatul Al Adyah', 'Perempuan', '1'],
+            [40, 4, '2201092028', 'Bintang Suhel', 'Laki-laki', '1'],
+            [41, 4, '2201092032', 'Rifki Aditya Ramadhan', 'Laki-laki', '1'],
+            [42, 4, '2201092036', 'Wahyu Bulkhoir', 'Laki-laki', '1'],
+            [43, 4, '2201092038', 'Fadhil Ridho Pratama', 'Laki-laki', '1'],
+            [44, 4, '2201092043', 'Hanna Adilah', 'Perempuan', '1'],
+            [45, 4, '2201092044', 'Larsa Zalona Illahi', 'Perempuan', '1'],
+            [46, 4, '2201092045', 'Miftahul Azizah', 'Perempuan', '1'],
+            [47, 4, '2201092047', 'Nashywa Davina Aurelia', 'Perempuan', '1'],
+            [48, 4, '2201092048', 'Nurul Iqma', 'Perempuan', '1'],
+            [49, 4, '2201092050', 'Rani Sakirman', 'Perempuan', '1'],
+            [50, 4, '2201093001', 'Dian Putri Sriwahyuni', 'Perempuan', '1'],
+            [51, 4, '2201093002', 'Rahman Faisal', 'Laki-laki', '1'],
+            [52, 3, '2111082026', 'Muhammad Ar-Razi A.Gazali', 'Laki-laki', '1'],
+            [53, 3, '2111082047', 'Winaldo Ageng Kalimasada', 'Laki-laki', '1'],
+            [54, 3, '2211081006', 'Cindy Steffani', 'Perempuan', '1'],
+            [55, 3, '2211081009', 'Fitri Sakinah', 'Perempuan', '1'],
+            [56, 3, '2211081010', 'Hafifah Azzahra', 'Perempuan', '1'],
+            [57, 3, '2211081021', 'Nurhadi Sa\'bani', 'Laki-laki', '1'],
+            [58, 3, '2211081025', 'Razi Syahriful Zanah', 'Laki-laki', '1'],
+            [59, 3, '2211081026', 'Rifko Ahmad', 'Laki-laki', '1'],
+            [60, 3, '2211081029', 'Taufiqurrahman', 'Laki-laki', '1'],
+            [61, 3, '2211082004', 'Athira Rahmadini Liamdas', 'Perempuan', '1'],
+            [62, 3, '2211082007', 'Fadila Islami Nisa', 'Perempuan', '1'],
+            [63, 3, '2211082015', 'Iqlima Khairunnisa', 'Perempuan', '1'],
+            [64, 3, '2211082016', 'Jazila Valisya Luthfia', 'Perempuan', '1'],
+            [65, 3, '2211082023', 'Nurul Aulia', 'Perempuan', '1'],
+            [66, 3, '2211082024', 'Puti Hanifah Marsla', 'Perempuan', '1'],
+            [67, 3, '2211083005', 'Ibrahim Risyad', 'Laki-laki', '1'],
+            [68, 3, '2211083010', 'Deni Ramadhan', 'Laki-laki', '1'],
+            [69, 3, '2211083012', 'M. Zidhan Prasetyo', 'Laki-laki', '1'],
+            [70, 3, '2211083013', 'M. Ismal Pratama', 'Laki-laki', '1'],
+            [71, 3, '2211083022', 'Auriel Ibrahim', 'Laki-laki', '1'],
+            [72, 3, '2211083024', 'Dzaky Rahmat Nurwahid', 'Laki-laki', '1'],
+            [73, 3, '2211083025', 'Farhan Muzakki', 'Laki-laki', '1'],
+            [74, 3, '2211083026', 'Geraldo Afrinandi Persada', 'Laki-laki', '1'],
+            [75, 3, '2211083028', 'Imam Mahmuda', 'Laki-laki', '1'],
+            [76, 3, '2211083041', 'Exel Pratama', 'Laki-laki', '1'],
+            [77, 3, '2211083045', 'Salma Husna', 'Perempuan', '1'],
+            [78, 1, '2111081002', 'Arshifa Demuna', 'Perempuan', '1'],
+            [79, 1, '2111081005', 'Fazila Surya Azzahrah', 'Perempuan', '1'],
+            [80, 1, '2111081009', 'Messy Wirdianti', 'Perempuan', '1'],
+            [81, 1, '2111081014', 'Yefri Afri Zandra', 'Laki-laki', '1'],
+            [82, 1, '2111082003', 'Aditiya Nofril Saputra', 'Laki-laki', '1'],
+            [83, 1, '2111082016', 'Habib Maulana Shidiq', 'Laki-laki', '1'],
+            [84, 1, '2111082017', 'Hana Aliyah Puteri', 'Perempuan', '1'],
+            [85, 1, '2111082024', 'Muhammad Anshar', 'Laki-laki', '1'],
+            [86, 1, '2111082025', 'Muhammad Ardy Ansyah', 'Laki-laki', '1'],
+            [87, 1, '2111082039', 'Ranaufal Muha', 'Laki-laki', '1'],
+            [88, 1, '2111082040', 'Rifqi Wirma Putra', 'Laki-laki', '1'],
+            [89, 1, '2111082041', 'Rizky Abiyyu', 'Laki-laki', '1'],
+            [90, 1, '2111082042', 'Rizqy Yoanda', 'Laki-laki', '1'],
+            [91, 1, '2111082043', 'Silvia Putri Herlieno', 'Perempuan', '1'],
+            [92, 1, '2111082049', 'Zaqaul Fikri Aziz', 'Laki-laki', '1'],
+            [93, 1, '2111083002', 'Ahmad Rayhan', 'Laki-laki', '1'],
+            [94, 1, '2111083003', 'Ahmad Zulveron', 'Laki-laki', '1'],
+            [95, 1, '2111083004', 'Alif Zidan Andriansyah', 'Laki-laki', '1'],
+            [96, 1, '2111083007', 'Fauzi Isyrin Apridal', 'Laki-laki', '1'],
+            [97, 1, '2111083011', 'Iqbal Muhakim', 'Laki-laki', '1'],
+            [98, 1, '2111083012', 'Iqra Aisyah . Ra', 'Perempuan', '1'],
+            [99, 1, '2111083019', 'Rahmi Aulia', 'Perempuan', '1'],
+            [100, 1, '2111083025', 'Yaser Husein', 'Laki-laki', '1'],
+            [101, 2, '2011083008', 'Ihsan Shadiq', 'Laki-laki', '1'],
+            [102, 2, '2011083014', 'Nadia .Z', 'Perempuan', '1'],
+            [103, 2, '2111081003', 'Aufa Yuliansyah', 'Laki-laki', '1'],
+            [104, 2, '2111081004', 'Bima Lintang Pratama', 'Laki-laki', '1'],
+            [105, 2, '2111081006', 'Gybran Nauval Yuhandika', 'Laki-laki', '1'],
+            [106, 2, '2111082001', 'Abdillah Hendra Rahmatullah', 'Laki-laki', '1'],
+            [107, 2, '2111082006', 'Amelia', 'Perempuan', '1'],
+            [108, 2, '2111082007', 'Astrid Tri Gustia', 'Perempuan', '1'],
+            [109, 2, '2111082015', 'Gerry Novazy Binjari Putra', 'Laki-laki', '1'],
+            [110, 2, '2111082019', 'Ikhsano Mulya', 'Laki-laki', '1'],
+            [111, 2, '2111082022', 'M.Cakra Adhana', 'Laki-laki', '1'],
+            [112, 2, '2111082027', 'Muhammad Bintang', 'Laki-laki', '1'],
+            [113, 2, '2111082036', 'Noverino Ramadhan', 'Laki-laki', '1'],
+            [114, 2, '2111082045', 'Teguh Yasti Putra', 'Laki-laki', '1'],
+            [115, 2, '2111083005', 'Dhiwa\' Thatsbih Azzaraqi', 'Laki-laki', '1'],
+            [116, 2, '2111083006', 'Farhan Abyu', 'Laki-laki', '1'],
+            [117, 2, '2111083008', 'Ferdiansyah Irawan', 'Laki-laki', '1'],
+            [118, 2, '2111083009', 'Githani Rizkyka Pasya', 'Perempuan', '1'],
+            [119, 2, '2111083013', 'Irfan Maulana', 'Laki-laki', '1'],
+            [120, 2, '2111083015', 'Muhammad Dwiky Alfira', 'Laki-laki', '1'],
+            [121, 2, '2111083017', 'Mubdi Marfiki Ikhsan', 'Laki-laki', '1'],
+            [122, 2, '2111083020', 'Revi Wardana Putra', 'Laki-laki', '1']
         ];
+
 
         // Membuat data mahasiswa dan mengisi 'user_id' secara otomatis
         foreach ($data_mahasiswa as $data) {
@@ -110,11 +268,11 @@ class RolesAndUsersSeeder extends Seeder
         }
 
         $PJData = [
-            [1, 1, 40, '2022-2026', '1'],
-            [2, 2, 46, '2022-2026', '1'],
-            [3, 3, 50, '2022-2026', '1'],
-            [4, 3, 52, '2022-2026', '1'],
-            [5, 3, 66, '2022-2026', '1'],
+            [1, 1, 223, '2022-2026', '1'],
+            [2, 2, 122, '2022-2026', '1'],
+            [3, 3, 160, '2022-2026', '1'],
+            [4, 3, 351, '2022-2026', '1'],
+            [5, 3, 312, '2022-2026', '1'],
         ];
 
         foreach ($PJData as $data) {

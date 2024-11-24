@@ -14,11 +14,11 @@ class KelasSeeder extends Seeder
     public function run(): void
     {
         $data_kelas = [
-            [1, 2, 4, '4-MI-A', '4-Manajemen Informatika-A'],
-            [2, 2, 4, '4-MI-B', '4-Manajemen Informatika-B'],
-            [3, 3, 4, '4-TK-A', '4-Teknik Komputer-A'],
-            [4, 3, 4, '4-TK-B', '4-Teknik Komputer-B'],
-            [5, 4, 4, '4-TRPL-A', '4-Teknologi Rekayasa Perangkat Lunak-A'],
+            [1, 42, 4, '4-TRPL-A', '4-Rekayasa Perangkat Lunak-A'],
+            [2, 42, 4, '4-TRPL-B', '4-Rekayasa Perangkat Lunak-B'],
+            [3, 42, 4, '3-TRPL-C', '3-Rekayasa Perangkat Lunak-C'],
+            [4, 35, 4, '3-MI-A', '3-Manajemen Informatika-A'],
+            [5, 35, 4, '3-TK-A', '3-Teknik Komputer-A'],
         ];
 
         foreach ($data_kelas as $data) {
