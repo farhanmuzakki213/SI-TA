@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\PklMhs;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,5 +26,8 @@ class DatabaseSeeder extends Seeder
         $this->call([RuanganSeeder::class,]);
         $this->call([TempatPklSeeder::class,]);
         $this->call([RoleTempatPklSeeder::class,]);
+        $this->call([UsulanTempatPklSeeder::class,]);
+        $this->call([PklMhsSeeder::class,]);
+        $this->call([LogBookPklSeeder::class,]);
     }
 }

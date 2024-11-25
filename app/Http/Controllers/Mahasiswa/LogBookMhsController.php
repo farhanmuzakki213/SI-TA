@@ -122,7 +122,7 @@ class LogBookMhsController extends Controller
         DB::beginTransaction();
         try {
             $oldData = log_book_pkl::where('id_look_book_pkl', $id)->first();
-            if ($oldData->file !== null && $request->hasFile('upload_file')) {
+            if ($oldData->file !== null && $request->hasFile('dokumen_laporan')) {
                 Storage::delete('public/uploads/pkl/laporan/' . $oldData->file);
             }
             $filename = null;

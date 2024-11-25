@@ -69,6 +69,11 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         Route::put('/logbookmhs/{id}/update', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'update'])->name('logbookmhs.update');
         Route::delete('/logbookmhs/{laporanpkl}/delete', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'destroy'])->name('logbookmhs.destroy');
         Route::delete('/logbookmhs/destroyMultiple', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'destroyMultiple'])->name('logbookmhs.destroyMultiple');
+
+        // Data Ajuan Sidang
+        Route::get('/ajukansidang', [\App\Http\Controllers\Mahasiswa\AjukanSidangController::class, 'index'])->name('ajukansidang');
+        Route::post('/ajukansidang/{id}/update', [\App\Http\Controllers\Mahasiswa\AjukanSidangController::class, 'update'])->name('ajukansidang.update');
+        Route::delete('/ajukansidang/{ajukansidang}/delete', [\App\Http\Controllers\Mahasiswa\AjukanSidangController::class, 'destroy'])->name('ajukansidang.destroy');
     });
 });
 
@@ -121,6 +126,10 @@ Route::group(['middleware' => ['role:pimpinanProdi']], function () {
 Route::group(['middleware' => ['role:admin']], function () {
     // Data Master : Dosen, Mahasiswa, Jurusan, Prodi, Kelas, Semester dan Tahun Akademik, Jabatan Pimpinan, Ruangan dan Sesi
     Route::middleware('auth')->group(function () {
+        // Persetujuan Sidang PKL
+        Route::get('/usulansidangpkl', [\App\Http\Controllers\Admin\UsulanSidangPklController::class, 'index'])->name('usulansidangpkl');
+        Route::put('/usulansidangpkl/{id}/update', [\App\Http\Controllers\Admin\UsulanSidangPklController::class, 'update'])->name('usulansidangpkl.update');
+
         // Data Dosen
         Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');
         Route::post('/dosen/store', [\App\Http\Controllers\Admin\DosenController::class, 'store'])->name('dosen.store');

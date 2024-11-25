@@ -13,6 +13,7 @@ const pimpinanForm = ({
     pimpinanDialogFooter,
     hideDialog,
     setpimpinan,
+    prodiOptions,
 }) => {
 
     const onInputChange = (e, field) => {
@@ -70,6 +71,23 @@ const pimpinanForm = ({
                 />
                 {submitted && !pimpinan.jabatan_pimpinan_id && (
                     <small className="p-invalid">Jabatan Pimpinan is required.</small>
+                )}
+            </div>
+
+            {/* Prodi ID */}
+            <div className="field">
+                <label htmlFor="prodi_id">Prodi Dosen</label>
+                <Dropdown
+                    id="prodi_id"
+                    value={pimpinan.prodi_id || ''}
+                    onChange={(e) => onInputChange(e, "prodi_id")}
+                    options={jabatan_pimpinanOptions}
+                    placeholder="Select a Prodi"
+                    optionLabel="label"
+                    required
+                />
+                {submitted && !pimpinan.prodi_id && (
+                    <small className="p-invalid">Prodi is required.</small>
                 )}
             </div>
 
