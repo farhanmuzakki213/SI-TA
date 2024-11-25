@@ -348,6 +348,7 @@ const mhspkl = () => {
                         <MhspklForm
                             mhspklDialog={mhspklDialog}
                             mhspkl={mhspkl}
+                            mhspkls={mhspkls}
                             setmhspkl={setmhspkl}
                             submitted={submitted}
                             mhspklDialogFooter={mhspklDialogFooter}

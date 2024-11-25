@@ -5,6 +5,7 @@ import { Dropdown } from 'primereact/dropdown';
 const MhspklForm = ({
     mhspklDialog,
     mhspkl,
+    mhspkls,
     submitted,
     mhspklDialogFooter,
     hideDialog,
@@ -20,7 +21,10 @@ const MhspklForm = ({
         }));
     };
 
-    console.log(mhspkl);
+    const filteredOptions = usulanOptions.filter(
+        (option) =>
+            !mhspkls.some((mhspkl) => mhspkl.usulan_tempat_pkl_id === option.value)
+    );
 
     return (
         <Dialog
@@ -40,7 +44,7 @@ const MhspklForm = ({
                     id="usulan_tempat_pkl_id"
                     value={mhspkl.usulan_tempat_pkl_id || ""}
                     onChange={(e) => onInputChange(e, "usulan_tempat_pkl_id")}
-                    options={usulanOptions}
+                    options={filteredOptions}
                     placeholder="Select a Mahasiswa"
                     optionLabel="label"
                     required

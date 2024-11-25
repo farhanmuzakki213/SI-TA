@@ -74,6 +74,7 @@ const LaporanpklForm = ({
             day: "2-digit",
         });
     };
+    // console.log(laporanpkl);
 
     return (
         <Dialog
@@ -127,7 +128,7 @@ const LaporanpklForm = ({
                 <FileUploadC
                     name="dokumen_laporan"
                     onFileSelect={(file) => {
-                        setlaporanpkl((prev) => ({ ...prev, dokumen_laporan: file }));
+                        setlaporanpkl((prev) => ({ ...prev, dokumen_laporan: file || prev.dokumen_laporan, }));
                     }}
                 />
             </div>

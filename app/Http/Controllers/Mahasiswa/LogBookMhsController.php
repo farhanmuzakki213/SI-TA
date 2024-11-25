@@ -21,7 +21,13 @@ class LogBookMhsController extends Controller
      */
     public function index()
     {
+        $id_user = auth()->user()->id;
+        $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
+        $pkl_mhs = PklMhs::whereHas('r_usulan', function ($q) use ($id_mahasiswa) {
+            $q->where('mahasiswa_id', $id_mahasiswa);
+        })->first();
         return Inertia::render('main/mahasiswa/laporanpkl/laporanpkl', [
+            'pkl_mhs' => $pkl_mhs,
             'nextNumber' => CariNomor::getCariNomor(log_book_pkl::class, 'id_log_book_pkl'),
             'data_laporanpkl' => log_book_pkl::with('r_pkl_mhs.r_usulan.r_mahasiswa')->get(),
         ]);
@@ -40,12 +46,12 @@ class LogBookMhsController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $id_user = auth()->user()->id;
         $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
         $pkl_mhs_id = PklMhs::whereHas('r_usulan', function ($q) use ($id_mahasiswa) {
             $q->where('mahasiswa_id', $id_mahasiswa);
         })->first()->id_pkl_mhs;
+        // dd($request->all(), $pkl_mhs_id);
         // dd($id_mahasiswa, $pkl_mhs_id);
         $validator = Validator::make($request->all(), [
             'id_log_book_pkl' => 'required',
@@ -78,7 +84,7 @@ class LogBookMhsController extends Controller
             return to_route('logbookmhs')->with('success', 'Laporan Pkl created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('logbookmhs')->with('error', 'Laporan Pkl created failed');
+            return to_route('logbookmhs')->with('error', 'Laporan Pkl created failed'. $e->getMessage());
         }
     }
 
@@ -103,7 +109,7 @@ class LogBookMhsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        dd($request->all());
+        dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
             'tgl_awal_kegiatan' => 'required|date',
             'tgl_akhir_kegiatan' => 'required|date|after_or_equal:tgl_awal_kegiatan',

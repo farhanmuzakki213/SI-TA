@@ -18,9 +18,8 @@ const FileUploadC = ({ name, onFileSelect }) => {
         });
 
         setTotalSize(_totalSize);
-        // Kirim file yang dipilih ke parent
         if (onFileSelect) {
-            onFileSelect(files[0]); // Ambil file pertama
+            onFileSelect(files[0]);
         }
     };
 

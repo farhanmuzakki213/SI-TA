@@ -16,7 +16,8 @@ return new class extends Migration
             $table->bigInteger('role_tempat_pkl_id')->unsigned();
             $table->bigInteger('mahasiswa_id')->unsigned();
             $table->longText('komentar')->nullable();
-            $table->enum('status_usulan', ['0', '1', '2'])->default('1');
+            $table->enum('status_usulan', ['1', '2', '3'])->default('1')
+                ->comment('1 = Diproses, 2 = DiTolak, 3 = Diterima');
             $table->timestamps();
         });
 

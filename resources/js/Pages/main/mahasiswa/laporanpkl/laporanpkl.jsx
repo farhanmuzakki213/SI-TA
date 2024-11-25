@@ -20,7 +20,7 @@ const laporanpkl = () => {
     };
 
     const { props } = usePage();
-    const { data_laporanpkl, nextNumber } = props;
+    const { data_laporanpkl, nextNumber, pkl_mhs } = props;
     const [laporanpkls, setlaporanpkls] = useState(null);
     const [laporanpklDialog, setlaporanpklDialog] = useState(false);
     const [deletelaporanpklDialog, setDeletelaporanpklDialog] = useState(false);
@@ -94,7 +94,6 @@ const laporanpkl = () => {
         const requiredFieldsForUpdate = [
             laporanpkl.tgl_awal_kegiatan,
             laporanpkl.tgl_akhir_kegiatan,
-            laporanpkl.dokumen_laporan,
         ];
 
         const isCreating = !laporanpkl.id_log_book_pkl;
@@ -113,26 +112,36 @@ const laporanpkl = () => {
                 detail: "Please fill in all required fields.",
                 life: 3000,
             });
-            console.log(laporanpkl);
             return;
         }
-
-        let _laporanpkl = { ...laporanpkl };
+        console.log(laporanpkl);
 
         try {
 
+            const formData = new FormData();
+            formData.append("id_log_book_pkl", nextNumber);
+            formData.append("tgl_awal_kegiatan", laporanpkl.tgl_awal_kegiatan);
+            formData.append("tgl_akhir_kegiatan", laporanpkl.tgl_akhir_kegiatan);
+            formData.append("dokumen_laporan", laporanpkl.dokumen_laporan);
+
             if (isCreating) {
-                _laporanpkl.id_log_book_pkl = nextNumber;
-                await router.post('/logbookmhs/store', _laporanpkl);
+                await router.post("/logbookmhs/store", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
             } else {
-                await router.put(`/logbookmhs/${laporanpkl.id_log_book_pkl}/update`, _laporanpkl);
+                await router.put(`/logbookmhs/${laporanpkl.id_log_book_pkl}/update`,
+                    formData,
+                    { headers: { "Content-Type": "multipart/form-data" } }
+                );
             }
 
             if (isCreating) {
-                setlaporanpkls(prevLaporanpkls => [...prevLaporanpkls, _laporanpkl]);
+                setlaporanpkls((prev) => [...prev, laporanpkl]);
             } else {
-                setlaporanpkls(prevLaporanpkls =>
-                    prevLaporanpkls.map(d => d.id_log_book_pkl === laporanpkl.id_log_book_pkl ? _laporanpkl : d)
+                setlaporanpkls((prev) =>
+                    prev.map((item) =>
+                        item.id_log_book_pkl === laporanpkl.id_log_book_pkl ? laporanpkl : item
+                    )
                 );
             }
         } catch (error) {
@@ -315,11 +324,11 @@ const laporanpkl = () => {
                 <div className="col-12">
                     <div className="card">
                         <Toast ref={toast} />
-                        <Toolbar
+                        {pkl_mhs && (<Toolbar
                             className="mb-4"
                             left={leftToolbarTemplate}
                             right={rightToolbarTemplate}
-                        ></Toolbar>
+                        ></Toolbar>)}
 
                         <LaporanpklDataTable
                             dt={dt}

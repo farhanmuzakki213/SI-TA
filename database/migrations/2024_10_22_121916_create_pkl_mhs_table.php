@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('dokumen_pkl')->nullable();
             $table->string('judul')->nullable();
             $table->string('dokumen_nilai_industri')->nullable();
-            $table->enum('status_ver_pkl', ['0', '1', '2'])->default('0')->nullable();
+            $table->enum('status_ver_pkl', ['1', '2', '3'])->default('1')
+            ->comment('1 = Diproses, 2 = DiTolak, 3 = Diterima');
             $table->timestamps();
         });
 

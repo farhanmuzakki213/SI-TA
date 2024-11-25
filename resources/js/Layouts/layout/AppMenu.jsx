@@ -80,6 +80,18 @@ const AppMenu = () => {
                 />
 
                 )}
+                {hasRole('dosenPembimbing') && (<AppMenuitem
+                    item={{
+                        label: 'PKL',
+                        items: [
+                            { label: 'Verifikasi Laporan', icon: 'pi pi-fw pi-file', to: route('laporanpkl') },
+                        ],
+                    }}
+                    root={true}
+                    index={1}
+                />
+
+                )}
                 {/* Data User, Role, Permission */}
                 {hasRole('mahasiswa') && (<AppMenuitem
                     item={{
