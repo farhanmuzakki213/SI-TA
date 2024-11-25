@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\PklMhs;
+use App\Models\PklNilai;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -30,5 +31,6 @@ class DatabaseSeeder extends Seeder
         $this->call([PklMhsSeeder::class,]);
         $this->call([LogBookPklSeeder::class,]);
         $this->call([BookingSeeder::class,]);
+        $this->call([PklNilaiSeeder::class,]);
     }
 }

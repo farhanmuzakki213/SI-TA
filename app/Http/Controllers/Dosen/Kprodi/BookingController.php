@@ -56,10 +56,11 @@ class BookingController extends Controller
                 return $pklMhs->r_usulan->mahasiswa_id;
             })
             ->toArray();
-        $JadwalDosen = Booking::select('ruangan_id', 'sesi_id', 'tgl_booking')->where('status_booking', '1')->whereIn('mahasiswa_id', $mahasiswa_id)->get()->toArray();
-        $mergeDataJadwal = array_merge($RSTterpakai, $JadwalDosen);
-        $GetUniqueDataJadwal = array_values(array_unique($mergeDataJadwal, SORT_REGULAR));
-        // dd($GetUniqueDataJadwal);
+        $STDosen = Booking::select('sesi_id', 'tgl_booking')->where('status_booking', '1')
+            ->whereIn('mahasiswa_id', $mahasiswa_id)
+            ->get()
+            ->toArray();
+        // dd($RSTterpakai, $mahasiswa_id, $STDosen);
         /* Pkl */
         $bookingsidangpkl = Booking::where('status_booking', '1')->pluck('mahasiswa_id')->toArray();
         $pklmhs = PklMhs::where('status_ver_pkl', '3')->whereHas('r_usulan.r_mahasiswa.r_kelas', function ($query) use ($kaprodi) {
@@ -113,7 +114,8 @@ class BookingController extends Controller
             'mahasiswaPklOptions' => $mahasiswaPklOptions,
             'mahasiswaSemproOptions' => $mahasiswaSemproOptions,
             'mahasiswaTaOptions' => $mahasiswaTaOptions,
-            'bookingused' => $GetUniqueDataJadwal,
+            'bookingused' => $RSTterpakai,
+            'jambookingused' => $STDosen
         ]);
     }
 

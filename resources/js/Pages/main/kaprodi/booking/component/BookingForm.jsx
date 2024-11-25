@@ -18,7 +18,8 @@ const BookingForm = ({
     mahasiswaPklOptions,
     mahasiswaSemproOptions,
     mahasiswaTaOptions,
-    bookingused
+    bookingused,
+    jambookingused
 }) => {
     const [calendarValue, setCalendarValue] = useState(null);
 
@@ -96,23 +97,44 @@ const BookingForm = ({
 
     const filterAvailableSesi = (ruangan_id, tgl_booking) => {
         return sesiOptions.filter((session) => {
-            return !bookingused.some(
+            const isUsed = jambookingused.some(
                 (used) =>
-                    used.ruangan_id === ruangan_id &&
-                    used.sesi_id === session.value &&
-                    used.tgl_booking === tgl_booking
+                    used.tgl_booking === tgl_booking &&
+                    used.sesi_id === session.value
+            );
+            return (
+                !isUsed &&
+                !bookingused.some(
+                    (used) =>
+                        used.ruangan_id === ruangan_id &&
+                        used.sesi_id === session.value &&
+                        used.tgl_booking === tgl_booking
+                )
             );
         });
     };
 
     const filterAvailableRuangan = (tgl_booking) => {
         return ruanganOptions.filter((ruangan) => {
+            // Ambil semua sesi yang digunakan untuk ruangan pada tanggal tersebut
             const ruanganBookings = bookingused.filter(
                 (used) => used.tgl_booking === tgl_booking && used.ruangan_id === ruangan.value
             );
-            return ruanganBookings.length < 4;
+
+            // Ambil jumlah sesi yang tersedia pada tanggal tersebut
+            const usedSesiIds = jambookingused
+                .filter((used) => used.tgl_booking === tgl_booking)
+                .map((used) => used.sesi_id);
+
+            // Periksa apakah ruangan masih memiliki sesi yang belum penuh
+            const isRuanganAvailable =
+                ruanganBookings.length < sesiOptions.length &&
+                sesiOptions.some((sesi) => !usedSesiIds.includes(sesi.value));
+
+            return isRuanganAvailable;
         });
     };
+
 
 
     const filteredSesiOptions =
@@ -122,6 +144,48 @@ const BookingForm = ({
 
     const filteredRuanganOptions =
         booking.tgl_booking ? filterAvailableRuangan(booking.tgl_booking) : ruanganOptions;
+
+    const sesiPlaceholder = () => {
+        if (filteredSesiOptions.length === 0 || filteredRuanganOptions.length === 0) {
+            if (
+                jambookingused.some(
+                    (used) =>
+                        used.tgl_booking === booking.tgl_booking &&
+                        used.sesi_id === booking.sesi_id
+                )
+            ) {
+                return "Dosen sudah memiliki jadwal pada sesi ini";
+            }
+            return "Tidak ada sesi tersedia";
+        }
+        return "Select a Sesi";
+    };
+
+    const ruanganPlaceholder = () => {
+        if (filteredRuanganOptions.length === 0) {
+            if (
+                jambookingused.some(
+                    (used) =>
+                        used.tgl_booking === booking.tgl_booking &&
+                        used.sesi_id === booking.sesi_id
+                )
+            ) {
+                return "Dosen sudah memiliki jadwal pada sesi ini";
+            }
+            if (
+                bookingused.some(
+                    (used) =>
+                        used.tgl_booking === booking.tgl_booking &&
+                        used.ruangan_id === booking.ruangan_id
+                )
+            ) {
+                return "Ruangan sudah penuh untuk tanggal ini";
+            }
+            return "Tidak ada Ruangan tersedia";
+        }
+        return "Select a Ruangan";
+    };
+
 
     return (
         <Dialog
@@ -225,11 +289,7 @@ const BookingForm = ({
                     value={booking.ruangan_id || ""}
                     onChange={(e) => onInputChange(e, "ruangan_id")}
                     options={filteredRuanganOptions}
-                    placeholder={
-                        filteredRuanganOptions.length === 0
-                            ? "Tidak ada Ruangan tersedia"
-                            : "Select a Ruangan"
-                    }
+                    placeholder={ruanganPlaceholder()}
                     optionLabel="label"
                     required
                     disabled={!booking.tgl_booking || filteredRuanganOptions.length === 0}
@@ -247,11 +307,7 @@ const BookingForm = ({
                     value={booking.sesi_id || ""}
                     onChange={(e) => onInputChange(e, "sesi_id")}
                     options={filteredSesiOptions}
-                    placeholder={
-                        filteredSesiOptions.length === 0 || filteredRuanganOptions.length === 0
-                            ? "Tidak ada sesi tersedia"
-                            : "Select a Sesi"
-                    }
+                    placeholder={sesiPlaceholder()}
                     optionLabel="label"
                     required
                     disabled={!booking.ruangan_id || filteredSesiOptions.length === 0}

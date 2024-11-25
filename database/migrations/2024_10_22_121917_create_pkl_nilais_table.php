@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pkl_nilais', function (Blueprint $table) {
-            $table->bigInteger('pkl_mhs_id')->primary()->unsigned();
+            $table->bigInteger('id_pkl_nilai')->primary()->unsigned();
+            $table->bigInteger('pkl_mhs_id')->unsigned();
             $table->bigInteger('dosen_id')->unsigned();
             $table->text('nilai');
-            $table->enum('sebagai', ['pembimbing', 'penguji', 'pembimbing_pkl']);
+            $table->enum('sebagai', ['pembimbing', 'penguji']);
             $table->timestamps();
         });
 

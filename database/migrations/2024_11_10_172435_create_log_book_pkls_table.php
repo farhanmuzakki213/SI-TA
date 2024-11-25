@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('status', ['1', '2', '3'])->default('1')
             ->comment('1 = Diproses, 2 = Direvisi, 3 = Diterima');
             $table->string('komentar')->nullable();
+            $table->text('nilai')->nullable();
             $table->timestamps();
         });
 

@@ -31,7 +31,8 @@ const booking = () => {
         mahasiswaSemproOptions: initialMahasiswaSemproOptions,
         mahasiswaTaOptions: initialMahasiswaTaOptions,
         nextNumber,
-        bookingused} = props;
+        bookingused,
+        jambookingused} = props;
     const [bookings, setbookings] = useState(null);
     const [ruanganOptions, setRuanganOptions] = useState([]);
     const [sesiOptions, setSesiOptions] = useState([]);
@@ -374,6 +375,7 @@ const booking = () => {
                             bookingDialogFooter={bookingDialogFooter}
                             hideDialog={hideDialog}
                             bookingused={bookingused}
+                            jambookingused={jambookingused}
                         />
 
                         <Dialog
