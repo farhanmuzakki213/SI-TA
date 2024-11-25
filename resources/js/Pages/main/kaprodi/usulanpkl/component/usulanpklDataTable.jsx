@@ -62,7 +62,7 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
             value={usulanpkls}
             selection={selectedusulanpkls}
             onSelectionChange={(e) => setSelectedusulanpkls(e.value)}
-            dataKey="id_usulanpkl"
+            dataKey="id_usulan"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}

@@ -10,16 +10,7 @@ const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlapo
         return (
             <>
                 <span className="p-column-title">Nama Mahasiswa</span>
-                {rowData.r_mahasiswa?.nama_mahasiswa || 'N/A'}
-            </>
-        );
-    };
-
-    const namaPBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Nama Perusahaan</span>
-                {rowData.r_role_tempat_pkls?.r_tempat_pkls?.nama_tempat_pkl || 'N/A'}
+                {rowData.r_pkl_mhs?.r_usulan?.r_mahasiswa?.nama_mahasiswa || 'N/A'}
             </>
         );
     };
@@ -28,7 +19,45 @@ const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlapo
         return (
             <>
                 <span className="p-column-title">Role / Divisi</span>
-                {rowData.r_role_tempat_pkls?.nama_role || 'N/A'}
+                {rowData.r_pkl_mhs?.r_usulan?.r_role_tempat_pkls?.nama_role || 'N/A'}
+            </>
+        );
+    };
+
+    const tglawalBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Tanggal Awal</span>
+                {rowData.tgl_awal_kegiatan || 'N/A'}
+            </>
+        );
+    };
+
+    const tglakhirBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Tanggal Akhir</span>
+                {rowData.tgl_akhir_kegiatan || 'N/A'}
+            </>
+        );
+    };
+
+    const fileBodyTemplate = (rowData) => {
+        // Pastikan dokumen_laporan adalah string (misalnya, nama file)
+        if (typeof rowData.dokumen_laporan === "string") {
+            return (
+                <>
+                    <span className="p-column-title">File</span>
+                    <a href={`/storage/uploads/pkl/laporan/${rowData.dokumen_laporan}`} target="_blank" rel="noopener noreferrer">
+                        {rowData.dokumen_laporan}
+                    </a>
+                </>
+            );
+        }
+        return (
+            <>
+                <span className="p-column-title">File</span>
+                N/A
             </>
         );
     };
@@ -37,7 +66,7 @@ const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlapo
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status_laporan === "1" ? "Diproses" : rowData.status_laporan === "2" ? "Ditolak" : "Diterima"}
+                {rowData.status === "1" ? "Diproses" : rowData.status === "2" ? "Ditolak" : "Diterima"}
             </>
         );
     };
@@ -62,7 +91,7 @@ const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlapo
             value={laporanpkls}
             selection={selectedlaporanpkls}
             onSelectionChange={(e) => setSelectedlaporanpkls(e.value)}
-            dataKey="id_laporanpkl"
+            dataKey="id_log_book_pkl"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
@@ -70,15 +99,17 @@ const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlapo
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Jadwal Ruangan"
             globalFilter={globalFilter}
-            emptyMessage="No Jadwal Ruangan found."
+            emptyMessage="No Laporan Mahasiswa PKL found."
             header={header}
             responsiveLayout="scroll"
             removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="r_mahasiswa.nama_mahasiswa" header="Nama Mahasiswa" sortable body={mahasiswaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_role_tempat_pkls.r_tempat_pkls.nama_tempat_pkl" header="Nama Perusahaan" sortable body={namaPBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_role_tempat_pkls.nama_role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
+            <Column field="r_pkl_mhs.r_usulan.r_mahasiswa.nama_mahasiswa" header="Nama Mahasiswa" sortable body={mahasiswaBodyTemplate}></Column>
+            <Column field="r_pkl_mhs.r_usulan.r_role_tempat_pkls.nama_role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
+            <Column field="tgl_awal_kegiatan" header="Tanggal Awal" body={tglawalBodyTemplate} sortable></Column>
+            <Column field="tgl_akhir_kegiatan" header="Tanggal Akhir" body={tglakhirBodyTemplate} sortable></Column>
+            <Column field="dokumen_laporan" header="File" body={fileBodyTemplate} sortable></Column>
             <Column field="status_laporan" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>

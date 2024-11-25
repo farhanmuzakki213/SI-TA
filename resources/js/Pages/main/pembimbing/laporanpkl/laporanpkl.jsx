@@ -14,7 +14,7 @@ const laporanpkl = () => {
     let emptylaporanpkl = {
         id_log_book_pkl: null,
         komentar: "",
-        status_laporan: "",
+        status: "",
     };
 
 
@@ -68,9 +68,9 @@ const laporanpkl = () => {
         setSubmitted(true);
 
         const requiredFieldsForUpdate = [
-            laporanpkl.id_laporan,
+            laporanpkl.id_log_book_pkl,
             laporanpkl.komentar,
-            laporanpkl.status_laporan
+            laporanpkl.status
         ];
 
         const isValid = requiredFieldsForUpdate.every(field => field);
@@ -88,18 +88,11 @@ const laporanpkl = () => {
         let _laporanpkl = { ...laporanpkl };
 
         try {
-            await router.put(`/laporanpkl/${laporanpkl.id_laporan}/update`, _laporanpkl);
+            await router.put(`/laporanpkl/${laporanpkl.id_log_book_pkl}/update`, _laporanpkl);
 
             setlaporanpkls(prevlaporanpkls =>
-                prevlaporanpkls.map(d => d.id_laporan === laporanpkl.id_laporan ? _laporanpkl : d)
+                prevlaporanpkls.map(d => d.id_log_book_pkl === laporanpkl.id_log_book_pkl ? _laporanpkl : d)
             );
-
-            toast.current?.show({
-                severity: "success",
-                summary: "Success",
-                detail: "Data successfully updated.",
-                life: 3000,
-            });
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Failed to update data.";
             toast.current?.show({
@@ -120,7 +113,7 @@ const laporanpkl = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_laporanpkl' },
+        { header: 'ID', field: 'id_log_book_pklpkl' },
         {
             header: 'Name',
             field: (laporanpkl) => `"${laporanpkl.nama_laporanpkl}"`

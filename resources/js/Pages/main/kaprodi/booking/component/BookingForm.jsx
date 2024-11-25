@@ -14,7 +14,7 @@ const BookingForm = ({
     bookingDialogFooter,
     hideDialog,
     setbooking,
-    mahasiswaOptions,
+        ons,
 }) => {
     const [calendarValue, setCalendarValue] = useState(null);
     const parseDate = (dateString) => {
@@ -131,7 +131,7 @@ const BookingForm = ({
                     id="mahasiswa_id"
                     value={booking.mahasiswa_id || ""}
                     onChange={(e) => onInputChange(e, "mahasiswa_id")}
-                    options={mahasiswaOptions}
+                    options={mahasiswaPklOptions}
                     placeholder="Select a Mahasiswa"
                     optionLabel="label"
                     required

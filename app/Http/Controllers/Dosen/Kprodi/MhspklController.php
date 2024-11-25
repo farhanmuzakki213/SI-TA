@@ -6,6 +6,7 @@ use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BaseOptionsResource;
 use App\Models\Dosen;
+use App\Models\Pimpinan;
 use App\Models\PklMhs;
 use App\Models\PklNilai;
 use App\Models\UsulanTempatPkl;
@@ -21,9 +22,16 @@ class MhspklController extends Controller
      */
     public function index()
     {
+        $id_user = auth()->user()->id;
+        $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
+        $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
+        $pklmhs = PklMhs::with('r_usulan.r_roleTempatPkls.r_tempatPkls', 'r_usulan.r_mahasiswa', 'r_usulan.r_mahasiswa.r_kelas',  'r_pembimbing', 'r_penguji')
+        ->whereHas('r_usulan.r_mahasiswa.r_kelas', function ($query) use ($kaprodi) {
+            $query->where('prodi_id', $kaprodi);
+        })->get();
         return Inertia::render('main/kaprodi/mhspkl/mhspkl', [
             'nextNumber' => CariNomor::getCariNomor(PklMhs::class, 'id_pkl_mhs'),
-            'data_mhspkl' => PklMhs::with('r_usulan.r_roleTempatPkls.r_tempatPkls', 'r_usulan.r_mahasiswa',  'r_pembimbing', 'r_penguji')->get(),
+            'data_mhspkl' => $pklmhs,
             'usulanOptions' => BaseOptionsResource::collection(
                 UsulanTempatPkl::with('r_mahasiswa')->where('status_usulan', '3')->get()->map(function ($p) {
                     $p->nama_mahasiswa = $p->r_mahasiswa->nama_mahasiswa ?? 'Nama tidak tersedia';

@@ -48,7 +48,8 @@ const tempatpkl = () => {
         setSubmitted(false);
         settempatpklDialog(true);
     };
-    // console.log(props);
+
+    console.log(props.data_usulan);
     const hideDialog = () => {
         setSubmitted(false);
         settempatpklDialog(false);
@@ -245,49 +246,56 @@ const tempatpkl = () => {
 
     return (
         <Layout>
-            <div className="grip">
-                <div className="col-12">
-                    <div className="card">
-                        <Toast ref={toast} />
-                        <h5>Lowongan</h5>
-                        <Button
-                            label="Tambah Lowongan"
-                            className="p-button-primary mr-2 mb-2"
-                            icon="pi pi-plus"
-                            severity="primary"
-                            onClick={openNew} />
-                        <TempatPklForm
-                            tempatpklDialog={tempatpklDialog}
-                            tempatpkl={tempatpkl}
-                            settempatpkl={settempatpkl}
-                            submitted={submitted}
-                            roleOptions={roleOptions}
-                            tempatOptions={tempatOptions}
-                            tempatpklDialogFooter={tempatpklDialogFooter}
-                            hideDialog={hideDialog}
+            {data_usulan[0] && data_usulan[0].status_usulan === "3" ? (
+                // perbaiki tampilan nanti
+                <p>Usulan diterima</p>
+            ) : (
+                <>
+                    <div className="grip">
+                        <div className="col-12">
+                            <div className="card">
+                                <Toast ref={toast} />
+                                <h5>Lowongan</h5>
+                                <Button
+                                    label="Tambah Lowongan"
+                                    className="p-button-primary mr-2 mb-2"
+                                    icon="pi pi-plus"
+                                    severity="primary"
+                                    onClick={openNew} />
+                                <TempatPklForm
+                                    tempatpklDialog={tempatpklDialog}
+                                    tempatpkl={tempatpkl}
+                                    settempatpkl={settempatpkl}
+                                    submitted={submitted}
+                                    roleOptions={roleOptions}
+                                    tempatOptions={tempatOptions}
+                                    tempatpklDialogFooter={tempatpklDialogFooter}
+                                    hideDialog={hideDialog}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <JobItemContainer
+                            data_tempats={data_tempats}
+                            calculateMonthDifference={calculateMonthDifference}
+                            setSelectedJob={setSelectedJob}
+                            selectedJob={selectedJob}
+                            detailsRef={detailsRef}
+                            companyRef={companyRef}
+                        />
+                        <JobDetailsContainer
+                            selectedJob={selectedJob}
+                            calculateMonthDifference={calculateMonthDifference}
+                            detailsRef={detailsRef}
+                            companyRef={companyRef}
+                            nextNumber={nextNumber}
+                            data_usulan={data_usulan}
+                            toast={toast}
                         />
                     </div>
-                </div>
-            </div>
-            <div className="flex justify-between">
-                <JobItemContainer
-                    data_tempats={data_tempats}
-                    calculateMonthDifference={calculateMonthDifference}
-                    setSelectedJob={setSelectedJob}
-                    selectedJob={selectedJob}
-                    detailsRef={detailsRef}
-                    companyRef={companyRef}
-                />
-                <JobDetailsContainer
-                    selectedJob={selectedJob}
-                    calculateMonthDifference={calculateMonthDifference}
-                    detailsRef={detailsRef}
-                    companyRef={companyRef}
-                    nextNumber={nextNumber}
-                    data_usulan={data_usulan}
-                    toast={toast}
-                />
-            </div>
+                </>
+            )}
         </Layout >
     );
 };
@@ -305,7 +313,7 @@ const JobItemContainer = ({ data_tempats, calculateMonthDifference, setSelectedJ
         return () => window.removeEventListener('resize', updateHeight);
     }, [detailsRef, companyRef]);
 
-    console.log(data_tempats);
+    // console.log(data_tempats);
 
     return (
         <div className="col-12 xl:col-5">
@@ -331,7 +339,7 @@ const JobDetailsContainer = ({ selectedJob, calculateMonthDifference, detailsRef
         <div className="grid gap-2">
             <div className="col-12" ref={detailsRef}>
                 <div className="card">
-                    <JobDetails job={selectedJob} calculateMonthDifference={calculateMonthDifference} nextNumber={nextNumber} data_usulan={data_usulan} toast={toast}/>
+                    <JobDetails job={selectedJob} calculateMonthDifference={calculateMonthDifference} nextNumber={nextNumber} data_usulan={data_usulan} toast={toast} />
                 </div>
             </div>
             <div className="col-12" ref={companyRef}>

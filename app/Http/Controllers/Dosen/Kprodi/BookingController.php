@@ -6,7 +6,10 @@ use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BaseOptionsResource;
 use App\Models\Booking;
+use App\Models\Dosen;
 use App\Models\Mahasiswa;
+use App\Models\Pimpinan;
+use App\Models\PklMhs;
 use App\Models\Ruangan;
 use App\Models\Sesi;
 use Carbon\Carbon;
@@ -22,6 +25,19 @@ class BookingController extends Controller
      */
     public function index()
     {
+        $id_user = auth()->user()->id;
+        $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
+        $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
+        $pklmhs = PklMhs::where('status_ver_pkl', '3')->whereHas('r_usulan.r_mahasiswa.r_kelas', function ($query) use ($kaprodi) {
+            $query->where('prodi_id', $kaprodi);
+        })->get();
+        // dd($pklmhs);
+        $mahasiswaPklOptions = $pklmhs->map(function ($p) {
+            return [
+                'label' => $p->r_usulan->r_mahasiswa->nama_mahasiswa ?? 'Unknown',
+                'value' => $p->r_usulan->r_mahasiswa->id_mahasiswa ?? null,
+            ];
+        });
         return Inertia::render('main/kaprodi/booking/booking', [
             'data_booking' => Booking::with('r_sesi', 'r_ruangan', 'r_mahasiswa')->get(),
             'nextNumber' => CariNomor::getCariNomor(Booking::class, 'id_booking'),
@@ -31,9 +47,7 @@ class BookingController extends Controller
             'sesiOptions' => BaseOptionsResource::collection(Sesi::all()->map(function ($p) {
                 return new BaseOptionsResource($p, 'periode_sesi', 'id_sesi');
             })),
-            'mahasiswaOptions' => BaseOptionsResource::collection(Mahasiswa::all()->map(function ($p) {
-                return new BaseOptionsResource($p, 'nama_mahasiswa', 'id_mahasiswa');
-            })),
+            'mahasiswaPklOptions' => $mahasiswaPklOptions,
         ]);
     }
 

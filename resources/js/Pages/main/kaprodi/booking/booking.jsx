@@ -24,11 +24,11 @@ const booking = () => {
 
 
     const { props } = usePage();
-    const { data_booking, ruanganOptions: initialRuanganOptions, sesiOptions: initialSesiOptions, mahasiswaOptions: initialMahasiswaOptions, nextNumber } = props;
+    const { data_booking, ruanganOptions: initialRuanganOptions, sesiOptions: initialSesiOptions, mahasiswaPklOptions: initialMahasiswaPklOptions, nextNumber } = props;
     const [bookings, setbookings] = useState(null);
     const [ruanganOptions, setRuanganOptions] = useState([]);
     const [sesiOptions, setSesiOptions] = useState([]);
-    const [mahasiswaOptions, setMahasiswaOptions] = useState([]);
+    const [mahasiswaPklOptions, setMahasiswaPklOptions] = useState([]);
     const [bookingDialog, setbookingDialog] = useState(false);
     const [deletebookingDialog, setDeletebookingDialog] = useState(false);
     const [deletebookingsDialog, setDeletebookingsDialog] = useState(false);
@@ -42,11 +42,11 @@ const booking = () => {
     useEffect(() => {
         setRuanganOptions(initialRuanganOptions);
         setSesiOptions(initialSesiOptions);
-        setMahasiswaOptions(initialMahasiswaOptions);
+        setMahasiswaPklOptions(initialMahasiswaPklOptions);
         setbookings(data_booking);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialRuanganOptions, initialSesiOptions, initialMahasiswaOptions, data_booking, props.flash]);
+    }, [initialRuanganOptions, initialSesiOptions, initialMahasiswaPklOptions, data_booking, props.flash]);
 
     const openNew = () => {
         setbooking(emptybooking);
@@ -358,7 +358,7 @@ const booking = () => {
                             submitted={submitted}
                             ruanganOptions={ruanganOptions}
                             sesiOptions={sesiOptions}
-                            mahasiswaOptions={mahasiswaOptions}
+                            mahasiswaPklOptions={mahasiswaPklOptions}
                             bookingDialogFooter={bookingDialogFooter}
                             hideDialog={hideDialog}
                         />

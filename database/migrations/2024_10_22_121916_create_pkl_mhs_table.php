@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('pembimbing_pkl')->nullable();
             $table->text('dokumen_pendukung')->nullable();
             $table->string('judul')->nullable();
-            $table->enum('status_ver_pkl', ['0', '1', '2'])->default('1');
+            $table->enum('status_ver_pkl', ['1', '2', '3'])->default('2');
             $table->timestamps();
         });
 

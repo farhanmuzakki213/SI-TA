@@ -20,8 +20,9 @@ class UsulanSidangPklController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
-            'status_ver_pkl' => 'required|in:0,2',
+            'status_ver_pkl' => 'required|in:1,3',
         ]);
 
         if ($validator->fails()) {

@@ -78,7 +78,7 @@ const UsulansidangpklDataTable = ({ usulansidangpkls, selectedusulansidangpkls, 
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status_ver_pkl === "1" ? "Diproses" : rowData.status_ver_pkl === "2" ? "Ditolak" : "Diterima"}
+                {rowData.status_ver_pkl === "1" ? "Ditolak" : rowData.status_ver_pkl === "2" ? "Diproses" : "Diterima"}
             </>
         );
     };
@@ -103,7 +103,7 @@ const UsulansidangpklDataTable = ({ usulansidangpkls, selectedusulansidangpkls, 
             value={usulansidangpkls}
             selection={selectedusulansidangpkls}
             onSelectionChange={(e) => setSelectedusulansidangpkls(e.value)}
-            dataKey="id_usulansidangpkl"
+            dataKey="id_pkl_mhs"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
@@ -111,7 +111,7 @@ const UsulansidangpklDataTable = ({ usulansidangpkls, selectedusulansidangpkls, 
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Jadwal Ruangan"
             globalFilter={globalFilter}
-            emptyMessage="No Jadwal Ruangan found."
+            emptyMessage="No Usulan Sidang Pkl found."
             header={header}
             responsiveLayout="scroll"
             removableSort

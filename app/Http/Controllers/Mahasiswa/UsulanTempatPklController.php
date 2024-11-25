@@ -24,8 +24,6 @@ class UsulanTempatPklController extends Controller
         $data_usulan = UsulanTempatPkl::with('r_mahasiswa', 'r_roleTempatPkls.r_tempatPkls')->where('mahasiswa_id', $id_mahasiswa)->get();
         // dd($data_usulan);
         $data_tempat = RoleTempatPkl::with("r_tempatPkls")->get();
-        // dd($data_usulan->toArray());
-        $nextNumber = $this->getCariNomor();
         return Inertia::render('main/mahasiswa/tempatpkl/tempatpkl', [
             'nextNumber' => CariNomor::getCariNomor(UsulanTempatPkl::class, 'id_usulan'),
             'data_usulan' => $data_usulan,

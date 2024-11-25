@@ -17,10 +17,11 @@ class LaporanPklController extends Controller
     {
         $id_user = auth()->user()->id;
         $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
-        $pembimbing_id = PklMhs::where('pembimbing_id', $id_dosen);
-        $data_laporan = log_book_pkl::whereHas('r_pkl_mhs', function ($q) use ($pembimbing_id) {
-            $q->where('pembimbing_id', $pembimbing_id);
-        })->get();
+        // dd($id_dosen);
+        $pkl_mhs_id = PklMhs::where('pembimbing_id', $id_dosen)->pluck('id_pkl_mhs')->toArray();
+        // dd($pembimbing_id);
+        $data_laporan = log_book_pkl::whereIn('pkl_mhs_id', $pkl_mhs_id)
+        ->with('r_pkl_mhs.r_usulan.r_mahasiswa', 'r_pkl_mhs.r_usulan.r_roleTempatPkls.r_tempatPkls')->get();
         return Inertia::render('main/pembimbing/laporanpkl/laporanpkl', [
             'data_laporanpkl' => $data_laporan,
         ]);
@@ -28,7 +29,7 @@ class LaporanPklController extends Controller
 
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
+        // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
             'status' => 'required',
             'komentar' => 'required',

@@ -77,12 +77,12 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
     });
 });
 
-// Route Dosen Penguji
-Route::group(['middleware' => ['role:dosenPenguji']], function () {
+// Route Dosen Pembimbing
+Route::group(['middleware' => ['role:dosenPembimbing']], function () {
     Route::middleware('auth')->group(function () {
         // Persetujuan Tempat PKL
         Route::get('/laporanpkl', [\App\Http\Controllers\Dosen\Pembimbing\LaporanPklController::class, 'index'])->name('laporanpkl');
-        Route::put('/lapranpkl/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\LaporanPklController::class, 'update'])->name('laporanpkl.update');
+        Route::put('/laporanpkl/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\LaporanPklController::class, 'update'])->name('laporanpkl.update');
     });
 });
 
