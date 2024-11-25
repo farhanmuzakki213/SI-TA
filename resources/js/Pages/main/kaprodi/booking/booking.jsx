@@ -24,11 +24,19 @@ const booking = () => {
 
 
     const { props } = usePage();
-    const { data_booking, ruanganOptions: initialRuanganOptions, sesiOptions: initialSesiOptions, mahasiswaPklOptions: initialMahasiswaPklOptions, nextNumber } = props;
+    const { data_booking,
+        ruanganOptions: initialRuanganOptions,
+        sesiOptions: initialSesiOptions,
+        mahasiswaPklOptions: initialMahasiswaPklOptions,
+        mahasiswaSemproOptions: initialMahasiswaSemproOptions,
+        mahasiswaTaOptions: initialMahasiswaTaOptions,
+        nextNumber } = props;
     const [bookings, setbookings] = useState(null);
     const [ruanganOptions, setRuanganOptions] = useState([]);
     const [sesiOptions, setSesiOptions] = useState([]);
     const [mahasiswaPklOptions, setMahasiswaPklOptions] = useState([]);
+    const [mahasiswaSemproOptions, setMahasiswaSemproOptions] = useState([]);
+    const [mahasiswaTaOptions, setMahasiswaTaOptions] = useState([]);
     const [bookingDialog, setbookingDialog] = useState(false);
     const [deletebookingDialog, setDeletebookingDialog] = useState(false);
     const [deletebookingsDialog, setDeletebookingsDialog] = useState(false);
@@ -43,10 +51,12 @@ const booking = () => {
         setRuanganOptions(initialRuanganOptions);
         setSesiOptions(initialSesiOptions);
         setMahasiswaPklOptions(initialMahasiswaPklOptions);
+        setMahasiswaSemproOptions(initialMahasiswaSemproOptions);
+        setMahasiswaTaOptions(initialMahasiswaTaOptions);
         setbookings(data_booking);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [initialRuanganOptions, initialSesiOptions, initialMahasiswaPklOptions, data_booking, props.flash]);
+    }, [initialRuanganOptions, initialSesiOptions, initialMahasiswaSemproOptions, initialMahasiswaTaOptions, initialMahasiswaPklOptions, data_booking, props.flash]);
 
     const openNew = () => {
         setbooking(emptybooking);
@@ -359,6 +369,8 @@ const booking = () => {
                             ruanganOptions={ruanganOptions}
                             sesiOptions={sesiOptions}
                             mahasiswaPklOptions={mahasiswaPklOptions}
+                            mahasiswaSemproOptions={mahasiswaSemproOptions}
+                            mahasiswaTaOptions={mahasiswaTaOptions}
                             bookingDialogFooter={bookingDialogFooter}
                             hideDialog={hideDialog}
                         />

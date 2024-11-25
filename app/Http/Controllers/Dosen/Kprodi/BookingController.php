@@ -38,6 +38,29 @@ class BookingController extends Controller
                 'value' => $p->r_usulan->r_mahasiswa->id_mahasiswa ?? null,
             ];
         });
+        // Contoh penanganan Jadwal Data Sempro
+        $sempro = Mahasiswa::whereHas('r_kelas', function ($query) use ($kaprodi) {
+            $query->where('prodi_id', $kaprodi);
+        })->get();
+
+        $mahasiswaSemproOptions = $sempro->map(function ($p) {
+            return [
+                'label' => $p->nama_mahasiswa ?? 'Unknown',
+                'value' => $p->id_mahasiswa ?? null,
+            ];
+        });
+        // Contoh penanganan Jadwal Data TA
+        $ta = Mahasiswa::whereHas('r_kelas', function ($query) use ($kaprodi) {
+            $query->where('prodi_id', $kaprodi);
+        })->get();
+
+        $mahasiswaTaOptions = $ta->map(function ($p) {
+            return [
+                'label' => $p->nama_mahasiswa ?? 'Unknown',
+                'value' => $p->id_mahasiswa ?? null,
+            ];
+        });
+        // dd($mahasiswaSemproOptions->toArray(), $mahasiswaTaOptions->toArray());
         return Inertia::render('main/kaprodi/booking/booking', [
             'data_booking' => Booking::with('r_sesi', 'r_ruangan', 'r_mahasiswa')->get(),
             'nextNumber' => CariNomor::getCariNomor(Booking::class, 'id_booking'),
@@ -48,6 +71,8 @@ class BookingController extends Controller
                 return new BaseOptionsResource($p, 'periode_sesi', 'id_sesi');
             })),
             'mahasiswaPklOptions' => $mahasiswaPklOptions,
+            'mahasiswaSemproOptions' => $mahasiswaSemproOptions,
+            'mahasiswaTaOptions' => $mahasiswaTaOptions,
         ]);
     }
 

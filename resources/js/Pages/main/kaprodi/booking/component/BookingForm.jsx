@@ -14,7 +14,9 @@ const BookingForm = ({
     bookingDialogFooter,
     hideDialog,
     setbooking,
-        ons,
+    mahasiswaPklOptions,
+    mahasiswaSemproOptions,
+    mahasiswaTaOptions,
 }) => {
     const [calendarValue, setCalendarValue] = useState(null);
     const parseDate = (dateString) => {
@@ -68,6 +70,7 @@ const BookingForm = ({
     const onTipeChange = (e) => {
         let _booking = { ...booking };
         _booking["tipe"] = e.value;
+        _booking["mahasiswa_id"] = "";
 
         setbooking(_booking);
     };
@@ -131,9 +134,18 @@ const BookingForm = ({
                     id="mahasiswa_id"
                     value={booking.mahasiswa_id || ""}
                     onChange={(e) => onInputChange(e, "mahasiswa_id")}
-                    options={mahasiswaPklOptions}
+                    options={
+                        booking.tipe === "1"
+                            ? mahasiswaPklOptions
+                            : booking.tipe === "2"
+                            ? mahasiswaSemproOptions
+                            : booking.tipe === "3"
+                            ? mahasiswaTaOptions
+                            : []
+                    }
                     placeholder="Select a Mahasiswa"
                     optionLabel="label"
+                    disabled={!booking.tipe}
                     required
                 />
                 {submitted && !booking.mahasiswa_id && (
