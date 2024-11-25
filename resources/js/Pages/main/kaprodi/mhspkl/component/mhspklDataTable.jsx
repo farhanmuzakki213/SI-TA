@@ -23,6 +23,24 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
         );
     };
 
+    const pembimbingpklBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Pembimbing PKL</span>
+                {rowData.pembimbing_pkl || 'N/A'}
+            </>
+        );
+    };
+
+    const judulBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Judul</span>
+                {rowData.judul || 'N/A'}
+            </>
+        );
+    };
+
     const pengujiBodyTemplate = (rowData) => {
         return (
             <>
@@ -72,9 +90,11 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
             removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="r_usulan.r_mahasiswa.nama_mahasiswa" header="Mahasiswa" body={namaBodyTemplate} headerStyle={{ width: "20rem" }} sortable></Column>
-            <Column field="r_pembimbing.nama_dosen" header="Pembimbing" body={pembimbingBodyTemplate} headerStyle={{ width: "20rem" }} sortable></Column>
-            <Column field="r_penguji.nama_dosen" header="Penguji" body={pengujiBodyTemplate} headerStyle={{ width: "20rem" }} sortable></Column>
+            <Column field="r_usulan.r_mahasiswa.nama_mahasiswa" header="Mahasiswa" body={namaBodyTemplate} sortable></Column>
+            <Column field="r_pembimbing.nama_dosen" header="Pembimbing" body={pembimbingBodyTemplate} sortable></Column>
+            <Column field="pembimbing_pkl" header="Pembimbing_pkl" body={pembimbingpklBodyTemplate} sortable></Column>
+            <Column field="judul" header="Judul" body={judulBodyTemplate} sortable></Column>
+            <Column field="r_penguji.nama_dosen" header="Penguji" body={pengujiBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ maxWidth: "1rem" }}></Column>
         </DataTable>
     );
