@@ -4,6 +4,7 @@ import { Dropdown } from "primereact/dropdown";
 import { RadioButton } from "primereact/radiobutton";
 import { Calendar } from "primereact/calendar";
 import "primeicons/primeicons.css";
+import { router } from "@inertiajs/react";
 
 const BookingForm = ({
     bookingDialog,
@@ -14,15 +15,19 @@ const BookingForm = ({
     bookingDialogFooter,
     hideDialog,
     setbooking,
-        ons,
+    mahasiswaPklOptions,
+    mahasiswaSemproOptions,
+    mahasiswaTaOptions,
+    bookingused
 }) => {
     const [calendarValue, setCalendarValue] = useState(null);
+
     const parseDate = (dateString) => {
         if (!dateString) return null;
         const [year, month, day] = dateString.split("-");
         return new Date(year, month - 1, day);
     };
-
+    console.log(bookingused);
     const formatDate = (date) => {
         if (!date) return "";
 
@@ -57,7 +62,15 @@ const BookingForm = ({
             ...prevState,
             [field]: value,
         }));
+        if (field === "mahasiswa_id") {
+            router.get('/booking', { mahasiswa_id: value }, {
+                preserveState: true,
+                replace: true,
+            });
+        }
     };
+
+
     const onStatusChange = (e) => {
         let _booking = { ...booking };
         _booking["status_booking"] = e.value;
@@ -68,6 +81,7 @@ const BookingForm = ({
     const onTipeChange = (e) => {
         let _booking = { ...booking };
         _booking["tipe"] = e.value;
+        _booking["mahasiswa_id"] = "";
 
         setbooking(_booking);
     };
@@ -78,7 +92,36 @@ const BookingForm = ({
     minDate.setDate(minDate.getDate() + 1);
 
     const maxDate = new Date(today);
-    maxDate.setDate(maxDate.getDate() + 8);
+    maxDate.setDate(maxDate.getDate() + 14);
+
+    const filterAvailableSesi = (ruangan_id, tgl_booking) => {
+        return sesiOptions.filter((session) => {
+            return !bookingused.some(
+                (used) =>
+                    used.ruangan_id === ruangan_id &&
+                    used.sesi_id === session.value &&
+                    used.tgl_booking === tgl_booking
+            );
+        });
+    };
+
+    const filterAvailableRuangan = (tgl_booking) => {
+        return ruanganOptions.filter((ruangan) => {
+            const ruanganBookings = bookingused.filter(
+                (used) => used.tgl_booking === tgl_booking && used.ruangan_id === ruangan.value
+            );
+            return ruanganBookings.length < 4;
+        });
+    };
+
+
+    const filteredSesiOptions =
+        booking.ruangan_id && booking.tgl_booking
+            ? filterAvailableSesi(booking.ruangan_id, booking.tgl_booking)
+            : sesiOptions;
+
+    const filteredRuanganOptions =
+        booking.tgl_booking ? filterAvailableRuangan(booking.tgl_booking) : ruanganOptions;
 
     return (
         <Dialog
@@ -90,57 +133,6 @@ const BookingForm = ({
             footer={bookingDialogFooter}
             onHide={hideDialog}
         >
-            {/* Ruangan ID */}
-            <div className="field">
-                <label htmlFor="ruangan_id">Ruangan</label>
-                <Dropdown
-                    id="ruangan_id"
-                    value={booking.ruangan_id || ""}
-                    onChange={(e) => onInputChange(e, "ruangan_id")}
-                    options={ruanganOptions}
-                    placeholder="Select a Ruangan"
-                    optionLabel="label"
-                    required
-                />
-                {submitted && !booking.ruangan_id && (
-                    <small className="p-invalid"> Ruangan is required.</small>
-                )}
-            </div>
-
-            {/* Sesi ID */}
-            <div className="field">
-                <label htmlFor="sesi_id">Sesi</label>
-                <Dropdown
-                    id="sesi_id"
-                    value={booking.sesi_id || ""}
-                    onChange={(e) => onInputChange(e, "sesi_id")}
-                    options={sesiOptions}
-                    placeholder="Select a Sesi"
-                    optionLabel="label"
-                    required
-                />
-                {submitted && !booking.sesi_id && (
-                    <small className="p-invalid"> Sesi is required.</small>
-                )}
-            </div>
-
-            {/* Mahasiswa ID */}
-            <div className="field">
-                <label htmlFor="mahasiswa_id">Mahasiswa</label>
-                <Dropdown
-                    id="mahasiswa_id"
-                    value={booking.mahasiswa_id || ""}
-                    onChange={(e) => onInputChange(e, "mahasiswa_id")}
-                    options={mahasiswaPklOptions}
-                    placeholder="Select a Mahasiswa"
-                    optionLabel="label"
-                    required
-                />
-                {submitted && !booking.mahasiswa_id && (
-                    <small className="p-invalid"> Mahasiswa is required.</small>
-                )}
-            </div>
-
             {/* Tipe */}
             <div className="field">
                 <label className="mb-3">Tujuan Booking</label>
@@ -178,6 +170,33 @@ const BookingForm = ({
                 </div>
             </div>
 
+            {/* Mahasiswa ID */}
+            <div className="field">
+                <label htmlFor="mahasiswa_id">Mahasiswa</label>
+                <Dropdown
+                    id="mahasiswa_id"
+                    value={booking.mahasiswa_id || ""}
+                    onChange={(e) => onInputChange(e, "mahasiswa_id")}
+                    options={
+                        booking.tipe === "1"
+                            ? mahasiswaPklOptions
+                            : booking.tipe === "2"
+                                ? mahasiswaSemproOptions
+                                : booking.tipe === "3"
+                                    ? mahasiswaTaOptions
+                                    : []
+                    }
+                    placeholder="Select a Mahasiswa"
+                    optionLabel="label"
+                    optionValue="value"
+                    disabled={!booking.tipe}
+                    required
+                />
+                {submitted && !booking.mahasiswa_id && (
+                    <small className="p-invalid"> Mahasiswa is required.</small>
+                )}
+            </div>
+
             {/* Tanggal Booking */}
             <div className="field">
                 <label htmlFor="tgl_booking">Tanggal Booking</label>
@@ -191,7 +210,55 @@ const BookingForm = ({
                     placeholder="Pilih Tanggal"
                     minDate={minDate}
                     maxDate={maxDate}
+                    disabledDays={[0]}
+                    disabled={!booking.mahasiswa_id}
+                    selectOtherMonths={false}
+
                 />
+            </div>
+
+            {/* Ruangan ID */}
+            <div className="field">
+                <label htmlFor="ruangan_id">Ruangan</label>
+                <Dropdown
+                    id="ruangan_id"
+                    value={booking.ruangan_id || ""}
+                    onChange={(e) => onInputChange(e, "ruangan_id")}
+                    options={filteredRuanganOptions}
+                    placeholder={
+                        filteredRuanganOptions.length === 0
+                            ? "Tidak ada Ruangan tersedia"
+                            : "Select a Ruangan"
+                    }
+                    optionLabel="label"
+                    required
+                    disabled={!booking.tgl_booking || filteredRuanganOptions.length === 0}
+                />
+                {submitted && !booking.ruangan_id && (
+                    <small className="p-invalid"> Ruangan is required.</small>
+                )}
+            </div>
+
+            {/* Sesi ID */}
+            <div className="field">
+                <label htmlFor="sesi_id">Sesi</label>
+                <Dropdown
+                    id="sesi_id"
+                    value={booking.sesi_id || ""}
+                    onChange={(e) => onInputChange(e, "sesi_id")}
+                    options={filteredSesiOptions}
+                    placeholder={
+                        filteredSesiOptions.length === 0 || filteredRuanganOptions.length === 0
+                            ? "Tidak ada sesi tersedia"
+                            : "Select a Sesi"
+                    }
+                    optionLabel="label"
+                    required
+                    disabled={!booking.ruangan_id || filteredSesiOptions.length === 0}
+                />
+                {submitted && !booking.sesi_id && (
+                    <small className="p-invalid"> Sesi is required.</small>
+                )}
             </div>
 
             {/* Status Jadwal Ruangan */}

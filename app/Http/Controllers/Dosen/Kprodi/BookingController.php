@@ -15,6 +15,7 @@ use App\Models\Sesi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -23,21 +24,83 @@ class BookingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $mahasiswaId = $request->query('mahasiswa_id');
         $id_user = auth()->user()->id;
         $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
         $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
+
+        /* Pengecekan Ketersediaan ruangan dan Jadwal Dosen */
+        $dosen_id = PklMhs::whereHas('r_usulan', function ($query) use ($mahasiswaId) {
+            $query->where('mahasiswa_id', $mahasiswaId);
+        })
+            ->select('pembimbing_id', 'penguji_id')
+            ->get()
+            ->flatMap(function ($item) {
+                return [$item->pembimbing_id, $item->penguji_id];
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+        // Log::debug('Query Dosen ID:', ['dosen_id' => $dosen_id]);
+        $RSTterpakai = Booking::select('ruangan_id', 'sesi_id', 'tgl_booking')->where('status_booking', '1')->get()->toArray();
+        $mahasiswa_id = PklMhs::where('status_ver_pkl', '3')
+            ->where(function ($query) use ($dosen_id) {
+                $query->whereIn('pembimbing_id', $dosen_id)
+                    ->orWhereIn('penguji_id', $dosen_id);
+            })
+            ->with('r_usulan')
+            ->get()
+            ->map(function ($pklMhs) {
+                return $pklMhs->r_usulan->mahasiswa_id;
+            })
+            ->toArray();
+        $JadwalDosen = Booking::select('ruangan_id', 'sesi_id', 'tgl_booking')->where('status_booking', '1')->whereIn('mahasiswa_id', $mahasiswa_id)->get()->toArray();
+        $mergeDataJadwal = array_merge($RSTterpakai, $JadwalDosen);
+        $GetUniqueDataJadwal = array_values(array_unique($mergeDataJadwal, SORT_REGULAR));
+        // dd($GetUniqueDataJadwal);
+        /* Pkl */
+        $bookingsidangpkl = Booking::where('status_booking', '1')->pluck('mahasiswa_id')->toArray();
         $pklmhs = PklMhs::where('status_ver_pkl', '3')->whereHas('r_usulan.r_mahasiswa.r_kelas', function ($query) use ($kaprodi) {
             $query->where('prodi_id', $kaprodi);
         })->get();
-        // dd($pklmhs);
-        $mahasiswaPklOptions = $pklmhs->map(function ($p) {
+
+        $mahasiswaPklOptions = $pklmhs->filter(function ($p) use ($bookingsidangpkl) {
+            return !in_array($p->r_usulan->r_mahasiswa->id_mahasiswa, $bookingsidangpkl);
+        })->map(function ($p) {
             return [
                 'label' => $p->r_usulan->r_mahasiswa->nama_mahasiswa ?? 'Unknown',
                 'value' => $p->r_usulan->r_mahasiswa->id_mahasiswa ?? null,
             ];
+        })->values();
+
+        /* Sempro */
+        // Contoh penanganan Jadwal Data Sempro
+        $sempro = Mahasiswa::whereHas('r_kelas', function ($query) use ($kaprodi) {
+            $query->where('prodi_id', $kaprodi);
+        })->get();
+
+        $mahasiswaSemproOptions = $sempro->map(function ($p) {
+            return [
+                'label' => $p->nama_mahasiswa ?? 'Unknown',
+                'value' => $p->id_mahasiswa ?? null,
+            ];
         });
+
+        /* TA */
+        // Contoh penanganan Jadwal Data TA
+        $ta = Mahasiswa::whereHas('r_kelas', function ($query) use ($kaprodi) {
+            $query->where('prodi_id', $kaprodi);
+        })->get();
+
+        $mahasiswaTaOptions = $ta->map(function ($p) {
+            return [
+                'label' => $p->nama_mahasiswa ?? 'Unknown',
+                'value' => $p->id_mahasiswa ?? null,
+            ];
+        });
+        // dd($mahasiswaSemproOptions->toArray(), $mahasiswaTaOptions->toArray());
         return Inertia::render('main/kaprodi/booking/booking', [
             'data_booking' => Booking::with('r_sesi', 'r_ruangan', 'r_mahasiswa')->get(),
             'nextNumber' => CariNomor::getCariNomor(Booking::class, 'id_booking'),
@@ -48,6 +111,9 @@ class BookingController extends Controller
                 return new BaseOptionsResource($p, 'periode_sesi', 'id_sesi');
             })),
             'mahasiswaPklOptions' => $mahasiswaPklOptions,
+            'mahasiswaSemproOptions' => $mahasiswaSemproOptions,
+            'mahasiswaTaOptions' => $mahasiswaTaOptions,
+            'bookingused' => $GetUniqueDataJadwal,
         ]);
     }
 
@@ -69,7 +135,7 @@ class BookingController extends Controller
             'id_booking' => 'required',
             'ruangan_id' => 'required|exists:ruangan,id_ruangan',
             'sesi_id' => 'required|exists:sesi,id_sesi',
-            'mahasiswa_id'=> 'required|exists:mahasiswas,id_mahasiswa',
+            'mahasiswa_id' => 'required|exists:mahasiswas,id_mahasiswa',
             'tgl_booking' => 'required',
             'tipe' => 'required|string'
         ]);
@@ -131,7 +197,7 @@ class BookingController extends Controller
             'id_booking' => 'required',
             'ruangan_id' => 'required|exists:ruangan,id_ruangan',
             'sesi_id' => 'required|exists:sesi,id_sesi',
-            'mahasiswa_id'=> 'required|exists:mahasiswas,id_mahasiswa',
+            'mahasiswa_id' => 'required|exists:mahasiswas,id_mahasiswa',
             'tgl_booking' => 'required',
             'tipe' => 'required|string',
             'status_booking' => 'required|string'

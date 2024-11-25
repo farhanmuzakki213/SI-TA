@@ -74,6 +74,13 @@ const LaporanpklForm = ({
             day: "2-digit",
         });
     };
+
+    const onFileSelect = (files) => {
+        setlaporanpkl((prevState) => ({
+            ...prevState,
+            dokumen_laporan: files,
+        }));
+    };
     // console.log(laporanpkl);
 
     return (
@@ -126,11 +133,13 @@ const LaporanpklForm = ({
             <div className="field">
                 <label htmlFor="dokumen_laporan">Dokumen Laporan</label>
                 <FileUploadC
+                    multiple={false}
                     name="dokumen_laporan"
-                    onFileSelect={(file) => {
-                        setlaporanpkl((prev) => ({ ...prev, dokumen_laporan: file || prev.dokumen_laporan, }));
-                    }}
+                    onFileSelect={onFileSelect}
                 />
+                {submitted && !laporanpkl?.dokumen_laporan && (
+                    <small className="p-invalid">Dokumen Laporan is required.</small>
+                )}
             </div>
         </Dialog>
     );

@@ -119,20 +119,20 @@ const laporanpkl = () => {
         try {
 
             const formData = new FormData();
-            formData.append("id_log_book_pkl", nextNumber);
             formData.append("tgl_awal_kegiatan", laporanpkl.tgl_awal_kegiatan);
             formData.append("tgl_akhir_kegiatan", laporanpkl.tgl_akhir_kegiatan);
             formData.append("dokumen_laporan", laporanpkl.dokumen_laporan);
 
             if (isCreating) {
+                formData.append("id_log_book_pkl", nextNumber);
                 await router.post("/logbookmhs/store", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
             } else {
-                await router.put(`/logbookmhs/${laporanpkl.id_log_book_pkl}/update`,
-                    formData,
-                    { headers: { "Content-Type": "multipart/form-data" } }
-                );
+                await router.post(`/logbookmhs/${laporanpkl.id_log_book_pkl}/update`, formData, {
+                    _method: 'put',
+                    forceFormData: true,
+                });
             }
 
             if (isCreating) {

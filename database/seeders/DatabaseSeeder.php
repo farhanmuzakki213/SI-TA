@@ -29,5 +29,6 @@ class DatabaseSeeder extends Seeder
         $this->call([UsulanTempatPklSeeder::class,]);
         $this->call([PklMhsSeeder::class,]);
         $this->call([LogBookPklSeeder::class,]);
+        $this->call([BookingSeeder::class,]);
     }
 }

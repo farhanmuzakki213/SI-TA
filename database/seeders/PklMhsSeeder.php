@@ -14,14 +14,14 @@ class PklMhsSeeder extends Seeder
     public function run(): void
     {
         $data_pkl_mhs = [
-            [1,  13,  14,  1  , "pembimbing1" , "test1.pdf", "judul1", "1"],
-            [2,  40,  46,  2  , "pembimbing2" , "test2.pdf", "judul2", "1"],
-            [3,  50,  52,  8  , "pembimbing3" , "test3.pdf", "judul3", "2"],
-            [4,  66,  85,  11 , "pembimbing4" , "test4.pdf", "judul4", "1"],
-            [5,  91,  103, 14 , "pembimbing5" , "test5.pdf", "judul5", "3"],
-            [6,  109, 116, 17 , "pembimbing6" , "test6.pdf", "judul6", "1"],
-            [7,  121, 122, 20 , "pembimbing7" , "test7.pdf", "judul7", "1"],
-            [8,  127, 132, 23 , "pembimbing8" , "test8.pdf", "judul8", "2"],
+            [1,  13,  14,  1  , "pembimbing1" , "test1.pdf", "judul1", "3"],
+            [2,  14,  46,  2  , "pembimbing2" , "test2.pdf", "judul2", "3"],
+            [3,  50,  14,  8  , "pembimbing3" , "test3.pdf", "judul3", "3"],
+            [4,  66,  14,  11 , "pembimbing4" , "test4.pdf", "judul4", "3"],
+            [5,  14,  103, 14 , "pembimbing5" , "test5.pdf", "judul5", "3"],
+            [6,  14, 116, 17 , "pembimbing6" , "test6.pdf", "judul6", "3"],
+            [7,  121, 14, 20 , "pembimbing7" , "test7.pdf", "judul7", "3"],
+            [8,  127, 132, 23 , "pembimbing8" , "test8.pdf", "judul8", "3"],
             [9,  160, 198, 26 , "pembimbing9" , "test9.pdf", "judul9", "1"],
             [10, 206, 212, 29 , "pembimbing10", "test10.pdf", "judul10", "1"],
             [11, 220, 223, 32 , "pembimbing11", "test11.pdf", "judul11", "3"],

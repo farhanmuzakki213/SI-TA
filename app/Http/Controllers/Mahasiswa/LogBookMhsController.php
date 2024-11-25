@@ -109,7 +109,7 @@ class LogBookMhsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        dd($request->all(), $id);
+        // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
             'tgl_awal_kegiatan' => 'required|date',
             'tgl_akhir_kegiatan' => 'required|date|after_or_equal:tgl_awal_kegiatan',
@@ -121,9 +121,9 @@ class LogBookMhsController extends Controller
         }
         DB::beginTransaction();
         try {
-            $oldData = log_book_pkl::where('id_look_book_pkl', $id)->first();
-            if ($oldData->file !== null && $request->hasFile('dokumen_laporan')) {
-                Storage::delete('public/uploads/pkl/laporan/' . $oldData->file);
+            $oldData = log_book_pkl::where('id_log_book_pkl', $id)->first();
+            if ($oldData->dokumen_laporan !== null && $request->hasFile('dokumen_laporan')) {
+                Storage::delete('public/uploads/pkl/laporan/' . $oldData->dokumen_laporan);
             }
             $filename = null;
             if ($request->hasFile('dokumen_laporan')) {
@@ -131,16 +131,14 @@ class LogBookMhsController extends Controller
                 $filename = $file->getClientOriginalName();
                 $path = 'public/uploads/pkl/laporan/';
                 $file->storeAs($path, $filename);
-                $data['file'] = $filename;
             }
             $data = [
                 'tgl_awal_kegiatan' => $request->tgl_awal_kegiatan,
-                'tgl_akhir_kegiatan' => $request->tgl_akhir_kegiatan
+                'tgl_akhir_kegiatan' => $request->tgl_akhir_kegiatan,
+                'dokumen_laporan' => $filename
             ];
-
-
-            $laporan = log_book_pkl::findOrFail($id);
-            $laporan->update($data);
+            // dd($data);
+            $oldData->update($data);
             DB::commit();
             return to_route('logbookmhs')->with('success', 'Laporan Pkl updated successfully');
         } catch (\Exception $e) {

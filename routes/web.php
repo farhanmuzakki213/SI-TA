@@ -66,7 +66,7 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         // Data Log Book MHS PKL / Laporan MHS PKL
         Route::get('/logbookmhs', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'index'])->name('logbookmhs');
         Route::post('/logbookmhs/store', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'store'])->name('logbookmhs.store');
-        Route::put('/logbookmhs/{id}/update', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'update'])->name('logbookmhs.update');
+        Route::post('/logbookmhs/{id}/update', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'update'])->name('logbookmhs.update');
         Route::delete('/logbookmhs/{laporanpkl}/delete', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'destroy'])->name('logbookmhs.destroy');
         Route::delete('/logbookmhs/destroyMultiple', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'destroyMultiple'])->name('logbookmhs.destroyMultiple');
 

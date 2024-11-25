@@ -35,7 +35,7 @@ const BookingDataTable = ({ bookings, selectedbookings, setSelectedbookings, glo
         return (
             <>
                 <span className="p-column-title">Tipe Booking</span>
-                {rowData.tipe || 'N/A'}
+                {rowData.tipe === "1" ? "Sidang PKL" : rowData.tipe === "2" ? "Sidang Sempro" : "Sidang TA"}
             </>
         );
     };

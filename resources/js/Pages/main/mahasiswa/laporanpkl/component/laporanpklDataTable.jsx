@@ -23,6 +23,24 @@ const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlapo
         );
     };
 
+    const komentarBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Komentar</span>
+                {rowData.komentar ? rowData.komentar : (rowData.status === "2" ? "Sedang Diproses" : "N/A")}
+            </>
+        );
+    };
+
+    const statusBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Status</span>
+                {rowData.status === "1" ? "Ditolak" : rowData.status === "2" ? "Diproses" : "Diterima"}
+            </>
+        );
+    };
+
     const fileBodyTemplate = (rowData) => {
         // Pastikan dokumen_laporan adalah string (misalnya, nama file)
         if (typeof rowData.dokumen_laporan === "string") {
@@ -87,6 +105,8 @@ const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlapo
             <Column field="tgl_awal_kegiatan" header="Tanggal Awal" body={tglawalBodyTemplate} sortable></Column>
             <Column field="tgl_akhir_kegiatan" header="Tanggal Akhir" body={tglakhirBodyTemplate} sortable></Column>
             <Column field="dokumen_laporan" header="File" body={fileBodyTemplate} sortable></Column>
+            <Column field="komentar" header="Komentar" body={komentarBodyTemplate} sortable></Column>
+            <Column field="status" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ maxWidth: "1rem" }}></Column>
         </DataTable>
     );
