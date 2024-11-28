@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PklMhs;
+use App\Models\User;
+use App\Notifications\PenugasanDosen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -30,11 +33,21 @@ class UsulanSidangPklController extends Controller
         }
         DB::beginTransaction();
         try {
+            $pkl_mhs = PklMhs::with('r_usulan.r_mahasiswa', 'r_pembimbing', 'r_penguji')->findOrFail($id);
+            // dd($pkl_mhs->toArray());
             $data = [
                 'status_ver_pkl' => $request->status_ver_pkl,
             ];
+            if ($request->status_ver_pkl == 3) {
+                $data_pembimbing = User::where('id', $pkl_mhs->r_pembimbing->user_id)->first();
+                $data_penguji = User::where('id', $pkl_mhs->r_penguji->user_id)->first();
 
-            $pkl_mhs = PklMhs::findOrFail($id);
+                if($data_pembimbing && $data_penguji){
+                    Notification::send($data_pembimbing, new PenugasanDosen($pkl_mhs));
+                    Notification::send($data_penguji, new PenugasanDosen($pkl_mhs));
+                }
+            }
+
             $pkl_mhs->update($data);
             DB::commit();
             return to_route('usulansidangpkl')->with('success', 'Ver Sidang Pkl updated successfully');
