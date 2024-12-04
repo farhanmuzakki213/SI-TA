@@ -10,10 +10,10 @@ class PklNilai extends Model
     use HasFactory;
 
     protected $fillable = [
-        'pkl_mhs_id', 'dosen_id', 'nilai', 'sebagai'
+        'id_pkl_nilai','pkl_mhs_id', 'dosen_id', 'nilai', 'sebagai'
     ];
     protected $table = 'pkl_nilais';
-    protected $primaryKey = 'pkl_mhs_id';
+    protected $primaryKey = 'id_pkl_nilai';
 
     public function r_pkl_mhs()
     {
