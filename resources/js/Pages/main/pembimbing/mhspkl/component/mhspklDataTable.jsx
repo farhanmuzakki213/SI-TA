@@ -38,7 +38,7 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
             <>
                 {rowData.id_pkl_mhs && (
                     <Link
-                        href={route('MhsPklPembimbing.detail'/* , { id: rowData.id_pkl_mhs } */)}
+                        href={'/Pembimbing/Mhspkl/' + rowData.id_pkl_mhs}
                         className="text-blue-500 hover:underline"
                         title="View Details"
                     >

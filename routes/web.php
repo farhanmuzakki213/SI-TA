@@ -83,7 +83,7 @@ Route::group(['middleware' => ['role:dosenPembimbing']], function () {
 
         // Data Mahasiswa
         Route::get('/Pembimbing/Mhspkl', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'index'])->name('MhsPklPembimbing');
-        Route::get('/Pembimbing/Mhspkl/Details', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'detail'])->name('MhsPklPembimbing.detail');
+        Route::get('/Pembimbing/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'detail']);
         // Persetujuan Tempat PKL
         Route::get('/laporanpkl', [\App\Http\Controllers\Dosen\Pembimbing\LaporanPklController::class, 'index'])->name('laporanpkl');
         Route::put('/laporanpkl/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\LaporanPklController::class, 'update'])->name('laporanpkl.update');

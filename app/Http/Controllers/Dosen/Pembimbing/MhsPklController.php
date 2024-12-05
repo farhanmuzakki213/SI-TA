@@ -23,9 +23,9 @@ class MhsPklController extends Controller
         ]);
     }
 
-    public function detail(/* $id */)
+    public function detail($id)
     {
-        /* if (!$id) {
+        if (!$id) {
             abort(404, 'ID is required');
         }
 
@@ -44,12 +44,12 @@ class MhsPklController extends Controller
             ->where('dosen_id', $id_dosen)
             ->get();
 
-        $data_laporan = log_book_pkl::where('pkl_mhs_id', $id)->get(); */
+        $data_laporan = log_book_pkl::where('pkl_mhs_id', $id)->get();
 
         return Inertia::render('main/pembimbing/mhspkl/detail', [
-            // 'data_mhs' => $data_mhs,
-            // 'data_nilai' => $data_nilai,
-            // 'data_laporan' => $data_laporan,
+            'data_mhs' => $data_mhs,
+            'data_nilai' => $data_nilai,
+            'data_laporan' => $data_laporan,
         ]);
     }
 }
