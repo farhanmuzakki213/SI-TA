@@ -15,7 +15,7 @@ export const LayoutProvider = ({ children }) => {
     const [layoutState, setLayoutState] = useState({
         staticMenuDesktopInactive: false,
         overlayMenuActive: false,
-        profileSidebarVisible: false,
+        topbarSidebarVisible: false,
         configSidebarVisible: false,
         staticMenuMobileActive: false,
         menuHoverActive: false
@@ -33,8 +33,8 @@ export const LayoutProvider = ({ children }) => {
         }
     };
 
-    const showProfileSidebar = () => {
-        setLayoutState((prevLayoutState) => ({ ...prevLayoutState, profileSidebarVisible: !prevLayoutState.profileSidebarVisible }));
+    const showTopBarSidebar = () => {
+        setLayoutState((prevLayoutState) => ({ ...prevLayoutState, topbarSidebarVisible: !prevLayoutState.topbarSidebarVisible }));
     };
 
     const isOverlay = () => {
@@ -51,7 +51,7 @@ export const LayoutProvider = ({ children }) => {
         layoutState,
         setLayoutState,
         onMenuToggle,
-        showProfileSidebar
+        showTopBarSidebar
     };
 
     return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;

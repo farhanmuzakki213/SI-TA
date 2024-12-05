@@ -83,6 +83,21 @@ Route::group(['middleware' => ['role:dosenPembimbing']], function () {
         // Persetujuan Tempat PKL
         Route::get('/laporanpkl', [\App\Http\Controllers\Dosen\Pembimbing\LaporanPklController::class, 'index'])->name('laporanpkl');
         Route::put('/laporanpkl/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\LaporanPklController::class, 'update'])->name('laporanpkl.update');
+
+        // Nilai Sidang PKL
+        Route::get('/nilaipklpembimbing', [\App\Http\Controllers\Dosen\Pembimbing\PklNilaiController::class, 'index'])->name('nilaipklpembimbing');
+        Route::post('/nilaipklpembimbing/store', [\App\Http\Controllers\Dosen\Pembimbing\PklNilaiController::class, 'store'])->name('nilaipklpembimbing.store');
+        Route::post('/nilaipklpembimbing/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\PklNilaiController::class, 'update'])->name('nilaipklpembimbing.update');
+    });
+});
+
+// Route Dosen Penguji
+Route::group(['middleware' => ['role:dosenPenguji']], function () {
+    Route::middleware('auth')->group(function () {
+        // Nilai Sidang PKL
+        Route::get('/nilaipklpenguji', [\App\Http\Controllers\Dosen\Penguji\PklNilaiController::class, 'index'])->name('nilaipklpenguji');
+        Route::post('/nilaipklpenguji/store', [\App\Http\Controllers\Dosen\Penguji\PklNilaiController::class, 'store'])->name('nilaipklpenguji.store');
+        Route::post('/nilaipklpenguji/{id}/update', [\App\Http\Controllers\Dosen\Penguji\PklNilaiController::class, 'update'])->name('nilaipklpenguji.update');
     });
 });
 
