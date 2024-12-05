@@ -255,9 +255,9 @@ const tempatpkl = () => {
                         <div className="col-12">
                             <div className="card">
                                 <Toast ref={toast} />
-                                <h5>Lowongan</h5>
+                                <h5>Usulan Tempat</h5>
                                 <Button
-                                    label="Tambah Lowongan"
+                                    label="Tempat"
                                     className="p-button-primary mr-2 mb-2"
                                     icon="pi pi-plus"
                                     severity="primary"

@@ -20,7 +20,7 @@ class PimpinanController extends Controller
      */
     public function index()
     {
-        $data_pimpinan = Pimpinan::with('r_dosen.r_prodi.r_jurusan', 'r_jabatan_pimpinan', 'r_prodi')->orderBy('id_pimpinan')->get();
+        $data_pimpinan = Pimpinan::with('r_dosen.r_prodi.r_jurusan', 'r_jabatan_pimpinan', 'r_prodi.r_jurusan')->orderBy('id_pimpinan')->get();
         $nextNumber = $this->getCariNomor();
         return Inertia::render('main/admin/pimpinan/pimpinan', [
             'data_pimpinan' => $data_pimpinan,

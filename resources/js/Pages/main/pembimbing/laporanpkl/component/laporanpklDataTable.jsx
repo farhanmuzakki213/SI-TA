@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 
 const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlaporanpkls, globalFilter, header, editlaporanpkl, confirmDeletelaporanpkl, dt }) => {
 
-    console.log(laporanpkls);
+    // console.log(laporanpkls);
     const mahasiswaBodyTemplate = (rowData) => {
         return (
             <>
@@ -110,7 +110,7 @@ const LaporanpklDataTable = ({ laporanpkls, selectedlaporanpkls, setSelectedlapo
             <Column field="tgl_awal_kegiatan" header="Tanggal Awal" body={tglawalBodyTemplate} sortable></Column>
             <Column field="tgl_akhir_kegiatan" header="Tanggal Akhir" body={tglakhirBodyTemplate} sortable></Column>
             <Column field="dokumen_laporan" header="File" body={fileBodyTemplate} sortable></Column>
-            <Column field="status_laporan" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column field="status" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );
