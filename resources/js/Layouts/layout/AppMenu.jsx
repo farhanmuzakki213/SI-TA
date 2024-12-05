@@ -85,6 +85,7 @@ const AppMenu = () => {
                     item={{
                         label: 'PKL Pembimbing',
                         items: [
+                            { label: 'Mahasiswa PKL', icon: 'pi pi-fw pi-file', to: route('MhsPklPembimbing') },
                             { label: 'Verifikasi Laporan', icon: 'pi pi-fw pi-file', to: route('laporanpkl') },
                             { label: 'Nilai Sidang', icon: 'pi pi-fw pi-file', to: route('nilaipklpembimbing') },
                         ],
@@ -105,7 +106,7 @@ const AppMenu = () => {
                     index={1}
                 />
                 )}
-                
+
                 {/* Data User, Role, Permission */}
                 {hasRole('mahasiswa') && (<AppMenuitem
                     item={{
