@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Dosen\Pembimbing;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MhsPklResource;
 use App\Models\Dosen;
 use App\Models\log_book_pkl;
 use App\Models\PklMhs;
 use App\Models\PklNilai;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class MhsPklController extends Controller
@@ -33,9 +33,8 @@ class MhsPklController extends Controller
         $id_dosen = Dosen::where('user_id', $id_user)->value('id_dosen');
 
         $data_mhs = PklMhs::where('id_pkl_mhs', $id)
-            ->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_roleTempatPkls.r_tempatPkls')
-            ->first();
-
+            ->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls')
+            ->get();
         if (!$data_mhs) {
             abort(404, 'Data not found');
         }
@@ -47,7 +46,7 @@ class MhsPklController extends Controller
         $data_laporan = log_book_pkl::where('pkl_mhs_id', $id)->get();
 
         return Inertia::render('main/pembimbing/mhspkl/detail', [
-            'data_mhs' => $data_mhs,
+            'data_mhs' => MhsPklResource::collection($data_mhs),
             'data_nilai' => $data_nilai,
             'data_laporan' => $data_laporan,
         ]);
