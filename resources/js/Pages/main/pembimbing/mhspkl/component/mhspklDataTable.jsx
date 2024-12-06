@@ -2,6 +2,8 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Link } from '@inertiajs/react';
+import { Avatar } from 'primereact/avatar';
+import { Button } from 'primereact/button';
 
 const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalFilter, header, editmhspkl, confirmDeletemhspkl, dt }) => {
 
@@ -9,7 +11,7 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
         return (
             <>
                 <span className="p-column-title">Nama Mahasiswa</span>
-                {rowData.r_usulan?.r_mahasiswa?.nama_mahasiswa || 'N/A'}
+                {rowData.nama_mahasiswa || 'N/A'}
             </>
         );
     };
@@ -18,22 +20,40 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
         return (
             <>
                 <span className="p-column-title">NIM Mahasiswa</span>
-                {rowData.r_usulan?.r_mahasiswa?.nim_mahasiswa || 'N/A'}
+                {rowData.nim_mahasiswa || 'N/A'}
             </>
         );
     };
 
-    const roleBodyTemplate = (rowData) => {
+    const prodiBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Role / Divisi</span>
-                {rowData.r_usulan?.r_role_tempat_pkls?.nama_role || 'N/A'}
+                <span className="p-column-title">Prodi Mahasiswa</span>
+                {rowData.prodi || 'N/A'}
+            </>
+        );
+    };
+
+    const jurusanBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Jurusan Mahasiswa</span>
+                {rowData.jurusan || 'N/A'}
+            </>
+        );
+    };
+
+    const gambarBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Foto Profil</span>
+                <Avatar image={rowData.foto_mahasiswa} size="xlarge" />
             </>
         );
     };
 
     const actionBodyTemplate = (rowData) => {
-        console.log(rowData);
+        // console.log(rowData);
         return (
             <>
                 {rowData.id_pkl_mhs && (
@@ -42,7 +62,7 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
                         className="text-blue-500 hover:underline"
                         title="View Details"
                     >
-                        <i className="pi pi-eye"></i>
+                        <Button icon="pi pi-eye" rounded outlined />
                     </Link>
                 )}
             </>
@@ -68,9 +88,11 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
             responsiveLayout="scroll"
             removableSort
         >
-            <Column field="r_usulan.r_mahasiswa.nama_mahasiswa" header="Nama Mahasiswa" sortable body={mahasiswaBodyTemplate}></Column>
-            <Column field="r_usulan.r_mahasiswa.nim_mahasiswa" header="NIM Mahasiswa" sortable body={mahasiswaNimBodyTemplate}></Column>
-            <Column field="r_usulan.r_role_tempat_pkls.nama_role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
+            <Column field="foto_mahasiswa" header="Gambar" sortable body={gambarBodyTemplate}></Column>
+            <Column field="nama_mahasiswa" header="Nama Mahasiswa" sortable body={mahasiswaBodyTemplate}></Column>
+            <Column field="nim_mahasiswa" header="NIM Mahasiswa" sortable body={mahasiswaNimBodyTemplate}></Column>
+            <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate}></Column>
+            <Column field="jurusan" header="Jurusan" body={jurusanBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dosen\Pembimbing;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MhsPklLaporanResource;
 use App\Http\Resources\MhsPklResource;
 use App\Models\Dosen;
 use App\Models\log_book_pkl;
@@ -16,10 +17,10 @@ class MhsPklController extends Controller
     {
         $id_user = auth()->user()->id;
         $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
-        $pkl_mhs_id = PklMhs::where('pembimbing_id', $id_dosen)->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_roleTempatPkls.r_tempatPkls')->get()->toArray();
+        $pkl_mhs = PklMhs::where('pembimbing_id', $id_dosen)->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls')->get();
         // dd($pkl_mhs_id);
         return Inertia::render('main/pembimbing/mhspkl/index', [
-            'data_mhspkl' => $pkl_mhs_id,
+            'data_mhspkl' => MhsPklResource::collection($pkl_mhs),
         ]);
     }
 
@@ -33,7 +34,7 @@ class MhsPklController extends Controller
         $id_dosen = Dosen::where('user_id', $id_user)->value('id_dosen');
 
         $data_mhs = PklMhs::where('id_pkl_mhs', $id)
-            ->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls')
+            ->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls', 'r_pembimbing', 'r_penguji')
             ->get();
         if (!$data_mhs) {
             abort(404, 'Data not found');
@@ -48,7 +49,7 @@ class MhsPklController extends Controller
         return Inertia::render('main/pembimbing/mhspkl/detail', [
             'data_mhs' => MhsPklResource::collection($data_mhs),
             'data_nilai' => $data_nilai,
-            'data_laporan' => $data_laporan,
+            'data_laporan' => MhsPklLaporanResource::collection($data_laporan),
         ]);
     }
 }

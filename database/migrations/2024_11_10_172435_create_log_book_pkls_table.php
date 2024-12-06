@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('log_book_pkls', function (Blueprint $table) {
             $table->bigInteger('id_log_book_pkl')->primary()->unsigned();
             $table->bigInteger('pkl_mhs_id')->unsigned();
+            $table->text('kegiatan');
             $table->date('tgl_awal_kegiatan');
             $table->date('tgl_akhir_kegiatan');
             $table->string('dokumen_laporan');
