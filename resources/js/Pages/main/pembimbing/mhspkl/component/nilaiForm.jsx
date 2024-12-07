@@ -2,7 +2,6 @@ import React from 'react';
 import { Dialog } from 'primereact/dialog';
 import { InputNumber } from 'primereact/inputnumber';
 import { classNames } from 'primereact/utils';
-import { Dropdown } from 'primereact/dropdown';
 
 const NilaipklForm = ({
     nilaipklDialog,
@@ -11,15 +10,7 @@ const NilaipklForm = ({
     nilaipklDialogFooter,
     hideDialog,
     setnilaipkl,
-    mahasiswaPklOptions,
 }) => {
-    const onInputChange = (e, field) => {
-        const value = e.target ? e.target.value : e.value;
-        setnilaipkl((prevState) => ({
-            ...prevState,
-            [field]: value,
-        }));
-    };
 
     const setValue = (e, field) => {
         const value = e.value;
@@ -28,33 +19,18 @@ const NilaipklForm = ({
             [field]: value,
         }));
     };
+    console.log("form nilai",nilaipkl);
 
     return (
         <Dialog
             visible={nilaipklDialog}
             style={{ width: "450px" }}
-            header="Laporan PKL Details"
+            header="Nilai PKL Details"
             modal
             className="p-fluid"
             footer={nilaipklDialogFooter}
             onHide={hideDialog}
         >
-            {/* PKL MHS ID */}
-            <div className="field">
-                <label htmlFor="pkl_mhs_id">Nama Mahasiswa</label>
-                <Dropdown
-                    id="pkl_mhs_id"
-                    value={nilaipkl.pkl_mhs_id || ''}
-                    onChange={(e) => onInputChange(e, "pkl_mhs_id")}
-                    options={mahasiswaPklOptions}
-                    placeholder="Select a mahasiswa"
-                    optionLabel="label"
-                    required
-                />
-                {submitted && !nilaipkl.pkl_mhs_id && (
-                    <small className="p-invalid">Nama Mahasiswa is required.</small>
-                )}
-            </div>
 
             {/* Bahasa */}
             <div className="field">

@@ -14,7 +14,6 @@ const LaporanpklForm = ({
     hideDialog,
     setlaporanpkl,
 }) => {
-    console.log("Data form: ",laporanpkl);
     const onInputChange = (e, field) => {
         const value = e.target ? e.target.value : e.value;
         setlaporanpkl((prevState) => ({

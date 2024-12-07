@@ -161,7 +161,7 @@ const detailPkl = ({
                     <p className="tw-text-gray-600">{data_mhss.tgl_awal_pkl} - {data_mhss.tgl_akhir_pkl}</p>
                 </div>
                 <div>
-                    <p className="tw-text-gray-800 tw-font-semibold">Pembimbing</p>
+                    <p className="tw-text-gray-800 tw-font-semibold">Dosen Pembimbing</p>
                     <p className="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
                 </div>
                 <div>
@@ -169,6 +169,7 @@ const detailPkl = ({
                     {statusUsulan()}
                 </div>
             </div>
+            <hr className="tw-my-2" />
             <div className="tw-mt-4">
                 <div className="card">
                     <h5>Laporan</h5>

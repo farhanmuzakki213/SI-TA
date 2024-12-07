@@ -80,26 +80,23 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
 // Route Dosen Pembimbing
 Route::group(['middleware' => ['role:dosenPembimbing']], function () {
     Route::middleware('auth')->group(function () {
-
         // PKL
         Route::get('/Pembimbing/Mhspkl', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'index'])->name('MhsPklPembimbing');
         Route::get('/Pembimbing/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'detail']);
-        Route::put('/Pembimbing/Mhspkl/Laporan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'update'])->name('MhsPklPembimbingLaporan.update');
-
-        // Nilai Sidang PKL
-        Route::get('/nilaipklpembimbing', [\App\Http\Controllers\Dosen\Pembimbing\PklNilaiController::class, 'index'])->name('nilaipklpembimbing');
-        Route::post('/nilaipklpembimbing/store', [\App\Http\Controllers\Dosen\Pembimbing\PklNilaiController::class, 'store'])->name('nilaipklpembimbing.store');
-        Route::post('/nilaipklpembimbing/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\PklNilaiController::class, 'update'])->name('nilaipklpembimbing.update');
+        Route::put('/Pembimbing/Mhspkl/Laporan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateLaporan'])->name('MhsPklPembimbingLaporan.updateLaporan');
+        Route::post('/Pembimbing/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'storeNilai'])->name('MhsPklPembimbingLaporan.storeNilai');
+        Route::put('/Pembimbing/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateNilai'])->name('MhsPklPembimbingLaporan.updateNilai');
     });
 });
 
 // Route Dosen Penguji
 Route::group(['middleware' => ['role:dosenPenguji']], function () {
     Route::middleware('auth')->group(function () {
-        // Nilai Sidang PKL
-        Route::get('/nilaipklpenguji', [\App\Http\Controllers\Dosen\Penguji\PklNilaiController::class, 'index'])->name('nilaipklpenguji');
-        Route::post('/nilaipklpenguji/store', [\App\Http\Controllers\Dosen\Penguji\PklNilaiController::class, 'store'])->name('nilaipklpenguji.store');
-        Route::post('/nilaipklpenguji/{id}/update', [\App\Http\Controllers\Dosen\Penguji\PklNilaiController::class, 'update'])->name('nilaipklpenguji.update');
+        // PKL
+        Route::get('/Penguji/Mhspkl', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'index'])->name('MhsPklPenguji');
+        Route::get('/Penguji/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'detail']);
+        Route::post('/Penguji/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'storeNilai'])->name('MhsPklPengujiLaporan.storeNilai');
+        Route::put('/Penguji/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'updateNilai'])->name('MhsPklPengujiLaporan.updateNilai');
     });
 });
 

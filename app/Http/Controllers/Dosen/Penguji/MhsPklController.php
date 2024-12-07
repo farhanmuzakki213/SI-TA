@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dosen\Pembimbing;
+namespace App\Http\Controllers\Dosen\Penguji;
 
 use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
@@ -22,9 +22,9 @@ class MhsPklController extends Controller
     {
         $id_user = auth()->user()->id;
         $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
-        $pkl_mhs = PklMhs::where('pembimbing_id', $id_dosen)->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls')->get();
+        $pkl_mhs = PklMhs::where('penguji_id', $id_dosen)->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls')->get();
         // dd($pkl_mhs_id);
-        return Inertia::render('main/pembimbing/mhspkl/index', [
+        return Inertia::render('main/penguji/mhspkl/index', [
             'data_mhspkl' => MhsPklResource::collection($pkl_mhs),
         ]);
     }
@@ -44,51 +44,12 @@ class MhsPklController extends Controller
 
         $data_laporan = log_book_pkl::where('pkl_mhs_id', $id)->get();
 
-        return Inertia::render('main/pembimbing/mhspkl/detail', [
+        return Inertia::render('main/penguji/mhspkl/detail', [
             'data_mhs' => MhsPklResource::collection($data_mhs),
             'data_nilai' => MhsPklNilaiResource::collection($data_nilai),
             'data_laporan' => MhsPklLaporanResource::collection($data_laporan),
             'nextNumber_nilai' => CariNomor::getCariNomor(PklNilai::class, 'id_pkl_nilai'),
         ]);
-    }
-
-    public function updateLaporan(Request $request, string $id)
-    {
-        // dd($request->all(), $id);
-        $validator = Validator::make($request->all(), [
-            'keaktifan' => 'required',
-            'komunikasi' => 'required',
-            'problem_solving' => 'required',
-            'status' => 'required',
-            'komentar' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return back()->with('error', $validator->errors()->first());
-        }
-        $total_nilai = ($request->keaktifan * 0.30) + ($request->komunikasi * 0.30) + ($request->problem_solving * 0.40);
-        $nilai_data = [
-            'keaktifan' => $request->keaktifan,
-            'komunikasi' => $request->komunikasi,
-            'problem_solving' => $request->problem_solving,
-            'total_nilai' => round($total_nilai, 2),
-        ];
-        DB::beginTransaction();
-        try {
-            $data = [
-                'status' => $request->status,
-                'nilai' => json_encode($nilai_data),
-                'komentar' => $request->komentar,
-            ];
-
-            $laporanpkl = log_book_pkl::findOrFail($id);
-            $laporanpkl->update($data);
-            DB::commit();
-            return back()->with('success', 'Laporan Pkl updated successfully');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Laporan Pkl updated failed');
-        }
     }
 
     public function storeNilai(Request $request)
@@ -127,7 +88,7 @@ class MhsPklController extends Controller
                 'pkl_mhs_id' => $request->pkl_mhs_id,
                 'dosen_id' => $id_dosen,
                 'nilai' => json_encode($nilai_data),
-                'sebagai' => 'pembimbing',
+                'sebagai' => 'penguji',
             ]);
             DB::commit();
 

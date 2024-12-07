@@ -33,7 +33,7 @@ const detailSidang = ({
         displayErrorMessage(props.flash?.error);
     }, [data_nilai, props.flash]);
 
-    const nilaiPembimbing = () => {
+    const nilaiPenguji = () => {
         console.log("Nilais", nilaipkls);
         if (!Array.isArray(nilaipkls) || nilaipkls.length === 0) {
             console.warn("nilaipkls is empty or not an array");
@@ -46,10 +46,10 @@ const detailSidang = ({
 
     console.log("Hasil Nilai Pembimbing:", nilaipkls);
 
-    const nilaiPenguji = JSON.parse(data_mhss.nilai_penguji?.nilai || '{}');
+    const nilaiPembimbing = JSON.parse(data_mhss.nilai_pembimbing?.nilai || '{}');
     const nilaiAkhir = () => {
-        if (nilaiPembimbing() != null && nilaiPenguji != null) {
-            return ((data_mhss.nilai_industri + nilaiPenguji.total_nilai + nilaiPembimbing().total_nilai) / 3);
+        if (nilaiPenguji() != null && nilaiPenguji != null) {
+            return ((data_mhss.nilai_industri + nilaiPembimbing.total_nilai + nilaiPenguji().total_nilai) / 3);
         }
         return null;
     };
@@ -133,10 +133,10 @@ const detailSidang = ({
             if (isCreating) {
                 _nilaipkl.id_pkl_nilai = nextNumber_nilai;
                 console.log("create",_nilaipkl);
-                await router.post("/Pembimbing/Mhspkl/Nilai/store", _nilaipkl);
+                await router.post("/Penguji/Mhspkl/Nilai/store", _nilaipkl);
             } else {
                 console.log("update",_nilaipkl);
-                await router.put(`/Pembimbing/Mhspkl/Nilai/${nilaipkl.id_pkl_nilai}/update`, _nilaipkl);
+                await router.put(`/Penguji/Mhspkl/Nilai/${nilaipkl.id_pkl_nilai}/update`, _nilaipkl);
             }
             if (isCreating) {
                 setnilaipkls(prevnilaipkls => [...prevnilaipkls, _nilaipkl]);
@@ -215,7 +215,11 @@ const detailSidang = ({
                 </div>
                 <div>
                     <p className="tw-text-gray-800 tw-font-semibold">Nilai Pembimbing</p>
-                    {!nilaiPembimbing() ? (
+                    <p className="tw-text-gray-600">{!nilaiPembimbing.total_nilai ? '-' : nilaiPembimbing.total_nilai}</p>
+                </div>
+                <div>
+                    <p className="tw-text-gray-800 tw-font-semibold">Nilai Penguji</p>
+                    {!nilaiPenguji() ? (
                         <div className="tw-flex tw-justify-between tw-items-start">
                             <div className="tw-flex tw-items-center">
                                 <p className="tw-text-gray-600">-</p>
@@ -228,18 +232,14 @@ const detailSidang = ({
                     ) : (
                         <div className="tw-flex tw-justify-between tw-items-center">
                             <div className="tw-flex tw-items-center">
-                                <p className="tw-text-gray-600">{nilaiPembimbing().total_nilai}</p>
+                                <p className="tw-text-gray-600">{nilaiPenguji().total_nilai}</p>
                             </div>
                             <Button icon="pi pi-pencil" severity="success" outlined rounded
                                 tooltip="Edit Nilai" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15}}
-                                onClick={() => editnilaipkl(nilaiPembimbing())} />
+                                onClick={() => editnilaipkl(nilaiPenguji())} />
                         </div>
                     )
                     }
-                </div>
-                <div>
-                    <p className="tw-text-gray-800 tw-font-semibold">Nilai Penguji</p>
-                    <p className="tw-text-gray-600">{!nilaiPenguji.total_nilai ? '-' : nilaiPenguji.total_nilai}</p>
                 </div>
                 <div>
                     <p className="tw-text-gray-800 tw-font-semibold">Nilai Akhir</p>

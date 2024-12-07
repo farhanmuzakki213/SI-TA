@@ -20,7 +20,12 @@ class MhsPklResource extends JsonResource
         $jadwal_sidang = Booking::where('mahasiswa_id', $this->r_usulan->r_mahasiswa->id_mahasiswa)->where('tipe', '1')->with('r_sesi', 'r_ruangan')->get();
         $tanggalAwal = Carbon::parse($this->r_usulan->r_roleTempatPkls->tgl_awal_pkl)->format('M d, Y');
         $tanggalAkhir = Carbon::parse($this->r_usulan->r_roleTempatPkls->tgl_akhir_pkl)->format('M d, Y');
-        $tanggalSidang = Carbon::parse($jadwal_sidang[0]->tgl_booking)->format('M d, Y');
+        if (!empty($jadwal_sidang) && isset($jadwal_sidang[0]['tgl_booking'])) {
+            $tanggalSidang = Carbon::parse($jadwal_sidang[0]['tgl_booking'])->format('M d, Y');
+        } else {
+            $tanggalSidang = null;
+        }
+
         $fotoProfile = $this->r_usulan->r_mahasiswa->r_user->images ?? "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80";
 
         if ($this->r_usulan->r_roleTempatPkls->tgl_awal_pkl > Carbon::now()) {
