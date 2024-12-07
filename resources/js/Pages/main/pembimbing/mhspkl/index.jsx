@@ -6,20 +6,11 @@ import Layout from "@/Layouts/layout/layout.jsx";
 import MhspklDataTable from './component/mhspklDataTable';
 
 const mhspkl = () => {
-    let emptymhspkl = {
-        id_log_book_pkl: null,
-        komentar: "",
-        status: "",
-    };
-
 
     const { props } = usePage();
     const { data_mhspkl } = props;
     const [mhspkls, setmhspkls] = useState(null);
-    const [mhspklDialog, setmhspklDialog] = useState(false);
-    const [mhspkl, setmhspkl] = useState(emptymhspkl);
     const [selectedmhspkls, setSelectedmhspkls] = useState(null);
-    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);

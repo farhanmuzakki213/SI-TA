@@ -1,10 +1,8 @@
 import { usePage } from '@inertiajs/react';
 import React from 'react';
 import Layout from '@/Layouts/layout/layout.jsx';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Tag } from 'primereact/tag';
-import { Button } from 'primereact/button';
+import DetailPkl from './component/detailPkl';
+import DetailSidang from './component/detailSidang';
 
 const MhspklDetail = () => {
     const { props } = usePage();
@@ -13,110 +11,7 @@ const MhspklDetail = () => {
     // console.log("data_laporan", data_laporan);
     // console.log("data_nilai", data_nilai);
 
-    const Section1 = () => {
-        const data_mhss = data_mhs[0];
-        const statusUsulan = () => {
 
-            switch (data_mhss.status_usulan) {
-                case "1":
-                    return <Tag severity="danger" value="Belum Disetujui" />;
-                case "2":
-                    return <Tag severity="warning" value="Menunggu Persetujuan" />;
-                case "3":
-                    return <Tag severity="success" value="Dikonfirmasi" />;
-                default:
-                    return <Tag severity="info" value="Status Tidak Dikenal" />;
-            }
-        };
-        return (
-            <div className="card">
-                <div>
-                    <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">PKL Details</h1>
-                    <hr className="tw-my-4" />
-                    <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Perusahaan</p>
-                            <p className="tw-text-gray-600">{data_mhss.tempat_pkl}</p>
-                        </div>
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Alamat</p>
-                            <p className="tw-text-gray-600">{data_mhss.alamat_perusahaan}</p>
-                        </div>
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Role / Divisi</p>
-                            <p className="tw-text-gray-600">{data_mhss.role_pkl}</p>
-                        </div>
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Tanggal PKL</p>
-                            <p className="tw-text-gray-600">{data_mhss.tgl_awal_pkl} - {data_mhss.tgl_akhir_pkl}</p>
-                        </div>
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Pembimbing</p>
-                            <p className="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
-                        </div>
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Status</p>
-                            {statusUsulan()}
-                        </div>
-                    </div>
-                    <div className="tw-mt-4">
-                        <div className="card">
-                            <h5>Laporan</h5>
-                            <DataTable value={data_laporan} rows={5} paginator responsiveLayout="scroll">
-                                <Column field="name" header="Kegiatan" style={{ width: '35%' }} />
-                                <Column field="tanggal" header="Tanggal Kegiatan" style={{ width: '25%' }} body={(data) => data.tanggal} />
-                                <Column
-                                    header="File"
-                                    style={{ width: '15%' }}
-                                    body={(data) => (
-                                        <>
-                                            <Button
-                                                icon="pi pi-file"
-                                                severity="info"
-                                                rounded outlined
-                                                onClick={() => window.open(`/storage/uploads/pkl/laporan/${data.file}`, '_blank')}
-                                                tooltip="Lihat File" tooltipOptions={{ position: 'right', mouseTrack: false, mouseTrackRight: 15 }}
-                                            />
-                                        </>
-                                    )}
-                                />
-                                <Column field="status" header="Status" style={{ width: '10%' }} body={(data) =>
-                                    data.status === '1' ? (
-                                        <Tag severity="danger">Ditolak</Tag>
-                                    ) : data.status === '2' ? (
-                                        <Tag severity="info">Diproses</Tag>
-                                    ) : (
-                                        <Tag severity="success">Diterima</Tag>
-                                    )
-                                } />
-                                <Column header="Aksi" style={{ width: '10%' }}
-                                    body={(data) =>
-                                        <Button icon="pi pi-pencil" severity="success" rounded
-                                            tooltip="Konfirmasi" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }} />
-                                    } />
-                            </DataTable>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    };
-
-    const Section2 = () => {
-        if (data_laporan.length > 4) {
-            return (
-                <div className="card">
-                    <p>Pengajuan Sidang</p>
-                </div>
-            )
-        } else {
-            return (
-                <div className="card">
-                    <p>Detail penilaian laporan</p>
-                </div>
-            )
-        }
-    };
     return (
         <Layout>
             <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-4">
@@ -150,11 +45,11 @@ const MhspklDetail = () => {
                 </div>
                 <div className="tw-w-full sm:tw-max-w-96">
                     <div className="tw-grid tw-gap-1">
+                        {/* <div className="tw-col-12">
+                            <DetailPkl data_mhs={data_mhs} data_laporan={data_laporan}/>
+                        </div> */}
                         <div className="tw-col-12">
-                            <Section1 />
-                        </div>
-                        <div className="tw-col-12">
-                            <Section2 />
+                            <DetailSidang data_mhs={data_mhs} data_nilai={data_nilai} />
                         </div>
                     </div>
                 </div>
