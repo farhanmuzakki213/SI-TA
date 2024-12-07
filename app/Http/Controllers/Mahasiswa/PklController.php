@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MhsPklLaporanResource;
+use App\Http\Resources\MhsPklResource;
+use App\Models\log_book_pkl;
 use App\Models\Mahasiswa;
+use App\Models\PklMhs;
 use App\Models\RoleTempatPkl;
 use App\Models\TempatPkl;
 use App\Models\UsulanTempatPkl;
@@ -13,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
-class UsulanTempatPklController extends Controller
+class PklController extends Controller
 {
     public function index()
     {
@@ -24,8 +28,20 @@ class UsulanTempatPklController extends Controller
         $data_usulan = UsulanTempatPkl::with('r_mahasiswa', 'r_roleTempatPkls.r_tempatPkls')->where('mahasiswa_id', $id_mahasiswa)->get();
         // dd($data_usulan);
         $data_tempat = RoleTempatPkl::with("r_tempatPkls")->get();
-        return Inertia::render('main/mahasiswa/tempatpkl/tempatpkl', [
+
+        $id_user = auth()->user()->id;
+        $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
+        $data_mhs = PklMhs::whereHas('r_usulan', function ($q) use ($id_mahasiswa) {
+            $q->where('mahasiswa_id', $id_mahasiswa);
+        })->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls', 'r_pembimbing', 'r_penguji')
+        ->get();
+        // dd($data_mhs->toArray());
+        $data_laporan = log_book_pkl::where('pkl_mhs_id', $data_mhs[0]->id_pkl_mhs)->get();
+        // dd($data_laporan->toArray());
+        return Inertia::render('main/mahasiswa/pkl/index', [
             'nextNumber' => CariNomor::getCariNomor(UsulanTempatPkl::class, 'id_usulan'),
+            'data_mhs' => MhsPklResource::collection($data_mhs),
+            'data_laporan' => MhsPklLaporanResource::collection($data_laporan),
             'data_usulan' => $data_usulan,
             'data_tempats' => $data_tempat,
             'roleOptions' => $data_role->map(fn($u) => [

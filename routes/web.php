@@ -56,12 +56,14 @@ Route::group(['middleware' => ['role:superAdmin']], function () {
 // Route Mahasiswa
 Route::group(['middleware' => ['role:mahasiswa']], function () {
     Route::middleware('auth')->group(function () {
-         // Data Tempat PKL
-        Route::get('/tempatpkl', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'index'])->name('tempatpkl');
-        Route::post('/tempatpkl/store', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'store'])->name('tempatpkl.store');
-        Route::post('/tempatpkl/storeAjuan', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'storeAjuan'])->name('tempatpkl.storeajuan');
-        Route::put('/tempatpkl/{id}/update', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'update'])->name('tempatpkl.update');
-        Route::delete('/tempatpkl/delete', [\App\Http\Controllers\Mahasiswa\UsulanTempatPklController::class, 'destroy'])->name('tempatpkl.destroy');
+         //PKL
+        Route::get('/MhsPkl', [\App\Http\Controllers\Mahasiswa\PklController::class, 'index'])->name('MhsPkl');
+        Route::post('/MhsPkl/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'store'])->name('MhsPkl.store');
+        Route::post('/MhsPkl/Ajuan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeAjuan'])->name('MhsPkl.storeAjuan');
+        Route::put('/MhsPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'update'])->name('MhsPkl.update');
+        Route::delete('/MhsPkl/delete', [\App\Http\Controllers\Mahasiswa\PklController::class, 'destroy'])->name('MhsPkl.destroy');
+        Route::post('/MhsPkl/Laporan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeLaporan'])->name('MhsPklLaporan.store');
+        Route::post('/MhsPkl/Laporan/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateLaporan'])->name('MhsPklLaporan.update');
 
         // Data Log Book MHS PKL / Laporan MHS PKL
         Route::get('/logbookmhs', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'index'])->name('logbookmhs');
@@ -129,11 +131,11 @@ Route::group(['middleware' => ['role:pimpinanProdi']], function () {
         Route::put('/usulanpkl/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\UsulanPklController::class, 'update'])->name('usulanpkl.update');
 
         // Data MHS PKL
-        Route::get('/mhspkl', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'index'])->name('mhspkl');
-        Route::post('/mhspkl/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'store'])->name('mhspkl.store');
-        Route::put('/mhspkl/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'update'])->name('mhspkl.update');
-        Route::delete('/mhspkl/{mhspkl}/delete', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroy'])->name('mhspkl.destroy');
-        Route::delete('/mhspkl/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroyMultiple'])->name('mhspkl.destroyMultiple');
+        Route::get('/MhsPkl/Kprodi', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'index'])->name('MhsPklKprodi');
+        Route::post('/MhsPkl/Kprodi/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'store'])->name('MhsPklKprodi.store');
+        Route::put('/MhsPkl/Kprodi/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'update'])->name('MhsPklKprodi.update');
+        Route::delete('/MhsPkl/Kprodi/{mhspkl}/delete', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroy'])->name('MhsPklKprodi.destroy');
+        Route::delete('/MhsPkl/Kprodi/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroyMultiple'])->name('MhsPklKprodi.destroyMultiple');
     });
 });
 // Route Admin

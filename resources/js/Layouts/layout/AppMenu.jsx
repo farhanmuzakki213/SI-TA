@@ -73,7 +73,7 @@ const AppMenu = () => {
                         label: 'PKL',
                         items: [
                             { label: 'Usulan Tempat Pkl', icon: 'pi pi-fw pi-file', to: route('usulanpkl') },
-                            { label: 'Mahasiswa Pkl', icon: 'pi pi-fw pi-file', to: route('mhspkl') },
+                            { label: 'Mahasiswa Pkl', icon: 'pi pi-fw pi-file', to: route('MhsPklKprodi') },
                         ],
                     }}
                     root={true}
@@ -110,7 +110,7 @@ const AppMenu = () => {
                     item={{
                         label: 'PKL',
                         items: [
-                            { label: 'Usulan Tempat', icon: 'pi pi-fw pi-file', to: route('tempatpkl') },
+                            { label: 'PKL', icon: 'pi pi-fw pi-file', to: route('MhsPkl') },
                             { label: 'Laporan', icon: 'pi pi-fw pi-file', to: route('logbookmhs') },
                             { label: 'Pengajuan Sidang', icon: 'pi pi-fw pi-file', to: route('ajukansidang') },
                         ]

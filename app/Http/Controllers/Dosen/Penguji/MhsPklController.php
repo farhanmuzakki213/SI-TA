@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dosen\Penguji;
 
 use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\MhsPklLaporanResource;
+use App\Http\Resources\PMhsPklLaporanResource;
 use App\Http\Resources\MhsPklNilaiResource;
 use App\Http\Resources\MhsPklResource;
 use Illuminate\Http\Request;
@@ -47,7 +47,7 @@ class MhsPklController extends Controller
         return Inertia::render('main/penguji/mhspkl/detail', [
             'data_mhs' => MhsPklResource::collection($data_mhs),
             'data_nilai' => MhsPklNilaiResource::collection($data_nilai),
-            'data_laporan' => MhsPklLaporanResource::collection($data_laporan),
+            'data_laporan' => PMhsPklLaporanResource::collection($data_laporan),
             'nextNumber_nilai' => CariNomor::getCariNomor(PklNilai::class, 'id_pkl_nilai'),
         ]);
     }
