@@ -2,15 +2,34 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { Link } from '@inertiajs/react';
 
 const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanpkls, globalFilter, header, editusulanpkl, confirmDeleteusulanpkl, dt }) => {
 
-    console.log(usulanpkls);
-    const mahasiswaBodyTemplate = (rowData) => {
+    // console.log(usulanpkls);
+    const namaBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Nama Mahasiswa</span>
-                {rowData.r_mahasiswa?.nama_mahasiswa || 'N/A'}
+                {rowData.nama_mahasiswa || 'N/A'}
+            </>
+        );
+    };
+
+    const nimBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Nim Mahasiswa</span>
+                {rowData.nim_mahasiswa || 'N/A'}
+            </>
+        );
+    };
+
+    const prodiBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Prodi Mahasiswa</span>
+                {rowData.prodi || 'N/A'}
             </>
         );
     };
@@ -19,7 +38,16 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
         return (
             <>
                 <span className="p-column-title">Nama Perusahaan</span>
-                {rowData.r_role_tempat_pkls?.r_tempat_pkls?.nama_tempat_pkl || 'N/A'}
+                {rowData.nama_perusahan || 'N/A'}
+            </>
+        );
+    };
+
+    const domisiliBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Domisili Perusahaan</span>
+                {rowData.kota_perusahaan || 'N/A'}
             </>
         );
     };
@@ -28,7 +56,7 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
         return (
             <>
                 <span className="p-column-title">Role / Divisi</span>
-                {rowData.r_role_tempat_pkls?.nama_role || 'N/A'}
+                {rowData.role || 'N/A'}
             </>
         );
     };
@@ -43,15 +71,27 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
     };
 
     const actionBodyTemplate = (rowData) => {
+        // console.log(rowData.id_pkl_mhs);
         return (
             <>
-                <Button
+                {!rowData.id_pkl_mhs && (
+                    <Button
                     icon="pi pi-pencil"
                     severity="success"
                     rounded
                     className="mr-2"
                     onClick={() => editusulanpkl(rowData)}
                 />
+                )}
+                {rowData.id_pkl_mhs && (
+                    <Link
+                        href={'/Kprodi/Mhspkl/' + rowData.id_pkl_mhs}
+                        className="text-blue-500 hover:underline"
+                        title="View Details"
+                    >
+                        <Button icon="pi pi-eye" rounded outlined />
+                    </Link>
+                )}
             </>
         );
     };
@@ -75,10 +115,13 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
             responsiveLayout="scroll"
             removableSort
         >
-            <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="r_mahasiswa.nama_mahasiswa" header="Nama Mahasiswa" sortable body={mahasiswaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_role_tempat_pkls.r_tempat_pkls.nama_tempat_pkl" header="Nama Perusahaan" sortable body={namaPBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_role_tempat_pkls.nama_role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
+            <Column headerStyle={{ width: "4rem" }}></Column>
+            <Column field="nama_mahasiswa" header="Nama Mahasiswa" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="nim_mahasiswa" header="Nim Mahasiswa" sortable body={nimBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
+            <Column field="nama_perusahan" header="Nama Perusahaan" sortable body={namaPBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="kota_perusahan" header="Domisili Perusahaan" sortable body={domisiliBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
             <Column field="status_usulan" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>

@@ -254,7 +254,8 @@ const detailSidang = ({
                         <span className="tw-ml-2 tw-text-gray-800">Nilai Industri</span>
                     </div>
                     <Button icon="pi pi-file" severity="primary" outlined label="File"
-                        tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }} />
+                        tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                        onClick={() => window.open(`/storage/uploads/pkl/nilai_industri/${data_mhss.file_nilai}`, '_blank')} />
                 </div>
                 <hr />
                 <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
@@ -262,7 +263,8 @@ const detailSidang = ({
                         <span className="tw-ml-2 tw-text-gray-800">Laporan Akhir</span>
                     </div>
                     <Button icon="pi pi-file" severity="primary" outlined label="File"
-                        tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }} />
+                        tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                        onClick={() => window.open(`/storage/uploads/pkl/laporan_akhir/${data_mhss.file_laporan}`, '_blank')} />
                 </div>
                 <hr />
                 <div className="tw-flex tw-justify-between tw-items-center tw-py-2">

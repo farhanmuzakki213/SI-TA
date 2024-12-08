@@ -70,9 +70,8 @@ const AppMenu = () => {
                 )}
                 {hasRole('pimpinanProdi') && (<AppMenuitem
                     item={{
-                        label: 'PKL',
+                        label: 'Kepala Prodi',
                         items: [
-                            { label: 'Usulan Tempat Pkl', icon: 'pi pi-fw pi-file', to: route('usulanpkl') },
                             { label: 'Mahasiswa Pkl', icon: 'pi pi-fw pi-file', to: route('MhsPklKprodi') },
                         ],
                     }}
@@ -83,7 +82,7 @@ const AppMenu = () => {
                 )}
                 {hasRole('dosenPembimbing') && (<AppMenuitem
                     item={{
-                        label: 'PKL Pembimbing',
+                        label: 'Pembimbing',
                         items: [
                             { label: 'Mahasiswa PKL', icon: 'pi pi-fw pi-file', to: route('MhsPklPembimbing') },
                         ],
@@ -95,7 +94,7 @@ const AppMenu = () => {
 
                 {hasRole('dosenPenguji') && (<AppMenuitem
                     item={{
-                        label: 'PKL Penguji',
+                        label: 'Penguji',
                         items: [
                             { label: 'Mahasiswa PKL', icon: 'pi pi-fw pi-file', to: route('MhsPklPenguji') },
                         ],
@@ -108,7 +107,7 @@ const AppMenu = () => {
                 {/* Data User, Role, Permission */}
                 {hasRole('mahasiswa') && (<AppMenuitem
                     item={{
-                        label: 'PKL',
+                        label: 'Mahasiswa',
                         items: [
                             { label: 'PKL', icon: 'pi pi-fw pi-file', to: route('MhsPkl') },
                             { label: 'Laporan', icon: 'pi pi-fw pi-file', to: route('logbookmhs') },

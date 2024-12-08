@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('kode_tempat_pkl')->nullable();
             $table->string('alamat_tempat_pkl');
             $table->string('tipe_tempat_pkl');
+            $table->string('kota_tempat_pkl');
             $table->text('logo_tempat_pkl')->nullable();
             $table->string('detail_info_tempat_pkl')->nullable();
             $table->timestamps();

@@ -16,9 +16,10 @@ return new class extends Migration
             $table->bigInteger('pembimbing_id')->unsigned();
             $table->bigInteger('penguji_id')->unsigned();
             $table->bigInteger('usulan_tempat_pkl_id')->unsigned();
-            $table->string('judul')->nullable();
+            $table->string('judul_laporan')->nullable();
             $table->string('pembimbing_pkl')->nullable();
-            $table->text('dokumen_pendukung')->nullable();
+            $table->text('file_nilai')->nullable();
+            $table->text('file_laporan')->nullable();
             $table->double('nilai_industri')->nullable();
             $table->enum('status_ver_pkl', ['1', '2', '3'])->default('2');
             $table->timestamps();

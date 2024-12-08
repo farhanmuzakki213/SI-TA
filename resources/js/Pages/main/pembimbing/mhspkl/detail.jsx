@@ -7,9 +7,9 @@ import DetailSidang from './component/detailSidang';
 const MhspklDetail = () => {
     const { props } = usePage();
     const { data_mhs, data_laporan, data_nilai, nextNumber_nilai } = props;
-    console.log("data_mhs", data_mhs);
+    // console.log("data_mhs", data_mhs);
     // console.log("data_laporan", data_laporan);
-    console.log("data_nilai", data_nilai);
+    // console.log("data_nilai", data_nilai);
 
 
     return (

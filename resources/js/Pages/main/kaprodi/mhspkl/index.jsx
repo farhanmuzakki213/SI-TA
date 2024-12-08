@@ -1,5 +1,4 @@
 import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
@@ -9,19 +8,22 @@ import Layout from "@/Layouts/layout/layout.jsx";
 import UsulanpklDataTable from './component/usulanpklDataTable';
 import UsulanpklForm from './component/usulanpklForm';
 import CSVExportComponent from '@/Components/CSVExportComponent';
-import CSVImportComponent from '@/Components/CSVImportComponent';
 
-const usulanpkl = () => {
+const index = () => {
     let emptyusulanpkl = {
         id_usulan: null,
         komentar: "",
         status_usulan: "",
+        id_pkl_mhs: null,
+        pembimbing_id: null,
+        penguji_id: null,
     };
 
 
     const { props } = usePage();
-    const { data_usulanpkl} = props;
+    const { data_usulanpkl, dosenOptions: initialDosenOptions} = props;
     const [usulanpkls, setusulanpkls] = useState(null);
+    const [dosenOptions, setDosenOptions] = useState([]);
     const [usulanpklDialog, setusulanpklDialog] = useState(false);
     const [usulanpkl, setusulanpkl] = useState(emptyusulanpkl);
     const [selectedusulanpkls, setSelectedusulanpkls] = useState(null);
@@ -31,15 +33,17 @@ const usulanpkl = () => {
     const dt = useRef(null);
 
     useEffect(() => {
+        setDosenOptions(initialDosenOptions);
         setusulanpkls(data_usulanpkl);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_usulanpkl, props.flash]);
+    }, [data_usulanpkl, props.flash, initialDosenOptions]);
 
     const hideDialog = () => {
         setSubmitted(false);
         setusulanpklDialog(false);
     };
+    // console.log(data_usulanpkl);
 
     const displaySuccessMessage = (successMessage) => {
         if (successMessage !== null) {
@@ -73,8 +77,11 @@ const usulanpkl = () => {
             usulanpkl.komentar,
             usulanpkl.status_usulan
         ];
-
+        if(usulanpkl.status_usulan === "3"){
+            requiredFieldsForUpdate.push(usulanpkl.pembimbing_id, usulanpkl.penguji_id);
+        }
         const isValid = requiredFieldsForUpdate.every(field => field);
+
 
         if (!isValid) {
             toast.current?.show({
@@ -89,18 +96,11 @@ const usulanpkl = () => {
         let _usulanpkl = { ...usulanpkl };
 
         try {
-            await router.put(`/usulanpkl/${usulanpkl.id_usulan}/update`, _usulanpkl);
+            await router.put(`/Kprodi/Mhspkl/Usulan/${usulanpkl.id_usulan}/update`, _usulanpkl);
 
             setusulanpkls(prevusulanpkls =>
                 prevusulanpkls.map(d => d.id_usulan === usulanpkl.id_usulan ? _usulanpkl : d)
             );
-
-            toast.current?.show({
-                severity: "success",
-                summary: "Success",
-                detail: "Data successfully updated.",
-                life: 3000,
-            });
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Failed to update data.";
             toast.current?.show({
@@ -134,14 +134,10 @@ const usulanpkl = () => {
             field: (usulanpkl) => usulanpkl.status_usulanpkl === "1" ? "Aktif" : "Tidak Aktif"
         }
     ];
-    const handleImport = (importedData) => {
-        setusulanpkls(prevusulanpkls => [...prevusulanpkls, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={usulanpkls} toast={toast} fileName="Jadwal_Ruangan_data.csv" columns={columns} />
             </React.Fragment>
         );
@@ -149,7 +145,7 @@ const usulanpkl = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Persetujuan Usulan Tempat PKL</h5>
+            <h5 className="m-0">Mahasiswa PKL</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -202,6 +198,7 @@ const usulanpkl = () => {
                             submitted={submitted}
                             usulanpklDialogFooter={usulanpklDialogFooter}
                             hideDialog={hideDialog}
+                            dosenOptions={dosenOptions}
                         />
                     </div>
                 </div>
@@ -210,4 +207,4 @@ const usulanpkl = () => {
     );
 };
 
-export default usulanpkl;
+export default index;
