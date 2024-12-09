@@ -17,10 +17,10 @@ class MhsPklResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $jadwal_sidang = Booking::where('mahasiswa_id', $this->r_usulan->r_mahasiswa->id_mahasiswa)->where('tipe', '1')->with('r_sesi', 'r_ruangan')->get();
+        $jadwal_sidang = Booking::where('mahasiswa_id', $this->r_usulan->r_mahasiswa->id_mahasiswa)->where('tipe', '1')->where('status_booking', '1')->with('r_sesi', 'r_ruangan')->get();
         $tanggalAwal = Carbon::parse($this->r_usulan->r_roleTempatPkls->tgl_awal_pkl)->format('M d, Y');
         $tanggalAkhir = Carbon::parse($this->r_usulan->r_roleTempatPkls->tgl_akhir_pkl)->format('M d, Y');
-        if (!empty($jadwal_sidang) && isset($jadwal_sidang[0]['tgl_booking']) && $jadwal_sidang[0]->status_booking == '1') {
+        if (!empty($jadwal_sidang) && isset($jadwal_sidang[0]['tgl_booking'])) {
             $tanggalSidang = Carbon::parse($jadwal_sidang[0]['tgl_booking'])->format('M d, Y');
             $sesi = $jadwal_sidang[0]->r_sesi->periode_sesi;
             $ruangan = $jadwal_sidang[0]->r_ruangan->kode_ruangan;
@@ -29,7 +29,6 @@ class MhsPklResource extends JsonResource
             $sesi = null;
             $ruangan = null;
         }
-
         $fotoProfile = $this->r_usulan->r_mahasiswa->r_user->images ?? "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80";
 
         if ($this->r_usulan->r_roleTempatPkls->tgl_awal_pkl > Carbon::now()) {
@@ -75,9 +74,11 @@ class MhsPklResource extends JsonResource
             'nilai_pembimbing' => $nilai_pembimbing,
             'nilai_penguji' => $nilai_penguji,
 
-            'tgl_booking' => $jadwal_sidang[0]->tgl_booking,
-            'sesi_id' => $jadwal_sidang[0]->sesi_id,
-            'ruangan_id' => $jadwal_sidang[0]->ruangan_id
+            'tgl_booking' => $jadwal_sidang[0]->tgl_booking ?? null,
+            'sesi_id' => $jadwal_sidang[0]->sesi_id ?? null,
+            'ruangan_id' => $jadwal_sidang[0]->ruangan_id ?? null,
+            'status_booking' => $jadwal_sidang[0]->status_booking ?? null,
+            'id_booking' => $jadwal_sidang[0]->id_booking ?? null
         ];
     }
 }

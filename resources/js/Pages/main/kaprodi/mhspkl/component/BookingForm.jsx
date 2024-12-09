@@ -19,7 +19,7 @@ const BookingForm = ({
     jambookingused
 }) => {
     const [calendarValue, setCalendarValue] = useState(null);
-    console.log("form:",booking.sesi_id);
+    // console.log("form:",booking);
     const parseDate = (dateString) => {
         if (!dateString) return null;
         const [year, month, day] = dateString.split("-");

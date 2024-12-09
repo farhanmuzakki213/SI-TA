@@ -139,7 +139,7 @@ class MhspklController extends Controller
 
     public function updatePkl(Request $request, string $id)
     {
-        // dd($request->all());
+        // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
             'pembimbing_id' => 'required|exists:dosens,id_dosen',
             'penguji_id' => 'required|exists:dosens,id_dosen',
@@ -174,10 +174,11 @@ class MhspklController extends Controller
             'sesi_id' => 'required|exists:sesi,id_sesi',
             'mahasiswa_id' => 'required|exists:mahasiswas,id_mahasiswa',
             'tgl_booking' => 'required',
-            'tipe' => 'required|string'
+            'tipe' => 'required|string',
         ]);
         $validator->after(function ($validator) use ($request) {
             $exists = Booking::where('ruangan_id', $request->ruangan_id)
+                ->where('tgl_booking', $request->tgl_booking)
                 ->where('sesi_id', $request->sesi_id)
                 ->where('tgl_booking', $request->tgl_booking)
                 ->exists();
@@ -201,27 +202,24 @@ class MhspklController extends Controller
             ]);
             DB::commit();
 
-            return to_route('booking')->with('success', 'Jadwal Ruangan created successfully');
+            return back()->with('success', 'Jadwal created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('booking')->with('error', 'Jadwal Ruangan created failed');
+            return back()->with('error', 'Jadwal created failed');
         }
     }
 
     public function updateJadwal(Request $request, string $id)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'id_booking' => 'required',
             'ruangan_id' => 'required|exists:ruangan,id_ruangan',
             'sesi_id' => 'required|exists:sesi,id_sesi',
-            'mahasiswa_id' => 'required|exists:mahasiswas,id_mahasiswa',
             'tgl_booking' => 'required',
-            'tipe' => 'required|string',
             'status_booking' => 'required|string'
         ]);
         $validator->after(function ($validator) use ($request) {
             $exists = Booking::where('ruangan_id', $request->ruangan_id)
+                ->where('tgl_booking', $request->tgl_booking)
                 ->where('sesi_id', $request->sesi_id)
                 ->where('tgl_booking', $request->tgl_booking)
                 ->exists();
@@ -236,22 +234,19 @@ class MhspklController extends Controller
         DB::beginTransaction();
         try {
             $data = [
-                'id_booking' => $request->id_booking,
                 'ruangan_id' => $request->ruangan_id,
                 'sesi_id' => $request->sesi_id,
-                'mahasiswa_id' => $request->mahasiswa_id,
                 'tgl_booking' => $request->tgl_booking,
-                'tipe' => $request->tipe,
                 'status_booking' => $request->status_booking
             ];
 
             $rTersedia = Booking::findOrFail($id);
             $rTersedia->update($data);
             DB::commit();
-            return to_route('booking')->with('success', 'Jadwal Ruangan updated successfully');
+            return back()->with('success', 'Jadwal updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('booking')->with('error', 'Jadwal Ruangan updated failed');
+            return back()->with('error', 'Jadwal updated failed');
         }
     }
 }

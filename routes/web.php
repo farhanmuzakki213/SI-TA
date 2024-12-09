@@ -56,7 +56,7 @@ Route::group(['middleware' => ['role:superAdmin']], function () {
 // Route Mahasiswa
 Route::group(['middleware' => ['role:mahasiswa']], function () {
     Route::middleware('auth')->group(function () {
-         //PKL
+        //PKL
         Route::get('/MhsPkl', [\App\Http\Controllers\Mahasiswa\PklController::class, 'index'])->name('MhsPkl');
         Route::post('/MhsPkl/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'store'])->name('MhsPkl.store');
         Route::post('/MhsPkl/Ajuan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeAjuan'])->name('MhsPkl.storeAjuan');
@@ -79,65 +79,69 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
     });
 });
 
-// Route Dosen Pembimbing
-Route::group(['middleware' => ['role:dosenPembimbing']], function () {
+Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi']], function () {
     Route::middleware('auth')->group(function () {
-        // PKL
-        Route::get('/Pembimbing/Mhspkl', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'index'])->name('MhsPklPembimbing');
-        Route::get('/Pembimbing/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'detail']);
-        Route::put('/Pembimbing/Mhspkl/Laporan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateLaporan'])->name('MhsPklPembimbingLaporan.updateLaporan');
-        Route::post('/Pembimbing/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'storeNilai'])->name('MhsPklPembimbingLaporan.storeNilai');
-        Route::put('/Pembimbing/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateNilai'])->name('MhsPklPembimbingLaporan.updateNilai');
+        // Route Dosen Pembimbing
+        Route::group(['middleware' => ['role:dosenPembimbing']], function () {
+            // PKL
+            Route::get('/Pembimbing/Mhspkl', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'index'])->name('MhsPklPembimbing');
+            Route::get('/Pembimbing/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'detail']);
+            Route::put('/Pembimbing/Mhspkl/Laporan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateLaporan'])->name('MhsPklPembimbingLaporan.updateLaporan');
+            Route::post('/Pembimbing/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'storeNilai'])->name('MhsPklPembimbingLaporan.storeNilai');
+            Route::put('/Pembimbing/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateNilai'])->name('MhsPklPembimbingLaporan.updateNilai');
+        });
+
+        // Route Dosen Penguji
+        Route::group(['middleware' => ['role:dosenPenguji']], function () {
+            // PKL
+            Route::get('/Penguji/Mhspkl', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'index'])->name('MhsPklPenguji');
+            Route::get('/Penguji/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'detail']);
+            Route::post('/Penguji/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'storeNilai'])->name('MhsPklPengujiLaporan.storeNilai');
+            Route::put('/Penguji/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'updateNilai'])->name('MhsPklPengujiLaporan.updateNilai');
+        });
+
+        // Route Kepala Prodi
+        Route::group(['middleware' => ['role:pimpinanProdi']], function () {
+            // Data Jadwal Ruangan
+            Route::get('/booking', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'index'])->name('booking');
+            Route::post('/booking/store', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'store'])->name('booking.store');
+            Route::put('/booking/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'update'])->name('booking.update');
+            Route::delete('/booking/{booking}/delete', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'destroy'])->name('booking.destroy');
+            Route::delete('/booking/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'destroyMultiple'])->name('booking.destroyMultiple');
+
+            // Data Ruangan
+            Route::get('/ruangan', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'index'])->name('ruangan');
+            Route::post('/ruangan/store', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'store'])->name('ruangan.store');
+            Route::put('/ruangan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'update'])->name('ruangan.update');
+            Route::delete('/ruangan/{ruangan}/delete', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'destroy'])->name('ruangan.destroy');
+            Route::delete('/ruangan/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'destroyMultiple'])->name('ruangan.destroyMultiple');
+
+            // Data Sesi
+            Route::get('/sesi', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'index'])->name('sesi');
+            Route::post('/sesi/store', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'store'])->name('sesi.store');
+            Route::put('/sesi/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'update'])->name('sesi.update');
+            Route::delete('/sesi/{sesi}/delete', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroy'])->name('sesi.destroy');
+            Route::delete('/sesi/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroyMultiple'])->name('sesi.destroyMultiple');
+
+            // PKL
+            Route::get('/Kprodi/Mhspkl', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'index'])->name('MhsPklKprodi');
+            Route::get('/Kprodi/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'detail']);
+            Route::post('/Kprodi/Mhspkl/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'store'])->name('MhsPklKprodi.store');
+            Route::put('/Kprodi/Mhspkl/Usulan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updateUsulan'])->name('MhsPklKprodi.updateUsulan');
+            Route::put('/Kprodi/Mhspkl/Pkl/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updatePkl'])->name('MhsPklKprodi.updatePkl');
+            Route::post('/Kprodi/Mhspkl/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'storeJadwal'])->name('MhsPklKprodi.storeJadwal');
+            Route::put('/Kprodi/Mhspkl/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updateJadwal'])->name('MhsPklKprodi.updateJadwal');
+            Route::delete('/Kprodi/Mhspkl/{mhspkl}/delete', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroy'])->name('MhsPklKprodi.destroy');
+            Route::delete('/Kprodi/Mhspkl/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroyMultiple'])->name('MhsPklKprodi.destroyMultiple');
+        });
+
+        // Surat Tugas
+        Route::get('/SuratTugas/Pkl/{id}', [\App\Http\Controllers\SuratTugasController::class, 'pkl']);
     });
 });
 
-// Route Dosen Penguji
-Route::group(['middleware' => ['role:dosenPenguji']], function () {
-    Route::middleware('auth')->group(function () {
-        // PKL
-        Route::get('/Penguji/Mhspkl', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'index'])->name('MhsPklPenguji');
-        Route::get('/Penguji/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'detail']);
-        Route::post('/Penguji/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'storeNilai'])->name('MhsPklPengujiLaporan.storeNilai');
-        Route::put('/Penguji/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'updateNilai'])->name('MhsPklPengujiLaporan.updateNilai');
-    });
-});
 
-// Route Kepala Prodi
-Route::group(['middleware' => ['role:pimpinanProdi']], function () {
-    Route::middleware('auth')->group(function () {
-         // Data Jadwal Ruangan
-        Route::get('/booking', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'index'])->name('booking');
-        Route::post('/booking/store', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'store'])->name('booking.store');
-        Route::put('/booking/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'update'])->name('booking.update');
-        Route::delete('/booking/{booking}/delete', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'destroy'])->name('booking.destroy');
-        Route::delete('/booking/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\BookingController::class, 'destroyMultiple'])->name('booking.destroyMultiple');
 
-        // Data Ruangan
-        Route::get('/ruangan', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'index'])->name('ruangan');
-        Route::post('/ruangan/store', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'store'])->name('ruangan.store');
-        Route::put('/ruangan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'update'])->name('ruangan.update');
-        Route::delete('/ruangan/{ruangan}/delete', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'destroy'])->name('ruangan.destroy');
-        Route::delete('/ruangan/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\RuanganController::class, 'destroyMultiple'])->name('ruangan.destroyMultiple');
-
-        // Data Sesi
-        Route::get('/sesi', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'index'])->name('sesi');
-        Route::post('/sesi/store', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'store'])->name('sesi.store');
-        Route::put('/sesi/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'update'])->name('sesi.update');
-        Route::delete('/sesi/{sesi}/delete', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroy'])->name('sesi.destroy');
-        Route::delete('/sesi/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroyMultiple'])->name('sesi.destroyMultiple');
-
-        // PKL
-        Route::get('/Kprodi/Mhspkl', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'index'])->name('MhsPklKprodi');
-        Route::get('/Kprodi/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'detail']);
-        Route::post('/Kprodi/Mhspkl/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'store'])->name('MhsPklKprodi.store');
-        Route::put('/Kprodi/Mhspkl/Usulan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updateUsulan'])->name('MhsPklKprodi.updateUsulan');
-        Route::put('/Kprodi/Mhspkl/Pkl/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updatePkl'])->name('MhsPklKprodi.updatePkl');
-        Route::post('/Kprodi/Mhspkl/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'storeJadwal'])->name('MhsPklKprodi.storeJadwal');
-        Route::put('/Kprodi/Mhspkl/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updateJadwal'])->name('MhsPklKprodi.updateJadwal');
-        Route::delete('/Kprodi/Mhspkl/{mhspkl}/delete', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroy'])->name('MhsPklKprodi.destroy');
-        Route::delete('/Kprodi/Mhspkl/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroyMultiple'])->name('MhsPklKprodi.destroyMultiple');
-    });
-});
 // Route Admin
 Route::group(['middleware' => ['role:admin']], function () {
     // Data Master : Dosen, Mahasiswa, Jurusan, Prodi, Kelas, Semester dan Tahun Akademik, Jabatan Pimpinan, Ruangan dan Sesi

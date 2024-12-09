@@ -15,6 +15,7 @@ const detailSidang = ({
     jambookingused
 }) => {
     const data_mhss = data_mhs[0];
+    // console.log(data_mhss);
     const { props } = usePage();
     const toast = useRef(null);
     const [submitted, setSubmitted] = useState(false);
@@ -23,8 +24,8 @@ const detailSidang = ({
         id_booking: null,
         ruangan_id: null,
         sesi_id: null,
-        mahasiswa_id: null,
-        tipe: "",
+        mahasiswa_id: data_mhss.id_mahasiswa,
+        tipe: "1",
         tgl_booking: null,
         status_booking: "",
     };
@@ -71,7 +72,7 @@ const detailSidang = ({
             isValid = requiredFieldsForUpdate.every(field => field);
         }
 
-        if (!isValid) { 
+        if (!isValid) {
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -81,24 +82,30 @@ const detailSidang = ({
             return;
         }
 
-        let _booking = { ...booking };
+        const { mahasiswa_id, ruangan_id, sesi_id, status_booking, tgl_booking, tipe } = booking;
 
         try {
 
             if (isCreating) {
-                _booking.id_booking = nextNumber;
-                await router.post('/Kprodi/Mhspkl/Jadwal/store', _booking);
+                await router.post('/Kprodi/Mhspkl/Jadwal/store', { id_booking: nextNumber, mahasiswa_id, ruangan_id, sesi_id, tgl_booking, tipe });
             } else {
-
-                await router.put(`/Kprodi/Mhspkl/Jadwal/${booking.id_booking}/update`, _booking);
+                await router.put(`/Kprodi/Mhspkl/Jadwal/${booking.id_booking}/update`, { ruangan_id, sesi_id, status_booking, tgl_booking });
             }
 
             if (isCreating) {
-                setbookings(prevbookings => [...prevbookings, _booking]);
+                setbookings(prevbookings => {
+                    if (!Array.isArray(prevbookings)) {
+                        return [];
+                    }
+                    return [...prevbookings, _booking]
+                });
             } else {
-                setbookings(prevbookings =>
-                    prevbookings.map(d => d.id_booking === booking.id_booking ? _booking : d)
-                );
+                setbookings(prevbookings => {
+                    if (!Array.isArray(prevbookings)) {
+                        return [];
+                    }
+                    return prevbookings.map(d => d.id_booking === booking.id_booking ? _booking : d)
+                });
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Failed to save Jadwal Ruangan.";
@@ -255,6 +262,14 @@ const detailSidang = ({
         }
         return null;
     };
+    const openFile = async () => {
+        try {
+            const url = `/SuratTugas/Pkl/${data_mhss.id_pkl_mhs}`;
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error(error);
+        }
+    };
     return (
         <div className="card">
             <Toast ref={toast} />
@@ -281,7 +296,7 @@ const detailSidang = ({
                         className="mr-2"
                         tooltip="Ubah Jadwal"
                         tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                        onClick={() => editbooking(data_mhss)}
+                        onClick={() => editbooking(bookings)}
                     />
                 )}
 
@@ -360,14 +375,19 @@ const detailSidang = ({
                         onClick={() => window.open(`/storage/uploads/pkl/laporan_akhir/${data_mhss.file_laporan}`, '_blank')} />
                 </div>
                 <hr />
-                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                    <div className="tw-flex tw-items-center">
-                        <span className="tw-ml-2 tw-text-gray-800">Surat Tugas</span>
-                    </div>
-                    <Button icon="pi pi-file" severity="primary" outlined label="File"
-                        tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }} />
-                </div>
-                <hr />
+                {data_mhss.id_booking && (
+                    <>
+                        <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                            <div className="tw-flex tw-items-center">
+                                <span className="tw-ml-2 tw-text-gray-800">Surat Tugas</span>
+                            </div>
+                            <Button icon="pi pi-file" severity="primary" outlined label="File"
+                                tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                onClick={openFile} />
+                        </div>
+                        <hr />
+                    </>
+                )}
             </div>
             <PklForm
                 pklDialog={pklDialog}

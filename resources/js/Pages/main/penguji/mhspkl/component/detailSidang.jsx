@@ -176,6 +176,15 @@ const detailSidang = ({
             <Button label="Save" icon="pi pi-check" text onClick={savenilaipkl} />
         </>
     );
+
+    const openFile = async () => {
+        try {
+            const url = `/SuratTugas/Pkl/${data_mhss.id_pkl_mhs}`;
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error(error);
+        }
+    };
     return (
         <div className="card">
             <Toast ref={toast} />
@@ -267,14 +276,19 @@ const detailSidang = ({
                         onClick={() => window.open(`/storage/uploads/pkl/laporan_akhir/${data_mhss.file_laporan}`, '_blank')} />
                 </div>
                 <hr />
-                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                    <div className="tw-flex tw-items-center">
-                        <span className="tw-ml-2 tw-text-gray-800">Surat Tugas</span>
-                    </div>
-                    <Button icon="pi pi-file" severity="primary" outlined label="File"
-                        tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }} />
-                </div>
-                <hr />
+                {data_mhss.id_booking && (
+                    <>
+                        <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                            <div className="tw-flex tw-items-center">
+                                <span className="tw-ml-2 tw-text-gray-800">Surat Tugas</span>
+                            </div>
+                            <Button icon="pi pi-file" severity="primary" outlined label="File"
+                                tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                onClick={openFile} />
+                        </div>
+                        <hr />
+                    </>
+                )}
             </div>
 
             <NilaipklForm

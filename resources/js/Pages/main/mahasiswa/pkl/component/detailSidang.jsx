@@ -84,14 +84,6 @@ const detailSidang = ({
                         tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }} />
                 </div>
                 <hr />
-                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                    <div className="tw-flex tw-items-center">
-                        <span className="tw-ml-2 tw-text-gray-800">Surat Tugas</span>
-                    </div>
-                    <Button icon="pi pi-file" severity="primary" outlined label="File"
-                        tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }} />
-                </div>
-                <hr />
             </div>
         </div>
     )

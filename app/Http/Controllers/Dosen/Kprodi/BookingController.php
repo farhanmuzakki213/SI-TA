@@ -59,7 +59,7 @@ class BookingController extends Controller
         $STDosen = Booking::select('sesi_id', 'tgl_booking')->where('status_booking', '1')
             ->whereIn('mahasiswa_id', $mahasiswa_id)
             ->get()
-            ->toArray();    
+            ->toArray();
         dd($RSTterpakai, $mahasiswa_id, $STDosen);
         /* Pkl */
         $bookingsidangpkl = Booking::where('status_booking', '1')->pluck('mahasiswa_id')->toArray();
@@ -194,7 +194,7 @@ class BookingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
+        dd($request->all());
         $validator = Validator::make($request->all(), [
             'id_booking' => 'required',
             'ruangan_id' => 'required|exists:ruangan,id_ruangan',
