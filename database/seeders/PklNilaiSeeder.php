@@ -104,50 +104,6 @@ class PklNilaiSeeder extends Seeder
             ],
             [
                 'id_pkl_nilai' => 5,
-                'pkl_mhs_id' => 3,
-                'dosen_id' => 50,
-                'nilai' => json_encode([
-                    'bahasa' => $ba = rand(75, 95),
-                    'analisis' => $an = rand(75, 95),
-                    'sikap' => $si = rand(75, 95),
-                    'komunikasi' => $ko = rand(75, 95),
-                    'penyajian' => $py = rand(75, 95),
-                    'penguasaan' => $pg = rand(75, 95),
-                    'total_nilai' => (array_sum([
-                        (int) (0.15 * $ba),
-                        (int) (0.15 * $an),
-                        (int) (0.15 * $si),
-                        (int) (0.15 * $ko),
-                        (int) (0.15 * $py),
-                        (int) (0.25 * $pg),
-                    ]) / 100) * 100
-                ]),
-                'sebagai' => 'pembimbing',
-            ],
-            [
-                'id_pkl_nilai' => 6,
-                'pkl_mhs_id' => 3,
-                'dosen_id' => 14,
-                'nilai' => json_encode([
-                    'bahasa' => $ba = rand(75, 95),
-                    'analisis' => $an = rand(75, 95),
-                    'sikap' => $si = rand(75, 95),
-                    'komunikasi' => $ko = rand(75, 95),
-                    'penyajian' => $py = rand(75, 95),
-                    'penguasaan' => $pg = rand(75, 95),
-                    'total_nilai' => (array_sum([
-                        (int) (0.15 * $ba),
-                        (int) (0.15 * $an),
-                        (int) (0.15 * $si),
-                        (int) (0.15 * $ko),
-                        (int) (0.15 * $py),
-                        (int) (0.25 * $pg),
-                    ]) / 100) * 100
-                ]),
-                'sebagai' => 'penguji',
-            ],
-            [
-                'id_pkl_nilai' => 7,
                 'pkl_mhs_id' => 4,
                 'dosen_id' => 66,
                 'nilai' => json_encode([
@@ -169,7 +125,7 @@ class PklNilaiSeeder extends Seeder
                 'sebagai' => 'pembimbing',
             ],
             [
-                'id_pkl_nilai' => 8,
+                'id_pkl_nilai' => 6,
                 'pkl_mhs_id' => 4,
                 'dosen_id' => 14,
                 'nilai' => json_encode([

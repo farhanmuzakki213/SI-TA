@@ -166,7 +166,7 @@ const detailPkl = ({
                     <p className="tw-text-gray-800 tw-font-semibold">Dosen Pembimbing</p>
                     <div className="tw-flex tw-justify-between tw-items-center">
                         <div className="tw-flex tw-items-center">
-                            <p className="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
+                            <p className="tw-text-gray-600">{pkls.dosen_pembimbing}</p>
                         </div>
                         <Button icon="pi pi-pencil" severity="success" outlined rounded
                             tooltip="Ubah Pembimbing" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}

@@ -132,7 +132,8 @@ Route::group(['middleware' => ['role:pimpinanProdi']], function () {
         Route::post('/Kprodi/Mhspkl/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'store'])->name('MhsPklKprodi.store');
         Route::put('/Kprodi/Mhspkl/Usulan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updateUsulan'])->name('MhsPklKprodi.updateUsulan');
         Route::put('/Kprodi/Mhspkl/Pkl/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updatePkl'])->name('MhsPklKprodi.updatePkl');
-        // Route::put('/Kprodi/Mhspkl/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updatePkl'])->name('MhsPklKprodi.updatePkl');
+        Route::post('/Kprodi/Mhspkl/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'storeJadwal'])->name('MhsPklKprodi.storeJadwal');
+        Route::put('/Kprodi/Mhspkl/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'updateJadwal'])->name('MhsPklKprodi.updateJadwal');
         Route::delete('/Kprodi/Mhspkl/{mhspkl}/delete', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroy'])->name('MhsPklKprodi.destroy');
         Route::delete('/Kprodi/Mhspkl/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'destroyMultiple'])->name('MhsPklKprodi.destroyMultiple');
     });

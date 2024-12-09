@@ -20,10 +20,14 @@ class MhsPklResource extends JsonResource
         $jadwal_sidang = Booking::where('mahasiswa_id', $this->r_usulan->r_mahasiswa->id_mahasiswa)->where('tipe', '1')->with('r_sesi', 'r_ruangan')->get();
         $tanggalAwal = Carbon::parse($this->r_usulan->r_roleTempatPkls->tgl_awal_pkl)->format('M d, Y');
         $tanggalAkhir = Carbon::parse($this->r_usulan->r_roleTempatPkls->tgl_akhir_pkl)->format('M d, Y');
-        if (!empty($jadwal_sidang) && isset($jadwal_sidang[0]['tgl_booking'])) {
+        if (!empty($jadwal_sidang) && isset($jadwal_sidang[0]['tgl_booking']) && $jadwal_sidang[0]->status_booking == '1') {
             $tanggalSidang = Carbon::parse($jadwal_sidang[0]['tgl_booking'])->format('M d, Y');
+            $sesi = $jadwal_sidang[0]->r_sesi->periode_sesi;
+            $ruangan = $jadwal_sidang[0]->r_ruangan->kode_ruangan;
         } else {
             $tanggalSidang = null;
+            $sesi = null;
+            $ruangan = null;
         }
 
         $fotoProfile = $this->r_usulan->r_mahasiswa->r_user->images ?? "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80";
@@ -41,6 +45,7 @@ class MhsPklResource extends JsonResource
         $nilai_penguji = PklNilai::where('dosen_id', $this->r_penguji->id_dosen)->where('pkl_mhs_id', $this->id_pkl_mhs)->select('nilai')->first();
         return [
             'id_pkl_mhs' => $this->id_pkl_mhs,
+            'id_mahasiswa' => $this->r_usulan->r_mahasiswa->id_mahasiswa,
             'nama_mahasiswa' => $this->r_usulan->r_mahasiswa->nama_mahasiswa,
             'nim_mahasiswa' => $this->r_usulan->r_mahasiswa->nim_mahasiswa,
             'prodi' => $this->r_usulan->r_mahasiswa->r_kelas->r_prodi->nama_prodi,
@@ -64,11 +69,15 @@ class MhsPklResource extends JsonResource
             'file_laporan' => $this->file_laporan,
             'file_nilai' => $this->file_nilai,
             'tgl_sidang' => $tanggalSidang ?? null,
-            'sesi_sidang' => $jadwal_sidang[0]->r_sesi->periode_sesi ?? null,
-            'ruangan_sidang' => $jadwal_sidang[0]->r_ruangan->kode_ruangan ?? null,
+            'sesi_sidang' => $sesi ?? null,
+            'ruangan_sidang' => $ruangan ?? null,
             'nilai_industri' => $this->nilai_industri ?? null,
             'nilai_pembimbing' => $nilai_pembimbing,
             'nilai_penguji' => $nilai_penguji,
+
+            'tgl_booking' => $jadwal_sidang[0]->tgl_booking,
+            'sesi_id' => $jadwal_sidang[0]->sesi_id,
+            'ruangan_id' => $jadwal_sidang[0]->ruangan_id
         ];
     }
 }

@@ -6,7 +6,13 @@ import DetailSidang from './component/detailSidang';
 
 const MhspklDetail = () => {
     const { props } = usePage();
-    const { data_mhs, dosenOptions } = props;
+    const { data_mhs,
+        dosenOptions,
+        ruanganOptions,
+        sesiOptions,
+        nextNumber,
+        bookingused,
+        jambookingused} = props;
     // console.log("data_mhs", data_mhs);
     // console.log("data_laporan", data_laporan);
     // console.log("data_nilai", data_nilai);
@@ -50,7 +56,14 @@ const MhspklDetail = () => {
                             <DetailPkl data_mhs={data_mhs} dosenOptions={dosenOptions} />
                         </div>}
                         <div className="tw-col-12">
-                            <DetailSidang data_mhs={data_mhs} dosenOptions={dosenOptions} />
+                            <DetailSidang
+                            data_mhs={data_mhs}
+                            dosenOptions={dosenOptions}
+                            sesiOptions={sesiOptions}
+                            ruanganOptions={ruanganOptions}
+                            nextNumber={nextNumber}
+                            bookingused={bookingused}
+                            jambookingused={jambookingused} />
                         </div>
                     </div>
                 </div>
