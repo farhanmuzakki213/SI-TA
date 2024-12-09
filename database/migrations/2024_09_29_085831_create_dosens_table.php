@@ -18,6 +18,7 @@ return new class extends Migration
             $table->bigInteger('golongan_id')->unsigned();
             $table->string('nama_dosen');
             $table->string('nidn_dosen');
+            $table->string('nip_dosen');
             $table->enum('gender', ['laki-laki', 'perempuan']);
             $table->enum('status_dosen', ['0', '1'])->default('1');
             $table->timestamps();

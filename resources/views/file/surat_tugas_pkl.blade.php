@@ -289,14 +289,14 @@
                 <tr class="table-light">
                     <td class="no">{{ $counter++ }}</td>
                     <td class="nama_dosen">{{ $data_sidang_pkl->r_pembimbing->nama_dosen }}</td>
-                    <td class="nip">{{ $data_sidang_pkl->r_pembimbing->nidn_dosen }}</td>
+                    <td class="nip">{{ $data_sidang_pkl->r_pembimbing->nip_dosen }}</td>
                     <td class="jabatan">Dosen Pembimbing</td>
                 </tr>
 
                 <tr class="table-light">
                     <td class="no">{{ $counter++ }}</td>
                     <td class="nama_dosen">{{ $data_sidang_pkl->r_penguji->nama_dosen }}</td>
-                    <td class="nip">{{ $data_sidang_pkl->r_penguji->nidn_dosen }}</td>
+                    <td class="nip">{{ $data_sidang_pkl->r_penguji->nip_dosen }}</td>
                     <td class="jabatan">Dosen Penguji</td>
                 </tr>
             </tbody>
@@ -367,7 +367,7 @@
                         <p>Ketua Prodi</p>
                         <br><br><br><br>
                         <p class="nama_kaprodi">{{ $Kaprodi->r_dosen->nama_dosen }}</p>
-                        <p class="nip_kaprodi">{{ $Kaprodi->r_dosen->nidn_dosen }}</p>
+                        <p class="nip_kaprodi">{{ $Kaprodi->r_dosen->nip_dosen }}</p>
                     </td>
                 </tr>
             </table>

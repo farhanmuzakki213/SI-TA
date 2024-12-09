@@ -34,9 +34,13 @@ class PklController extends Controller
         $data_mhs = PklMhs::whereHas('r_usulan', function ($q) use ($id_mahasiswa) {
             $q->where('mahasiswa_id', $id_mahasiswa);
         })->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls', 'r_pembimbing', 'r_penguji')
-        ->get();
+            ->get();
         // dd($data_mhs->toArray());
-        $data_laporan = log_book_pkl::where('pkl_mhs_id', $data_mhs[0]->id_pkl_mhs)->get();
+        if (!empty($data_mhs) && isset($data_mhs[0]['id_pkl_mhs'])) {
+            $data_laporan = log_book_pkl::where('pkl_mhs_id', $data_mhs[0]->id_pkl_mhs)->get();
+        } else {
+            $data_laporan = [];
+        }
         // dd($data_laporan->toArray());
         return Inertia::render('main/mahasiswa/pkl/index', [
             'nextNumber' => CariNomor::getCariNomor(UsulanTempatPkl::class, 'id_usulan'),
