@@ -6,7 +6,7 @@ import DetailSidang from './component/detailSidang';
 
 const MhspklDetail = () => {
     const { props } = usePage();
-    const { data_mhs, dosenOptions: initialDosenOptions } = props;
+    const { data_mhs, dosenOptions } = props;
     // console.log("data_mhs", data_mhs);
     // console.log("data_laporan", data_laporan);
     // console.log("data_nilai", data_nilai);
@@ -47,10 +47,10 @@ const MhspklDetail = () => {
                 <div className="tw-w-full sm:tw-max-w-96">
                     <div className="tw-grid tw-gap-1">
                         {<div className="tw-col-12">
-                            <DetailPkl data_mhs={data_mhs} initialDosenOptions={initialDosenOptions} />
+                            <DetailPkl data_mhs={data_mhs} dosenOptions={dosenOptions} />
                         </div>}
                         <div className="tw-col-12">
-                            <DetailSidang data_mhs={data_mhs} initialDosenOptions={initialDosenOptions} />
+                            <DetailSidang data_mhs={data_mhs} dosenOptions={dosenOptions} />
                         </div>
                     </div>
                 </div>

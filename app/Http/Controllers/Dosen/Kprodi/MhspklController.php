@@ -73,24 +73,15 @@ class MhspklController extends Controller
         }
         DB::beginTransaction();
         try {
-            if($request->status_usulan == '3'){
+            if ($request->status_usulan == '3') {
                 $nextNumber = CariNomor::getCariNomor(PklMhs::class, 'id_pkl_mhs');
-                if(!$request->id_pkl_mhs){
-                    $dataPkl = [
-                        'id_pkl_mhs' => $nextNumber,
-                        'pembimbing_id' => $request->pembimbing_id,
-                        'penguji_id' => $request->penguji_id,
-                        'usulan_tempat_pkl_id' => $request->id_usulan,
-                    ];
-                    PklMhs::create($dataPkl);
-                }else{
-                    $dataPkl = [
-                        'pembimbing_id' => $request->pembimbing_id,
-                        'penguji_id' => $request->penguji_id,
-                        'usulan_tempat_pkl_id' => $request->id_usulan,
-                    ];
-                    PklMhs::where('id_pkl_mhs', $request->id_pkl_mhs)->update($dataPkl);
-                }
+                $dataPkl = [
+                    'id_pkl_mhs' => $nextNumber,
+                    'pembimbing_id' => $request->pembimbing_id,
+                    'penguji_id' => $request->penguji_id,
+                    'usulan_tempat_pkl_id' => $request->id_usulan,
+                ];
+                PklMhs::create($dataPkl);
             }
             $data = [
                 'status_usulan' => $request->status_usulan,
@@ -104,6 +95,34 @@ class MhspklController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return to_route('MhsPklKprodi')->with('error', 'Usulan Pkl updated failed');
+        }
+    }
+
+    public function updatePkl(Request $request, string $id)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'pembimbing_id' => 'required|exists:dosens,id_dosen',
+            'penguji_id' => 'required|exists:dosens,id_dosen',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $data = [
+                'pembimbing_id' => $request->pembimbing_id,
+                'penguji_id' => $request->penguji_id,
+            ];
+
+            $pkl = PklMhs::findOrFail($id);
+            $pkl->update($data);
+            DB::commit();
+            return back()->with('success', 'Pembimbing dan Penguji Pkl updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Pembimbing dan Penguji Pkl updated failed');
         }
     }
 }

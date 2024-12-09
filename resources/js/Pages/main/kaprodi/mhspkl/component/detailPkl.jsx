@@ -1,36 +1,38 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Tag } from 'primereact/tag';
 import { Button } from "primereact/button";
+import PklForm from "./ubahpklForm";
+import { router, usePage } from "@inertiajs/react";
+import { Toast } from "primereact/toast";
 
 const detailPkl = ({
     data_mhs,
+    dosenOptions : initialDosenOptions,
 }) => {
-    let emptylaporanpkl = {
-        id_log_book_pkl: null,
-        komentar: "",
-        keaktifan: null,
-        komunikasi: null,
-        problem_solving: null,
-        status: "",
+    let emptypkl = {
+        id_pkl_mhs: null,
+        pembimbing_id: null,
+        penguji_id: null,
     };
     const { props } = usePage();
     const data_mhss = data_mhs[0];
-    const data_laporanpkl = data_laporan;
-    const [laporanpkls, setlaporanpkls] = useState(null);
-    const [laporanpklDialog, setlaporanpklDialog] = useState(false);
-    const [laporanpkl, setlaporanpkl] = useState(emptylaporanpkl);
+    const [pkls, setpkls] = useState([]);
+    const [dosenOptions, setDosenOptions] = useState([]);
+    const [pklDialog, setpklDialog] = useState(false);
+    const [pkl, setpkl] = useState(emptypkl);
     const [submitted, setSubmitted] = useState(false);
     const toast = useRef(null);
 
     useEffect(() => {
-        setlaporanpkls(data_laporanpkl);
+        setpkls(data_mhss);
+        setDosenOptions(initialDosenOptions);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_laporanpkl, props.flash]);
+    }, [data_mhss, props.flash, initialDosenOptions]);
 
     const hideDialog = () => {
         setSubmitted(false);
-        setlaporanpklDialog(false);
+        setpklDialog(false);
     };
 
     const displaySuccessMessage = (successMessage) => {
@@ -57,16 +59,14 @@ const detailPkl = ({
         }
     };
 
-    const savelaporanpkl = async () => {
+    const savepkl = async () => {
+        console.log("test1", pkl);
         setSubmitted(true);
 
         const requiredFieldsForUpdate = [
-            laporanpkl.id_log_book_pkl,
-            laporanpkl.komentar,
-            laporanpkl.status,
-            laporanpkl.keaktifan,
-            laporanpkl.komunikasi,
-            laporanpkl.problem_solving
+            pkl.id_pkl_mhs,
+            pkl.pembimbing_id,
+            pkl.penguji_id
         ];
 
         const isValid = requiredFieldsForUpdate.every(field => field);
@@ -80,15 +80,23 @@ const detailPkl = ({
             });
             return;
         }
+        console.log("test2", pkl);
 
-        let _laporanpkl = { ...laporanpkl };
+        const { id_pkl_mhs, pembimbing_id, penguji_id } = pkl;
 
         try {
-            await router.put(`/Pembimbing/Mhspkl/Laporan/${laporanpkl.id_log_book_pkl}/update`, _laporanpkl);
+            console.log("test3", pkl);
+            await router.put(`/Kprodi/Mhspkl/Pkl/${id_pkl_mhs}/update`, { pembimbing_id, penguji_id });
 
-            setlaporanpkls(prevlaporanpkls =>
-                prevlaporanpkls.map(d => d.id_log_book_pkl === laporanpkl.id_log_book_pkl ? _laporanpkl : d)
-            );
+            setpkls(prevpkls => {
+                if (!Array.isArray(prevpkls)) {
+                    return [];
+                }
+
+                return prevpkls.map(d =>
+                    d.id_pkl_mhs === pkl.id_pkl_mhs ? pkl : d
+                );
+            });
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Failed to update data.";
             toast.current?.show({
@@ -98,17 +106,17 @@ const detailPkl = ({
                 life: 3000,
             });
         } finally {
-            setlaporanpkl(emptylaporanpkl);
-            setlaporanpklDialog(false);
+            setpkl(emptypkl);
+            setpklDialog(false);
         }
     };
 
-    const editlaporanpkl = (laporanpkl) => {
-        setlaporanpkl({ ...laporanpkl });
-        setlaporanpklDialog(true);
+    const editpkl = (pkl) => {
+        setpkl({ ...pkl });
+        setpklDialog(true);
     };
 
-    const laporanpklDialogFooter = (
+    const pklDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -116,7 +124,7 @@ const detailPkl = ({
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={savelaporanpkl} />
+            <Button label="Save" icon="pi pi-check" text onClick={savepkl} />
         </>
     );
     const statusUsulan = () => {
@@ -134,6 +142,7 @@ const detailPkl = ({
     };
     return (
         <div className="card">
+            <Toast ref={toast} />
             <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">PKL Details</h1>
             <hr className="tw-my-4" />
             <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
@@ -161,7 +170,7 @@ const detailPkl = ({
                         </div>
                         <Button icon="pi pi-pencil" severity="success" outlined rounded
                             tooltip="Ubah Pembimbing" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                        />
+                        onClick={() => editpkl(data_mhss)}/>
                     </div>
                 </div>
                 <div>
@@ -169,12 +178,13 @@ const detailPkl = ({
                     {statusUsulan()}
                 </div>
             </div>
-            <LaporanpklForm
-                laporanpklDialog={laporanpklDialog}
-                laporanpkl={laporanpkl}
-                setlaporanpkl={setlaporanpkl}
+            <PklForm
+                pklDialog={pklDialog}
+                pkl={pkl}
+                dosenOptions={dosenOptions}
+                setpkl={setpkl}
                 submitted={submitted}
-                laporanpklDialogFooter={laporanpklDialogFooter}
+                pklDialogFooter={pklDialogFooter}
                 hideDialog={hideDialog}
             />
         </div>
