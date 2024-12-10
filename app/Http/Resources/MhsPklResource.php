@@ -45,12 +45,15 @@ class MhsPklResource extends JsonResource
         $nilai_penguji_2 = PklNilai::where('dosen_id', $this->r_penguji->id_dosen)->where('pkl_mhs_id', $this->id_pkl_mhs)->where('sebagai', 'penguji')->select('nilai')->first();
         return [
             'id_pkl_mhs' => $this->id_pkl_mhs,
+
             'id_mahasiswa' => $this->r_usulan->r_mahasiswa->id_mahasiswa,
             'nama_mahasiswa' => $this->r_usulan->r_mahasiswa->nama_mahasiswa,
             'nim_mahasiswa' => $this->r_usulan->r_mahasiswa->nim_mahasiswa,
             'prodi' => $this->r_usulan->r_mahasiswa->r_kelas->r_prodi->nama_prodi,
+            'jenjang' => $this->r_usulan->r_mahasiswa->r_kelas->r_prodi->jenjang,
             'jurusan' => $this->r_usulan->r_mahasiswa->r_kelas->r_prodi->r_jurusan->nama_jurusan,
             'foto_mahasiswa' => $fotoProfile,
+
             'tempat_pkl' => $this->r_usulan->r_roleTempatPkls->r_tempatPkls->nama_tempat_pkl,
             'role_pkl' => $this->r_usulan->r_roleTempatPkls->nama_role,
             'tgl_awal_pkl' => $tanggalAwal,

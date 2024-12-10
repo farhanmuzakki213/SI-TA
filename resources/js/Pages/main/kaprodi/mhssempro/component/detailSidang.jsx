@@ -292,7 +292,7 @@ const detailSidang = ({
                         tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
                         onClick={bookingopenNew}
                     />
-                )}  
+                )}
                 {data_mhss.status_ver_pkl === "3" && data_mhss.tgl_sidang != null && (
                     <Button
                         label="Jadwal"
@@ -412,22 +412,6 @@ const detailSidang = ({
                 <div className="card">
                     <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Files</p>
                     <div class="tw-mt-4 tw-space-y-4">
-                        <div class="tw-flex tw-justify-between tw-items-center tw-py-2">
-                            <div class="tw-flex tw-items-center">
-                                <span class="tw-text-gray-800">Nilai Industri</span>
-                            </div>
-                            <Button icon="pi pi-file" severity="primary" outlined label="File"
-                                tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                onClick={() => window.open(`/storage/uploads/pkl/nilai_industri/${data_mhss.file_nilai}`, '_blank')} />
-                        </div>
-                        <div class="tw-flex tw-justify-between tw-items-center tw-py-2">
-                            <div class="tw-flex tw-items-center">
-                                <span class="tw-text-gray-800">Laporan Akhir</span>
-                            </div>
-                            <Button icon="pi pi-file" severity="primary" outlined label="File"
-                                tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                onClick={() => window.open(`/storage/uploads/pkl/laporan_akhir/${data_mhss.file_laporan}`, '_blank')} />
-                        </div>
                         {data_mhss.id_booking && (
                             <div class="tw-flex tw-justify-between tw-items-center tw-py-2">
                                 <div class="tw-flex tw-items-center">

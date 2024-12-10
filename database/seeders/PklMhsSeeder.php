@@ -25,7 +25,7 @@ class PklMhsSeeder extends Seeder
             [9,  160, 198, 26 , "pembimbing9" , "laporan9.pdf",  "nilai9.pdf", "judul9", "1", 90],
             [10, 206, 212, 29 , "pembimbing10", "laporan10.pdf", "nilai10.pdf","judul10", "1", 90],
             [11, 220, 223, 32 , "pembimbing11", "laporan11.pdf", "nilai11.pdf","judul11", "3", 90],
-            [12, 258, 277, 35 , "pembimbing12", "laporan12.pdf", "nilai12.pdf","judul12", "1", 90],
+            [12, 258, 277, 35 , "pembimbing12", "laporan12.pdf", "nilai12.pdf","judul12", "3", 90],
         ];
         foreach ($data_pkl_mhs as $data) {
             DB::table('pkl_mhs')->insert([

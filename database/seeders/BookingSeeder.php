@@ -19,6 +19,7 @@ class BookingSeeder extends Seeder
             [3, 1, 3, 8,  "1", "2024-12-9", "0"],
             [4, 1, 4, 11, "1", "2024-12-9", "1"],
             [5, 1, 1, 14, "1", "2024-12-10", "1"],
+            [6, 1, 2, 78, "1", "2024-12-10", "1"],
         ];
         foreach ($data_golongan as $data) {
             DB::table('booking')->insert([

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigInteger('jurusan_id')->unsigned();
             $table->string('kode_prodi');
             $table->string('nama_prodi');
+            $table->string('jenjang');
             $table->timestamps();
         });
 

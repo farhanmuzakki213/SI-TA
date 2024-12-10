@@ -234,12 +234,13 @@ const detailPkl = ({
             <div className="tw-mt-4">
                 <div className="card">
                     <Toolbar
-                    className="mb-4"
-                    left={leftToolbarTemplate}
-                    right={rightToolbarTemplate}
+                        className="mb-4"
+                        left={leftToolbarTemplate}
+                        right={rightToolbarTemplate}
                     />
                     <DataTable value={laporanpkls} rows={3} paginator responsiveLayout="scroll">
-                        <Column field="kegiatan" header="Kegiatan" style={{ width: '35%' }}
+                        <Column field="tanggal" header="Tanggal Kegiatan" style={{ width: '20%' }} body={(data) => data.tanggal} />
+                        <Column field="kegiatan" header="Kegiatan" style={{ width: '65%' }}
                             body={(data) =>
                                 <div>
                                     {Object.entries(data.kegiatan).map(([key, value]) => (
@@ -249,10 +250,9 @@ const detailPkl = ({
                                     ))}
                                 </div>
                             } />
-                        <Column field="tanggal" header="Tanggal Kegiatan" style={{ width: '25%' }} body={(data) => data.tanggal} />
                         <Column
                             header="File"
-                            style={{ width: '15%' }}
+                            style={{ width: '5%' }}
                             body={(data) => (
                                 <>
                                     <Button
@@ -265,31 +265,29 @@ const detailPkl = ({
                                 </>
                             )}
                         />
-                        <Column field="status" header="Status" style={{ width: '10%' }} body={(data) =>
+                        <Column field="status" header="Status" style={{ width: '5%' }} body={(data) =>
                             data.status === '1' ? (
-                                <Tag severity="warning">Revisi</Tag>
-                            ) : data.status === '2' ? (
-                                <Tag severity="info">Proses</Tag>
+                                <Tag severity="warning">Belum</Tag>
                             ) : (
-                                <Tag severity="success">Diterima</Tag>
+                                <Tag severity="success">Diverifikasi</Tag>
                             )
                         } />
-                        <Column header="Aksi" style={{ width: '10%' }}
+                        <Column header="Aksi" style={{ width: '5%' }}
                             body={(data) =>
                                 <Button icon="pi pi-pencil" severity="success" rounded
                                     tooltip="Konfirmasi" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                    onClick={() => editlaporanpkl(data)}/>
+                                    onClick={() => editlaporanpkl(data)} />
                             } />
                     </DataTable>
 
                     <LaporanpklForm
-                            laporanpklDialog={laporanpklDialog}
-                            laporanpkl={laporanpkl}
-                            setlaporanpkl={setlaporanpkl}
-                            submitted={submitted}
-                            laporanpklDialogFooter={laporanpklDialogFooter}
-                            hideDialog={hideDialog}
-                        />
+                        laporanpklDialog={laporanpklDialog}
+                        laporanpkl={laporanpkl}
+                        setlaporanpkl={setlaporanpkl}
+                        submitted={submitted}
+                        laporanpklDialogFooter={laporanpklDialogFooter}
+                        hideDialog={hideDialog}
+                    />
                 </div>
             </div>
         </div>

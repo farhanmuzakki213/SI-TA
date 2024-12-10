@@ -9,7 +9,7 @@ class Prodi extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_prodi', 'jurusan_id', 'kode_prodi', 'nama_prodi'
+        'id_prodi', 'jurusan_id', 'kode_prodi', 'nama_prodi', 'jenjang'
     ];
     protected $table = 'prodis';
     protected $primaryKey = 'id_prodi';

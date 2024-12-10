@@ -255,7 +255,7 @@ class UsulanTempatPklSeeder extends Seeder
             [
                 'id_usulan' => 35,
                 'role_tempat_pkl_id' => 100,
-                'mahasiswa_id' => rand(26, 120),
+                'mahasiswa_id' => 78,
                 'komentar' => 'ok',
                 'status_usulan' => '3'
             ],
