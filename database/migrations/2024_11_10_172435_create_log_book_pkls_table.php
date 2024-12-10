@@ -18,10 +18,9 @@ return new class extends Migration
             $table->date('tgl_awal_kegiatan');
             $table->date('tgl_akhir_kegiatan');
             $table->string('dokumen_laporan');
-            $table->enum('status', ['1', '2', '3'])->default('1')
-            ->comment('1 = Diproses, 2 = Direvisi, 3 = Diterima');
+            $table->enum('status', ['1', '2'])->default('1')
+            ->comment('1 = Diproses, 2 = Diverifikasi');
             $table->string('komentar')->nullable();
-            $table->text('nilai')->nullable();
             $table->timestamps();
         });
 

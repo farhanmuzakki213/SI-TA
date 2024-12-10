@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dosen\Pembimbing;
 
 use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MhsPklNilaiPembimbingResource;
 use App\Http\Resources\PMhsPklLaporanResource;
 use App\Http\Resources\MhsPklNilaiResource;
 use App\Http\Resources\MhsPklResource;
@@ -40,13 +41,14 @@ class MhsPklController extends Controller
 
         $data_nilai = PklNilai::where('pkl_mhs_id', $id)
             ->where('dosen_id', $id_dosen)
+            ->where('sebagai', 'pembimbing')
             ->get();
 
         $data_laporan = log_book_pkl::where('pkl_mhs_id', $id)->get();
 
         return Inertia::render('main/pembimbing/mhspkl/detail', [
             'data_mhs' => MhsPklResource::collection($data_mhs),
-            'data_nilai' => MhsPklNilaiResource::collection($data_nilai),
+            'data_nilai' => MhsPklNilaiPembimbingResource::collection($data_nilai),
             'data_laporan' => PMhsPklLaporanResource::collection($data_laporan),
             'nextNumber_nilai' => CariNomor::getCariNomor(PklNilai::class, 'id_pkl_nilai'),
         ]);
@@ -56,28 +58,16 @@ class MhsPklController extends Controller
     {
         // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
-            'keaktifan' => 'required',
-            'komunikasi' => 'required',
-            'problem_solving' => 'required',
-            'status' => 'required',
             'komentar' => 'required',
         ]);
 
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
         }
-        $total_nilai = ($request->keaktifan * 0.30) + ($request->komunikasi * 0.30) + ($request->problem_solving * 0.40);
-        $nilai_data = [
-            'keaktifan' => $request->keaktifan,
-            'komunikasi' => $request->komunikasi,
-            'problem_solving' => $request->problem_solving,
-            'total_nilai' => round($total_nilai, 2),
-        ];
         DB::beginTransaction();
         try {
             $data = [
-                'status' => $request->status,
-                'nilai' => json_encode($nilai_data),
+                'status' => '2',
                 'komentar' => $request->komentar,
             ];
 
@@ -97,25 +87,19 @@ class MhsPklController extends Controller
         $validator = Validator::make($request->all(), [
             'id_pkl_nilai' => 'required',
             'pkl_mhs_id' => 'required',
-            'bahasa' => 'required',
-            'analisis' => 'required',
-            'sikap' => 'required',
+            'keaktifan' => 'required',
             'komunikasi' => 'required',
-            'penyajian' => 'required',
-            'penguasaan' => 'required',
+            'problem_solving' => 'required',
         ]);
 
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
         }
-        $total_nilai = ($request->bahasa * 0.15) + ($request->analisis * 0.15) + ($request->sikap * 0.15) + ($request->komunikasi * 0.15) + ($request->penyajian * 0.15) + ($request->penguasaan * 0.25);
+        $total_nilai = ($request->keaktifan * 0.30) + ($request->komunikasi * 0.30) + ($request->problem_solving * 0.40);
         $nilai_data = [
-            'bahasa' => $request->bahasa,
-            'analisis' => $request->analisis,
-            'sikap' => $request->sikap,
+            'keaktifan' => $request->keaktifan,
             'komunikasi' => $request->komunikasi,
-            'penyajian' => $request->penyajian,
-            'penguasaan' => $request->penguasaan,
+            'problem_solving' => $request->problem_solving,
             'total_nilai' => round($total_nilai, 2),
         ];
         DB::beginTransaction();
@@ -142,25 +126,19 @@ class MhsPklController extends Controller
     {
         // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
-            'bahasa' => 'required',
-            'analisis' => 'required',
-            'sikap' => 'required',
+            'keaktifan' => 'required',
             'komunikasi' => 'required',
-            'penyajian' => 'required',
-            'penguasaan' => 'required',
+            'problem_solving' => 'required',
         ]);
 
         if ($validator->fails()) {
             return back()->with('error 123', $validator->errors()->first());
         }
-        $total_nilai = ($request->bahasa * 0.15) + ($request->analisis * 0.15) + ($request->sikap * 0.15) + ($request->komunikasi * 0.15) + ($request->penyajian * 0.15) + ($request->penguasaan * 0.25);
+        $total_nilai = ($request->keaktifan * 0.30) + ($request->komunikasi * 0.30) + ($request->problem_solving * 0.40);
         $nilai_data = [
-            'bahasa' => $request->bahasa,
-            'analisis' => $request->analisis,
-            'sikap' => $request->sikap,
+            'keaktifan' => $request->keaktifan,
             'komunikasi' => $request->komunikasi,
-            'penyajian' => $request->penyajian,
-            'penguasaan' => $request->penguasaan,
+            'problem_solving' => $request->problem_solving,
             'total_nilai' => round($total_nilai, 2),
         ];
         DB::beginTransaction();

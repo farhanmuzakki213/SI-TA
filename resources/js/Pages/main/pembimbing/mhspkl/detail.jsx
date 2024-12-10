@@ -44,10 +44,10 @@ const MhspklDetail = () => {
                     </div>
                 </div>
                 <div className="tw-w-full sm:tw-max-w-96">
-                    <div className="tw-grid tw-gap-1">
-                        {<div className="tw-col-12">
-                            <DetailPkl data_mhs={data_mhs} data_laporan={data_laporan}/>
-                        </div>}
+                    <div className="tw-grid tw-gap-4">
+                        <div className="tw-col-12">
+                            <DetailPkl data_mhs={data_mhs} data_laporan={data_laporan} />
+                        </div>
                         <div className="tw-col-12">
                             <DetailSidang data_mhs={data_mhs} data_nilai={data_nilai} nextNumber_nilai={nextNumber_nilai} />
                         </div>

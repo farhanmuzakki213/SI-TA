@@ -31,14 +31,13 @@ const NilaipklForm = ({
             footer={nilaipklDialogFooter}
             onHide={hideDialog}
         >
-
-            {/* Bahasa */}
+            {/* Keaktifan */}
             <div className="field">
-                <label htmlFor="bahasa">Bahasa</label>
+                <label htmlFor="keaktifan">Keaktifan *</label>
                 <InputNumber
-                    inputId="bahasa"
-                    value={nilaipkl.bahasa || ''}
-                    onValueChange={(e) => setValue(e, "bahasa")}
+                    inputId="keaktifan"
+                    value={nilaipkl.keaktifan || ''}
+                    onValueChange={(e) => setValue(e, "keaktifan")}
                     required
                     mode="decimal"
                     showButtons
@@ -46,62 +45,17 @@ const NilaipklForm = ({
                     max={100}
                     minFractionDigits={2}
                     className={classNames({
-                        "p-invalid": submitted && !nilaipkl.bahasa,
+                        "p-invalid": submitted && !nilaipkl.keaktifan,
                     })}
                 />
-                {submitted && !nilaipkl.bahasa && (
-                    <small className="p-invalid">Bahasa is required.</small>
+                {submitted && !nilaipkl.keaktifan && (
+                    <small className="p-invalid">Keaktifan is required.</small>
                 )}
             </div>
-
-            {/* Analisis */}
-            <div className="field">
-                <label htmlFor="analisis">Analisis</label>
-                <InputNumber
-                    inputId="analisis"
-                    value={nilaipkl.analisis || ''}
-                    onValueChange={(e) => setValue(e, "analisis")}
-                    required
-                    mode="decimal"
-                    showButtons
-                    min={0}
-                    max={100}
-                    minFractionDigits={2}
-                    className={classNames({
-                        "p-invalid": submitted && !nilaipkl.analisis,
-                    })}
-                />
-                {submitted && !nilaipkl.analisis && (
-                    <small className="p-invalid">Analisis is required.</small>
-                )}
-            </div>
-
-            {/* Sikap */}
-            <div className="field">
-                <label htmlFor="sikap">Sikap</label>
-                <InputNumber
-                    inputId="sikap"
-                    value={nilaipkl.sikap || ''}
-                    onValueChange={(e) => setValue(e, "sikap")}
-                    required
-                    mode="decimal"
-                    showButtons
-                    min={0}
-                    max={100}
-                    minFractionDigits={2}
-                    className={classNames({
-                        "p-invalid": submitted && !nilaipkl.sikap,
-                    })}
-                />
-                {submitted && !nilaipkl.sikap && (
-                    <small className="p-invalid">Sikap is required.</small>
-                )}
-            </div>
-
 
             {/* Komunikasi */}
             <div className="field">
-                <label htmlFor="komunikasi">Komunikasi</label>
+                <label htmlFor="komunikasi">Komunikasi *</label>
                 <InputNumber
                     inputId="komunikasi"
                     value={nilaipkl.komunikasi || ''}
@@ -121,14 +75,13 @@ const NilaipklForm = ({
                 )}
             </div>
 
-
-            {/* Penyajian */}
+            {/* Problem Solving */}
             <div className="field">
-                <label htmlFor="penyajian">Penyajian</label>
+                <label htmlFor="problem">Problem Solving *</label>
                 <InputNumber
-                    inputId="penyajian"
-                    value={nilaipkl.penyajian || ''}
-                    onValueChange={(e) => setValue(e, "penyajian")}
+                    inputId="problem_solving"
+                    value={nilaipkl.problem_solving || ''}
+                    onValueChange={(e) => setValue(e, "problem_solving")}
                     required
                     mode="decimal"
                     showButtons
@@ -136,36 +89,14 @@ const NilaipklForm = ({
                     max={100}
                     minFractionDigits={2}
                     className={classNames({
-                        "p-invalid": submitted && !nilaipkl.penyajian,
+                        "p-invalid": submitted && !nilaipkl.problem_solving,
                     })}
                 />
-                {submitted && !nilaipkl.penyajian && (
-                    <small className="p-invalid">Penyajian is required.</small>
+                {submitted && !nilaipkl.problem_solving && (
+                    <small className="p-invalid">Problem Solving is required.</small>
                 )}
             </div>
-
-
-            {/* Penguasaan */}
-            <div className="field">
-                <label htmlFor="penguasaan">Penguasaan</label>
-                <InputNumber
-                    inputId="penguasaan"
-                    value={nilaipkl.penguasaan || ''}
-                    onValueChange={(e) => setValue(e, "penguasaan")}
-                    required
-                    mode="decimal"
-                    showButtons
-                    min={0}
-                    max={100}
-                    minFractionDigits={2}
-                    className={classNames({
-                        "p-invalid": submitted && !nilaipkl.penguasaan,
-                    })}
-                />
-                {submitted && !nilaipkl.penguasaan && (
-                    <small className="p-invalid">Penguasaan is required.</small>
-                )}
-            </div>
+            
         </Dialog>
     );
 };

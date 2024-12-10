@@ -19,7 +19,7 @@ const NilaipklForm = ({
             [field]: value,
         }));
     };
-    console.log("form nilai",nilaipkl);
+    // console.log("form nilai",nilaipkl);
 
     return (
         <Dialog

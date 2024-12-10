@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MhsPklNilaiResource extends JsonResource
+class MhsPklNilaiPengujiResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,12 +19,14 @@ class MhsPklNilaiResource extends JsonResource
         return [
             'id_pkl_nilai' => $this->id_pkl_nilai,
             'pkl_mhs_id' => $this->pkl_mhs_id,
+            'dosen_id' => $this->dosen_id,
+            'sebagai' => $this->sebagai,
             'bahasa' => $nilai['bahasa'] ?? null,
             'analisis' => $nilai['analisis'] ?? null,
             'sikap' => $nilai['sikap'] ?? null,
-            'komunikasi' => $nilai['komunikasi'] ?? null,
             'penyajian' => $nilai['penyajian'] ?? null,
             'penguasaan' => $nilai['penguasaan'] ?? null,
+            'komunikasi' => $nilai['komunikasi'] ?? null,
             'total_nilai' => $nilai['total_nilai'] ?? null,
         ];
     }

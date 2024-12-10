@@ -14,10 +14,6 @@ const detailPkl = ({
     let emptylaporanpkl = {
         id_log_book_pkl: null,
         komentar: "",
-        keaktifan: null,
-        komunikasi: null,
-        problem_solving: null,
-        status: "",
     };
     const { props } = usePage();
     const data_mhss = data_mhs[0];
@@ -69,10 +65,7 @@ const detailPkl = ({
         const requiredFieldsForUpdate = [
             laporanpkl.id_log_book_pkl,
             laporanpkl.komentar,
-            laporanpkl.status,
-            laporanpkl.keaktifan,
-            laporanpkl.komunikasi,
-            laporanpkl.problem_solving
+
         ];
 
         const isValid = requiredFieldsForUpdate.every(field => field);
@@ -173,8 +166,9 @@ const detailPkl = ({
             <div className="tw-mt-4">
                 <div className="card">
                     <h5>Laporan</h5>
-                    <DataTable value={laporanpkls} rows={3} paginator responsiveLayout="scroll">
-                        <Column field="kegiatan" header="Kegiatan" style={{ width: '35%' }}
+                    <DataTable value={laporanpkls} rows={1} paginator responsiveLayout="scroll">
+                        <Column field="tanggal" header="Tanggal Kegiatan" style={{ width: '20%' }} body={(data) => data.tanggal} />
+                        <Column field="kegiatan" header="Kegiatan" style={{ width: '65%' }}
                             body={(data) =>
                                 <div>
                                     {Object.entries(data.kegiatan).map(([key, value]) => (
@@ -184,10 +178,9 @@ const detailPkl = ({
                                     ))}
                                 </div>
                             } />
-                        <Column field="tanggal" header="Tanggal Kegiatan" style={{ width: '25%' }} body={(data) => data.tanggal} />
                         <Column
                             header="File"
-                            style={{ width: '15%' }}
+                            style={{ width: '5%' }}
                             body={(data) => (
                                 <>
                                     <Button
@@ -200,16 +193,14 @@ const detailPkl = ({
                                 </>
                             )}
                         />
-                        <Column field="status" header="Status" style={{ width: '10%' }} body={(data) =>
+                        <Column field="status" header="Status" style={{ width: '5%' }} body={(data) =>
                             data.status === '1' ? (
-                                <Tag severity="warning">Revisi</Tag>
-                            ) : data.status === '2' ? (
-                                <Tag severity="info">Proses</Tag>
+                                <Tag severity="warning">Belum</Tag>
                             ) : (
-                                <Tag severity="success">Diterima</Tag>
+                                <Tag severity="success">Diverifikasi</Tag>
                             )
                         } />
-                        <Column header="Aksi" style={{ width: '10%' }}
+                        <Column header="Aksi" style={{ width: '5%' }}
                             body={(data) =>
                                 <Button icon="pi pi-pencil" severity="success" rounded
                                     tooltip="Konfirmasi" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}

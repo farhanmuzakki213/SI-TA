@@ -37,7 +37,7 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
     const jurusanBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Jurusan Mahasiswa</span>
+                <span className="p-column-title">Status</span>
                 {rowData.jurusan || 'N/A'}
             </>
         );
@@ -62,7 +62,8 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
                         className="text-blue-500 hover:underline"
                         title="View Details"
                     >
-                        <Button icon="pi pi-eye" rounded outlined />
+                        <Button icon="pi pi-eye" rounded outlined
+                        tooltip="Lihat Details" tooltipOptions={{ position: 'right', mouseTrack: false, mouseTrackRight: 15 }}/>
                     </Link>
                 )}
             </>

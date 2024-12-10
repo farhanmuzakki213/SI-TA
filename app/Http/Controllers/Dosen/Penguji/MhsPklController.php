@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dosen\Penguji;
 
 use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MhsPklNilaiPengujiResource;
 use App\Http\Resources\PMhsPklLaporanResource;
 use App\Http\Resources\MhsPklNilaiResource;
 use App\Http\Resources\MhsPklResource;
@@ -22,7 +23,7 @@ class MhsPklController extends Controller
     {
         $id_user = auth()->user()->id;
         $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
-        $pkl_mhs = PklMhs::where('penguji_id', $id_dosen)->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls')->get();
+        $pkl_mhs = PklMhs::where('penguji_id', $id_dosen)->OrWhere('pembimbing_id', $id_dosen)->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_roleTempatPkls.r_tempatPkls')->get();
         // dd($pkl_mhs_id);
         return Inertia::render('main/penguji/mhspkl/index', [
             'data_mhspkl' => MhsPklResource::collection($pkl_mhs),
@@ -40,14 +41,16 @@ class MhsPklController extends Controller
 
         $data_nilai = PklNilai::where('pkl_mhs_id', $id)
             ->where('dosen_id', $id_dosen)
+            ->where('sebagai', 'penguji')
             ->get();
 
         $data_laporan = log_book_pkl::where('pkl_mhs_id', $id)->get();
 
         return Inertia::render('main/penguji/mhspkl/detail', [
             'data_mhs' => MhsPklResource::collection($data_mhs),
-            'data_nilai' => MhsPklNilaiResource::collection($data_nilai),
+            'data_nilai' => MhsPklNilaiPengujiResource::collection($data_nilai),
             'data_laporan' => PMhsPklLaporanResource::collection($data_laporan),
+            'id_dosen' => $id_dosen,
             'nextNumber_nilai' => CariNomor::getCariNomor(PklNilai::class, 'id_pkl_nilai'),
         ]);
     }
