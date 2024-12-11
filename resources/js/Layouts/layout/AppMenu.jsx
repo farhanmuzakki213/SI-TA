@@ -86,6 +86,7 @@ const AppMenu = () => {
                         label: 'Pembimbing',
                         items: [
                             { label: 'Mahasiswa PKL', icon: 'pi pi-fw pi-file', to: route('MhsPklPembimbing') },
+                            { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproPembimbing') },
                         ],
                     }}
                     root={true}
@@ -98,6 +99,7 @@ const AppMenu = () => {
                         label: 'Penguji',
                         items: [
                             { label: 'Mahasiswa PKL', icon: 'pi pi-fw pi-file', to: route('MhsPklPenguji') },
+                            { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproPenguji') },
                         ],
                     }}
                     root={true}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
-import PklForm from "./ubahpklForm";
+import SemproForm from "./ubahsemproForm";
 import { router, usePage } from "@inertiajs/react";
 import { Toast } from "primereact/toast";
 import BookingForm from "./BookingForm";
@@ -25,7 +25,7 @@ const detailSidang = ({
         ruangan_id: null,
         sesi_id: null,
         mahasiswa_id: data_mhss.id_mahasiswa,
-        tipe: "1",
+        tipe: "2",
         tgl_booking: null,
         status_booking: "",
     };
@@ -87,9 +87,9 @@ const detailSidang = ({
         try {
 
             if (isCreating) {
-                await router.post('/Kprodi/Mhspkl/Jadwal/store', { id_booking: nextNumber, mahasiswa_id, ruangan_id, sesi_id, tgl_booking, tipe });
+                await router.post('/Kprodi/Mhssempro/Jadwal/store', { id_booking: nextNumber, mahasiswa_id, ruangan_id, sesi_id, tgl_booking, tipe });
             } else {
-                await router.put(`/Kprodi/Mhspkl/Jadwal/${booking.id_booking}/update`, { ruangan_id, sesi_id, status_booking, tgl_booking });
+                await router.put(`/Kprodi/Mhssempro/Jadwal/${booking.id_booking}/update`, { ruangan_id, sesi_id, status_booking, tgl_booking });
             }
 
             if (isCreating) {
@@ -142,26 +142,26 @@ const detailSidang = ({
         </>
     );
     /* Pembimbing dan Penguji */
-    let emptypkl = {
-        id_pkl_mhs: null,
+    let emptysempro = {
+        id_sempro_mhs: null,
         pembimbing_id: null,
         penguji_id: null,
     };
-    const [pkls, setpkls] = useState([]);
+    const [sempros, setsempros] = useState([]);
     const [dosenOptions, setDosenOptions] = useState([]);
-    const [pklDialog, setpklDialog] = useState(false);
-    const [pkl, setpkl] = useState(emptypkl);
+    const [semproDialog, setsemproDialog] = useState(false);
+    const [sempro, setsempro] = useState(emptysempro);
 
     useEffect(() => {
-        setpkls(data_mhss);
+        setsempros(data_mhss);
         setDosenOptions(initialDosenOptions);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
     }, [data_mhss, props.flash, initialDosenOptions]);
 
-    const pklhideDialog = () => {
+    const semprohideDialog = () => {
         setSubmitted(false);
-        setpklDialog(false);
+        setsemproDialog(false);
     };
 
     const displaySuccessMessage = (successMessage) => {
@@ -188,13 +188,13 @@ const detailSidang = ({
         }
     };
 
-    const savepkl = async () => {
+    const savesempro = async () => {
         setSubmitted(true);
 
         const requiredFieldsForUpdate = [
-            pkl.id_pkl_mhs,
-            pkl.pembimbing_id,
-            pkl.penguji_id
+            sempro.id_sempro_mhs,
+            sempro.pembimbing_id,
+            sempro.penguji_id
         ];
 
         const isValid = requiredFieldsForUpdate.every(field => field);
@@ -209,18 +209,18 @@ const detailSidang = ({
             return;
         }
 
-        const { id_pkl_mhs, pembimbing_id, penguji_id } = pkl;
+        const { id_sempro_mhs, pembimbing_id, penguji_id } = sempro;
 
         try {
-            await router.put(`/Kprodi/Mhspkl/Pkl/${id_pkl_mhs}/update`, { pembimbing_id, penguji_id });
+            await router.put(`/Kprodi/Mhssempro/sempro/${id_sempro_mhs}/update`, { pembimbing_id, penguji_id });
 
-            setpkls(prevpkls => {
-                if (!Array.isArray(prevpkls)) {
+            setsempros(prevsempros => {
+                if (!Array.isArray(prevsempros)) {
                     return [];
                 }
 
-                return prevpkls.map(d =>
-                    d.id_pkl_mhs === pkl.id_pkl_mhs ? pkl : d
+                return prevsempros.map(d =>
+                    d.id_sempro_mhs === sempro.id_sempro_mhs ? sempro : d
                 );
             });
         } catch (error) {
@@ -232,25 +232,25 @@ const detailSidang = ({
                 life: 3000,
             });
         } finally {
-            setpkl(emptypkl);
-            setpklDialog(false);
+            setsempro(emptysempro);
+            setsemproDialog(false);
         }
     };
 
-    const editpkl = (pkl) => {
-        setpkl({ ...pkl });
-        setpklDialog(true);
+    const editsempro = (sempro) => {
+        setsempro({ ...sempro });
+        setsemproDialog(true);
     };
 
-    const pklDialogFooter = (
+    const semproDialogFooter = (
         <>
             <Button
                 label="Cancel"
                 icon="pi pi-times"
                 text
-                onClick={pklhideDialog}
+                onClick={semprohideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={savepkl} />
+            <Button label="Save" icon="pi pi-check" text onClick={savesempro} />
         </>
     );
 
@@ -269,12 +269,13 @@ const detailSidang = ({
     };
     const openFile = async () => {
         try {
-            const url = `/SuratTugas/Pkl/${data_mhss.id_pkl_mhs}`;
+            const url = `/SuratTugas/sempro/${data_mhss.id_sempro_mhs}`;
             window.open(url, '_blank');
         } catch (error) {
             console.error(error);
         }
     };
+    console.log(data_mhss);
     return (
         <div className="card">
             <Toast ref={toast} />
@@ -282,7 +283,7 @@ const detailSidang = ({
                 <div className="tw-flex tw-items-center">
                     <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
                 </div>
-                {data_mhss.status_ver_pkl === "3" && data_mhss.tgl_sidang === null && (
+                {data_mhss.status_ver_sempro === "3" && data_mhss.tgl_sidang === null && (
                     <Button
                         label="Jadwal"
                         icon="pi pi-plus"
@@ -293,7 +294,7 @@ const detailSidang = ({
                         onClick={bookingopenNew}
                     />
                 )}
-                {data_mhss.status_ver_pkl === "3" && data_mhss.tgl_sidang != null && (
+                {data_mhss.status_ver_sempro === "3" && data_mhss.tgl_sidang != null && (
                     <Button
                         label="Jadwal"
                         icon="pi pi-pencil"
@@ -307,74 +308,74 @@ const detailSidang = ({
 
             </div>
             <hr className="tw-my-4" />
-            <div class="card">
+            <div className="card">
                 <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-sm">
                     <div>
-                        <p class="tw-text-gray-800 tw-font-semibold">Judul</p>
-                        <p class="tw-text-gray-600">{!data_mhss.judul ? '-' : data_mhss.judul}</p>
+                        <p className="tw-text-gray-800 tw-font-semibold">Judul</p>
+                        <p className="tw-text-gray-600">{!data_mhss.judul_sempro ? '-' : data_mhss.judul_sempro}</p>
                     </div>
                     <div>
-                        <p class="tw-text-gray-800 tw-font-semibold">Tanggal Sidang</p>
-                        <p class="tw-text-gray-600">{!data_mhss.tgl_sidang ? '-' : data_mhss.tgl_sidang}</p>
+                        <p className="tw-text-gray-800 tw-font-semibold">Tanggal Sidang</p>
+                        <p className="tw-text-gray-600">{!data_mhss.tgl_sidang ? '-' : data_mhss.tgl_sidang}</p>
                     </div>
                     <div>
-                        <p class="tw-text-gray-800 tw-font-semibold">Ruangan</p>
-                        <p class="tw-text-gray-600">{!data_mhss.ruangan_sidang ? '-' : data_mhss.ruangan_sidang}</p>
+                        <p className="tw-text-gray-800 tw-font-semibold">Ruangan</p>
+                        <p className="tw-text-gray-600">{!data_mhss.ruangan_sidang ? '-' : data_mhss.ruangan_sidang}</p>
                     </div>
                     <div>
-                        <p class="tw-text-gray-800 tw-font-semibold">Sesi</p>
-                        <p class="tw-text-gray-600">{!data_mhss.sesi_sidang ? '-' : data_mhss.sesi_sidang}</p>
+                        <p className="tw-text-gray-800 tw-font-semibold">Sesi</p>
+                        <p className="tw-text-gray-600">{!data_mhss.sesi_sidang ? '-' : data_mhss.sesi_sidang}</p>
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
-                <div class="tw-mt-4 tw-space-y-4">
-                    <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-800 tw-font-medium">Nama Dosen</p>
+            <div className="card">
+                <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
+                <div className="tw-mt-4 tw-space-y-4">
+                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-800 tw-font-medium">Nama Dosen</p>
                         </div>
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-800 tw-font-medium">Jabatan</p>
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-800 tw-font-medium">Jabatan</p>
                         </div>
-                        <div class="tw-w-1/3 tw-text-right">
-                            <p class="tw-text-gray-800 tw-font-medium">Nilai</p>
+                        <div className="tw-w-1/3 tw-text-right">
+                            <p className="tw-text-gray-800 tw-font-medium">Nilai</p>
                         </div>
                     </div>
-                    <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
                         </div>
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-600">Pembimbing Program Studi</p>
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-600">Pembimbing Program Studi</p>
                         </div>
-                        <div class="tw-w-1/3 tw-text-right">
+                        <div className="tw-w-1/3 tw-text-right">
                             {!nilaiPembimbing ? (
-                                <p class="tw-text-gray-600">-</p>
+                                <p className="tw-text-gray-600">-</p>
                             ) : (
-                                <p class="tw-text-gray-600">{nilaiPembimbing.total_nilai}</p>
+                                <p className="tw-text-gray-600">{nilaiPembimbing.total_nilai}</p>
                             )}
                         </div>
                     </div>
-                    <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-600">{!data_mhss.pkl_pembimbing ? '-' : data_mhss.pkl_pembimbing}</p>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-600">{!data_mhss.sempro_pembimbing ? '-' : data_mhss.sempro_pembimbing}</p>
                         </div>
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-600">Pembimbing dari Industri</p>
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-600">Pembimbing dari Industri</p>
                         </div>
-                        <div class="tw-w-1/3 tw-text-right">
-                            <p class="tw-text-gray-600">{!data_mhss.nilai_industri ? '-' : data_mhss.nilai_industri}</p>
+                        <div className="tw-w-1/3 tw-text-right">
+                            <p className="tw-text-gray-600">{!data_mhss.nilai_industri ? '-' : data_mhss.nilai_industri}</p>
                         </div>
                     </div>
-                    <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
                         </div>
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-600">Penguji 1</p>
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-600">Penguji 1</p>
                         </div>
-                        <div class="tw-w-1/3 tw-text-right">
+                        <div className="tw-w-1/3 tw-text-right">
                             {!nilaiPenguji_1 ? (
                                 <p className="tw-text-gray-600">-</p>
                             ) : (
@@ -382,14 +383,14 @@ const detailSidang = ({
                             )}
                         </div>
                     </div>
-                    <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-600">{data_mhss.dosen_penguji}</p>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-600">{data_mhss.dosen_penguji}</p>
                         </div>
-                        <div class="tw-w-1/3">
-                            <p class="tw-text-gray-600">Penguji 2</p>
+                        <div className="tw-w-1/3">
+                            <p className="tw-text-gray-600">Penguji 2</p>
                         </div>
-                        <div class="tw-w-1/3 tw-text-right">
+                        <div className="tw-w-1/3 tw-text-right">
                             {!nilaiPenguji_2 ? (
                                 <p className="tw-text-gray-600">-</p>
                             ) : (
@@ -398,24 +399,24 @@ const detailSidang = ({
                         </div>
                     </div>
                     <hr className="tw-my-2" />
-                    <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div class="tw-w-1/2">
-                            <p class="tw-text-gray-800 tw-font-medium">Total Nilai</p>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                        <div className="tw-w-1/2">
+                            <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
                         </div>
-                        <div class="tw-w-1/2 tw-text-right">
-                            <p class="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? '-' : nilaiAkhir()}</p>
+                        <div className="tw-w-1/2 tw-text-right">
+                            <p className="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? '-' : nilaiAkhir()}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="tw-mt-6">
+            <div className="tw-mt-6">
                 <div className="card">
-                    <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Files</p>
-                    <div class="tw-mt-4 tw-space-y-4">
+                    <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Files</p>
+                    <div className="tw-mt-4 tw-space-y-4">
                         {data_mhss.id_booking && (
-                            <div class="tw-flex tw-justify-between tw-items-center tw-py-2">
-                                <div class="tw-flex tw-items-center">
-                                    <span class="tw-text-gray-800">Surat Tugas</span>
+                            <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                                <div className="tw-flex tw-items-center">
+                                    <span className="tw-text-gray-800">Surat Tugas</span>
                                 </div>
                                 <Button icon="pi pi-file" severity="primary" outlined label="File"
                                     tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
@@ -425,14 +426,14 @@ const detailSidang = ({
                     </div>
                 </div>
             </div>
-            <PklForm
-                pklDialog={pklDialog}
-                pkl={pkl}
+            <SemproForm
+                semproDialog={semproDialog}
+                sempro={sempro}
                 dosenOptions={dosenOptions}
-                setpkl={setpkl}
+                setsempro={setsempro}
                 submitted={submitted}
-                pklDialogFooter={pklDialogFooter}
-                pklhideDialog={pklhideDialog}
+                semproDialogFooter={semproDialogFooter}
+                semprohideDialog={semprohideDialog}
             />
 
             <BookingForm

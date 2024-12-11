@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
 import { Avatar } from 'primereact/avatar';
 
-const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalFilter, header, editsempro, confirmDeletesempro, dt }) => {
+const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalFilter, header, editsempro, dt }) => {
 
     // console.log(sempros);
     const namaBodyTemplate = (rowData) => {
@@ -52,15 +52,6 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
             </>
         );
     };
-
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Status</span>
-                {rowData.status_ver_sempro === "1" ? "Ditolak" : rowData.status_ver_sempro === "2" ? "Belum" : "Diterima"}
-            </>
-        );
-    };
     const gambarBodyTemplate = (rowData) => {
         return (
             <>
@@ -74,23 +65,14 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
         // console.log(rowData.id_pkl_mhs, status);
         return (
             <>
-                {rowData.status_ver_sempro === '3' ? (
+                {rowData.status_ver_sempro === '3' && (
                     <Link
-                        href={'/Kprodi/MhsSempro/' + rowData.id_sempro_mhs}
+                        href={'/Penguji/Mhssempro/' + rowData.id_sempro_mhs}
                         className="text-blue-500 hover:underline"
                         title="View Details"
                     >
                         <Button icon="pi pi-eye" rounded outlined />
                     </Link>
-
-                ) : (
-                    <Button
-                        icon="pi pi-pencil"
-                        severity="success"
-                        rounded
-                        className="mr-2"
-                        onClick={() => editsempro(rowData)}
-                    />
                 )}
             </>
         );
@@ -122,7 +104,6 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
             {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
             <Column field="judul_sempro" header="Judul" sortable body={judulBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column header="File" sortable body={fileBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_ver_sempro" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

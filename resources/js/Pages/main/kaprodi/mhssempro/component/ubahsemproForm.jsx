@@ -3,29 +3,29 @@ import { Dialog } from "primereact/dialog";
 import "primeicons/primeicons.css";
 import { Dropdown } from "primereact/dropdown";
 
-const pklForm = ({
-    pklDialog,
-    pkl,
+const semproForm = ({
+    semproDialog,
+    sempro,
     submitted,
-    pklDialogFooter,
+    semproDialogFooter,
     hideDialog,
-    setpkl,
+    setsempro,
     dosenOptions
 }) => {
     const onInputChange = (e, field) => {
         const value = e.target ? e.target.value : e.value;
-        setpkl((prevState) => ({
+        setsempro((prevState) => ({
             ...prevState,
             [field]: value,
         }));
     };
 
     const filteredPengujiOptions = dosenOptions.filter((dosen) => {
-        if (pkl.pembimbing_id) {
+        if (sempro.pembimbing_id) {
             return (
-                dosen.value !== pkl.pembimbing_id &&
+                dosen.value !== sempro.pembimbing_id &&
                 dosen.golongan >=
-                dosenOptions.find((d) => d.value === pkl.pembimbing_id)
+                dosenOptions.find((d) => d.value === sempro.pembimbing_id)
                     ?.golongan
             );
         }
@@ -34,11 +34,11 @@ const pklForm = ({
 
 
     const filteredPembimbingOptions = dosenOptions.filter((dosen) => {
-        if (pkl.penguji_id) {
+        if (sempro.penguji_id) {
             return (
-                dosen.value !== pkl.penguji_id &&
+                dosen.value !== sempro.penguji_id &&
                 dosen.golongan >=
-                dosenOptions.find((d) => d.value === pkl.penguji_id)
+                dosenOptions.find((d) => d.value === sempro.penguji_id)
                     ?.golongan
             );
         }
@@ -47,12 +47,12 @@ const pklForm = ({
 
     return (
         <Dialog
-            visible={pklDialog}
+            visible={semproDialog}
             style={{ width: "450px" }}
             header="Ubah Pembimbing dan Penguji"
             modal
             className="p-fluid"
-            footer={pklDialogFooter}
+            footer={semproDialogFooter}
             onHide={hideDialog}
         >
             {/* Pembimbing */}
@@ -60,7 +60,7 @@ const pklForm = ({
                 <label htmlFor="pembimbing_id">Pembimbing *</label>
                 <Dropdown
                     id="pembimbing_id"
-                    value={pkl.pembimbing_id || ""}
+                    value={sempro.pembimbing_id || ""}
                     onChange={(e) => onInputChange(e, "pembimbing_id")}
                     options={filteredPembimbingOptions}
                     placeholder="Select a Pembimbing"
@@ -68,7 +68,7 @@ const pklForm = ({
                     optionValue="value"
                     required
                 />
-                {submitted && !pkl.pembimbing_id && (
+                {submitted && !sempro.pembimbing_id && (
                     <small className="p-invalid"> Pembimbing is required.</small>
                 )}
             </div>
@@ -78,7 +78,7 @@ const pklForm = ({
                 <label htmlFor="penguji_id">Penguji *</label>
                 <Dropdown
                     id="penguji_id"
-                    value={pkl.penguji_id || ""}
+                    value={sempro.penguji_id || ""}
                     onChange={(e) => onInputChange(e, "penguji_id")}
                     options={filteredPengujiOptions}
                     placeholder="Select a Penguji"
@@ -86,10 +86,10 @@ const pklForm = ({
                     optionValue="value"
                     required
                 />
-                {submitted && !pkl.penguji_id && (
+                {submitted && !sempro.penguji_id && (
                     <small className="p-invalid"> Penguji is required.</small>
                 )}
-                {submitted && pkl.pembimbing_id === pkl.penguji_id && (
+                {submitted && sempro.pembimbing_id === sempro.penguji_id && (
                     <small className="p-invalid"> Pembimbing and Penguji cannot be the same.</small>
                 )}
             </div>
@@ -98,4 +98,4 @@ const pklForm = ({
     );
 };
 
-export default pklForm;
+export default semproForm;

@@ -22,7 +22,11 @@ class SemproController extends Controller
         $mahasiswa = Mahasiswa::where('user_id', $id_user)->with('r_user', 'r_kelas.r_prodi.r_jurusan')->get();
         $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
         $data_sempro = SemproMhs::where('mahasiswa_id', $id_mahasiswa)
-            ->with('r_mahasiswa.r_kelas.r_prodi.r_jurusan', 'r_mahasiswa.r_user', 'r_pembimbing_1', 'r_pembimbing_2', 'r_penguji',)
+            ->with('r_mahasiswa.r_kelas.r_prodi.r_jurusan',
+            'r_mahasiswa.r_user',
+            'r_pembimbing_1',
+            'r_pembimbing_2',
+            'r_penguji',)
             ->get();
 
         // dd($data_sempro, $id_mahasiswa->toArray());

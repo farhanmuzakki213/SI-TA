@@ -139,4 +139,89 @@ class MhsSemproController extends Controller
             return to_route('MhsSemproKprodi')->with('error', 'Verifikasi Sempro updated failed');
         }
     }
+
+    public function storeJadwal(Request $request)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'id_booking' => 'required',
+            'ruangan_id' => 'required|exists:ruangan,id_ruangan',
+            'sesi_id' => 'required|exists:sesi,id_sesi',
+            'mahasiswa_id' => 'required|exists:mahasiswas,id_mahasiswa',
+            'tgl_booking' => 'required',
+            'tipe' => 'required|string',
+        ]);
+        $validator->after(function ($validator) use ($request) {
+            $exists = Booking::where('ruangan_id', $request->ruangan_id)
+                ->where('tgl_booking', $request->tgl_booking)
+                ->where('sesi_id', $request->sesi_id)
+                ->where('tgl_booking', $request->tgl_booking)
+                ->exists();
+            if ($exists) {
+                $validator->errors()->add('ruangan_id', 'Kombinasi ruangan dan sesi sudah ada');
+            }
+        });
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+
+        DB::beginTransaction();
+        try {
+            Booking::create([
+                'id_booking' => $request->id_booking,
+                'ruangan_id' => $request->ruangan_id,
+                'sesi_id' => $request->sesi_id,
+                'mahasiswa_id' => $request->mahasiswa_id,
+                'tgl_booking' => $request->tgl_booking,
+                'tipe' => $request->tipe
+            ]);
+            DB::commit();
+
+            return back()->with('success', 'Jadwal created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Jadwal created failed');
+        }
+    }
+
+    public function updateJadwal(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'ruangan_id' => 'required|exists:ruangan,id_ruangan',
+            'sesi_id' => 'required|exists:sesi,id_sesi',
+            'tgl_booking' => 'required',
+            'status_booking' => 'required|string'
+        ]);
+        $validator->after(function ($validator) use ($request) {
+            $exists = Booking::where('ruangan_id', $request->ruangan_id)
+                ->where('tgl_booking', $request->tgl_booking)
+                ->where('sesi_id', $request->sesi_id)
+                ->where('tgl_booking', $request->tgl_booking)
+                ->exists();
+            if ($exists) {
+                $validator->errors()->add('ruangan_id', 'Kombinasi ruangan dan sesi sudah ada');
+            }
+        });
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $data = [
+                'ruangan_id' => $request->ruangan_id,
+                'sesi_id' => $request->sesi_id,
+                'tgl_booking' => $request->tgl_booking,
+                'status_booking' => $request->status_booking
+            ];
+
+            $rTersedia = Booking::findOrFail($id);
+            $rTersedia->update($data);
+            DB::commit();
+            return back()->with('success', 'Jadwal updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Jadwal updated failed');
+        }
+    }
 }

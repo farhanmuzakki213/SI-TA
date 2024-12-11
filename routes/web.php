@@ -88,6 +88,10 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
     Route::middleware('auth')->group(function () {
         // Route Dosen Pembimbing
         Route::group(['middleware' => ['role:dosenPembimbing']], function () {
+            // Sempro
+            Route::get('/Pembimbing/Mhssempro', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'index'])->name('MhsSemproPembimbing');
+            Route::get('/Pembimbing/Mhssempro/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'detail']);
+
             // PKL
             Route::get('/Pembimbing/Mhspkl', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'index'])->name('MhsPklPembimbing');
             Route::get('/Pembimbing/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'detail']);
@@ -98,6 +102,11 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
 
         // Route Dosen Penguji
         Route::group(['middleware' => ['role:dosenPenguji']], function () {
+
+            // Sempro
+            Route::get('/Penguji/Mhssempro', [\App\Http\Controllers\Dosen\Penguji\MhsSemproController::class, 'index'])->name('MhsSemproPenguji');
+            Route::get('/Penguji/Mhssempro/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsSemproController::class, 'detail']);
+
             // PKL
             Route::get('/Penguji/Mhspkl', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'index'])->name('MhsPklPenguji');
             Route::get('/Penguji/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'detail']);
@@ -132,6 +141,8 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             Route::get('/Kprodi/MhsSempro', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'index'])->name('MhsSemproKprodi');
             Route::get('/Kprodi/MhsSempro/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'detail']);
             Route::put('/Kprodi/MhsSempro/Penugasan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updatePenugasan'])->name('MhsSemproKprodi.updatePenugasan');
+            Route::post('/Kprodi/Mhssempro/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'storeJadwal'])->name('MhsSemproKprodi.storeJadwal');
+            Route::put('/Kprodi/Mhssempro/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updateJadwal'])->name('MhsSemproKprodi.updateJadwal');
 
             // PKL
             Route::get('/Kprodi/Mhspkl', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'index'])->name('MhsPklKprodi');

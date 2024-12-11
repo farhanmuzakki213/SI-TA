@@ -103,11 +103,11 @@ const SemproForm = ({
                 <div className="formgrid grid">
                     <div className="field-radiobutton col-4">
                         <RadioButton
-                            inputId="status_ver_sempro2"
+                            inputId="status_ver_sempro1"
                             name="status_ver_sempro"
-                            value="2"
+                            value="1"
                             onChange={onStatusChange}
-                            checked={sempro.status_ver_sempro === "2"}
+                            checked={sempro.status_ver_sempro === "1"}
                         />
                         <label htmlFor="status_ver_sempro2">Ditolak</label>
                     </div>

@@ -13,6 +13,7 @@ const index = () => {
         judul_sempro: '',
         file_sempro: '',
     };
+    const data_sempros = data_sempro[0];
     console.log(data_sempro);
     const [sempros, setsempros] = useState(null);
     const [semproDialog, setsemproDialog] = useState(false);
@@ -188,9 +189,87 @@ const index = () => {
                                         onClick={openNew}
                                     />
                                 ) : (
-                                    <p>detail sempro</p>
-                                )}
+                                    data_sempro[0].status_ver_sempro === '3' ? (
+                                        <div className="card">
+                                            <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
+                                            <hr className="tw-my-4" />
+                                            <div className="card">
+                                                <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-sm">
+                                                    <div>
+                                                        <p className="tw-text-gray-800 tw-font-semibold">Judul</p>
+                                                        <p className="tw-text-gray-600">{data_sempros?.judul_sempro || '-'}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="tw-text-gray-800 tw-font-semibold">Tanggal Sidang</p>
+                                                        <p className="tw-text-gray-600">{data_sempros?.tgl_sidang || '-'}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="tw-text-gray-800 tw-font-semibold">Ruangan</p>
+                                                        <p className="tw-text-gray-600">{data_sempros?.ruangan_sidang || '-'}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="tw-text-gray-800 tw-font-semibold">Sesi</p>
+                                                        <p className="tw-text-gray-600">{data_sempros?.sesi_sidang || '-'}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
 
+                                            <hr className="tw-my-3" />
+                                            <div className="card">
+                                                <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
+                                                <div className="tw-mt-4 tw-space-y-4">
+                                                    {["Pembimbing Program Studi", "Pembimbing dari Industri", "Penguji 1", "Penguji 2"].map((jabatan, index) => (
+                                                        <div key={index} className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                                            <div className="tw-w-1/3">
+                                                                <p className="tw-text-gray-600">-</p>
+                                                            </div>
+                                                            <div className="tw-w-1/3">
+                                                                <p className="tw-text-gray-600">{jabatan}</p>
+                                                            </div>
+                                                            <div className="tw-w-1/3 tw-text-right">
+                                                                <p className="tw-text-gray-600">-</p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+
+                                                    <hr className="tw-my-2" />
+                                                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                                        <div className="tw-w-1/2">
+                                                            <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
+                                                        </div>
+                                                        <div className="tw-w-1/2 tw-text-right">
+                                                            <p className="tw-text-gray-800 tw-font-medium">nilai akhir</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="tw-mt-6">
+                                                <div className="card">
+                                                    <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Files</p>
+                                                    <div className="tw-mt-4 tw-space-y-4">
+                                                        <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                                                            <div className="tw-flex tw-items-center">
+                                                                <span className="tw-text-gray-800">Proposal</span>
+                                                            </div>
+                                                            <Button
+                                                                icon="pi pi-file"
+                                                                severity="primary"
+                                                                outlined
+                                                                label="File"
+                                                                tooltip="Lihat File"
+                                                                tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                                                onClick={() => window.open(`/storage/uploads/sempro/file/${data_sempros?.file_sempro}`, '_blank')}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p>edit</p>
+                                    )
+                                )}
                             </div>
                         </div>
                     </div>
