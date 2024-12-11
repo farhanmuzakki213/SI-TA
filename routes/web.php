@@ -91,13 +91,15 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             // Sempro
             Route::get('/Pembimbing/Mhssempro', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'index'])->name('MhsSemproPembimbing');
             Route::get('/Pembimbing/Mhssempro/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'detail']);
+            Route::post('/Pembimbing/Mhssempro/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'storeNilai'])->name('MhsSemproPembimbing.storeNilai');
+            Route::put('/Pembimbing/Mhssempro/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'updateNilai'])->name('MhsSemproPembimbing.updateNilai');
 
             // PKL
             Route::get('/Pembimbing/Mhspkl', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'index'])->name('MhsPklPembimbing');
             Route::get('/Pembimbing/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'detail']);
-            Route::put('/Pembimbing/Mhspkl/Laporan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateLaporan'])->name('MhsPklPembimbingLaporan.updateLaporan');
-            Route::post('/Pembimbing/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'storeNilai'])->name('MhsPklPembimbingLaporan.storeNilai');
-            Route::put('/Pembimbing/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateNilai'])->name('MhsPklPembimbingLaporan.updateNilai');
+            Route::put('/Pembimbing/Mhspkl/Laporan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateLaporan'])->name('MhsPklPembimbing.updateLaporan');
+            Route::post('/Pembimbing/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'storeNilai'])->name('MhsPklPembimbing.storeNilai');
+            Route::put('/Pembimbing/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateNilai'])->name('MhsPklPembimbing.updateNilai');
         });
 
         // Route Dosen Penguji

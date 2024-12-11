@@ -211,7 +211,7 @@ const detailSidang = ({
                     <div className="tw-flex tw-items-center">
                         <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
                     </div>
-                    {!nilaiPembimbing() ? (
+                    {!nilaiPembimbing() && data_mhss.id_booking ? (
                         <Button
                             label="Nilai"
                             icon="pi pi-plus"

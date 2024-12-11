@@ -1,14 +1,189 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
-// import SemproForm from "./ubahsemproForm";
+import NilaisemproForm from "./nilaiForm";
 import { router, usePage } from "@inertiajs/react";
 import { Toast } from "primereact/toast";
-// import BookingForm from "./BookingForm";
 
 const detailSidang = ({
     data_mhs,
+    data_nilai,
+    nextNumber_nilai,
+    dosen_id,
 }) => {
+    let emptynilaisempro = {
+        id_sempro_nilai: null,
+        sempro_mhs_id: data_mhs[0].id_sempro_mhs,
+        pendahuluan: "",
+        tinjauan_pustaka: "",
+        metodologi_penelitian: "",
+        bahasa_dan_tata_tulis: "",
+        presentasi: "",
+    };
     const data_mhss = data_mhs[0];
+    const { props } = usePage();
+    const [nilaisempros, setnilaisempros] = useState(null);
+    const [nilaisemproDialog, setnilaisemproDialog] = useState(false);
+    const [nilaisempro, setnilaisempro] = useState(emptynilaisempro);
+    const [submitted, setSubmitted] = useState(false);
+    const toast = useRef(null);
+
+    useEffect(() => {
+        setnilaisempros(data_nilai);
+        displaySuccessMessage(props.flash?.success);
+        displayErrorMessage(props.flash?.error);
+    }, [data_nilai, props.flash]);
+
+    console.log(data_nilai);
+    const nilaiPembimbing = () => {
+        console.log("Nilais", nilaisempros);
+        if (!Array.isArray(nilaisempros) || nilaisempros.length === 0) {
+            console.warn("nilaisempros is empty or not an array");
+            return null;
+        }
+        const nilaisempro = nilaisempros[0];
+
+        return nilaisempro;
+    };
+
+    console.log("Hasil Nilai Pembimbing:", nilaiPembimbing());
+
+    const nilaiPenguji = JSON.parse(data_mhss.nilai_penguji?.nilai || null);
+    const nilaiPembimbing_1 = JSON.parse(data_mhss.nilai_pembimbing_1?.nilai || null);
+    const nilaiPembimbing_2 = JSON.parse(data_mhss.nilai_pembimbing_2?.nilai || null);
+    console.log("Hasil Nilai Penguji:", nilaiPenguji);
+    console.log("Hasil Nilai Pembimbing 1:", nilaiPembimbing_1);
+    console.log("Hasil Nilai Pembimbing 2:", nilaiPembimbing_2);
+    // const nilaiAkhir = () => {
+    //     if (nilaiPembimbing() != null && nilaiPembimbing_1 != null && nilaiPembimbing_2 != null) {
+    //         const totalNilai =
+    //             (data_mhss.nilai_industri * 0.30) +
+    //             (nilaiPembimbing().total_nilai * 0.35) +
+    //             (((nilaiPembimbing_1.total_nilai + nilaiPembimbing_2.total_nilai) / 2) * 0.35);
+    //         return parseFloat(totalNilai.toFixed(2));
+    //     }
+    //     return null;
+    // };
+    // console.log("Hasil Nilai Akhir:", nilaiAkhir());
+    const openNew = () => {
+        setnilaisempro(emptynilaisempro);
+        setSubmitted(false);
+        setnilaisemproDialog(true);
+    };
+
+    const hideDialog = () => {
+        setSubmitted(false);
+        setnilaisemproDialog(false);
+    };
+
+    const displaySuccessMessage = (successMessage) => {
+        if (successMessage !== null) {
+            const message = successMessage || "Operation successful";
+            toast.current?.show({
+                severity: "success",
+                summary: "Successful",
+                detail: message,
+                life: 3000,
+            });
+        }
+    };
+
+    const displayErrorMessage = (errorMessage) => {
+        if (errorMessage !== null) {
+            const message = errorMessage || "Operation failed";
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: message,
+                life: 3000,
+            });
+        }
+    };
+
+    const savenilaisempro = async () => {
+        setSubmitted(true);
+
+        const requiredFieldsForCreate = [
+            nilaisempro.pendahuluan,
+            nilaisempro.tinjauan_pustaka,
+            nilaisempro.metodologi_penelitian,
+            nilaisempro.bahasa_dan_tata_tulis,
+            nilaisempro.presentasi,
+        ];
+
+        const requiredFieldsForUpdate = [
+            nilaisempro.pendahuluan,
+            nilaisempro.tinjauan_pustaka,
+            nilaisempro.metodologi_penelitian,
+            nilaisempro.bahasa_dan_tata_tulis,
+            nilaisempro.presentasi,
+        ];
+
+        const isCreating = !nilaisempro.id_sempro_nilai;
+        let isValid = true;
+
+        if (isCreating) {
+            isValid = requiredFieldsForCreate.every(field => field);
+        } else {
+            isValid = requiredFieldsForUpdate.every(field => field);
+        }
+
+        if (!isValid) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: "Please fill in all required fields.",
+                life: 3000,
+            });
+            return;
+        }
+        let _nilaisempro = { ...nilaisempro };
+        try {
+            if (isCreating) {
+                _nilaisempro.id_sempro_nilai = nextNumber_nilai;
+                // console.log("create", _nilaisempro);
+                await router.post("/Pembimbing/Mhssempro/Nilai/store", _nilaisempro);
+            } else {
+                // console.log("update", _nilaisempro);
+                await router.put(`/Pembimbing/Mhssempro/Nilai/${nilaisempro.id_sempro_nilai}/update`, _nilaisempro);
+            }
+            if (isCreating) {
+                setnilaisempros(prevnilaisempros => [...prevnilaisempros, _nilaisempro]);
+            } else {
+                setnilaisempros(prevnilaisempros =>
+                    prevnilaisempros.map(d => d.id_nilaisempro === nilaisempro.id_sempro_nilai ? _nilaisempro : d)
+                );
+            }
+        } catch (error) {
+            console.error("Error occurred:", error);
+            const errorMessage = error.response?.data?.message || "Failed to save nilaisempro.";
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: errorMessage,
+                life: 3000,
+            });
+        } finally {
+            setnilaisempro(emptynilaisempro);
+            setnilaisemproDialog(false);
+        }
+    };
+
+    const editnilaisempro = (nilaisempro) => {
+        setnilaisempro({ ...nilaisempro });
+        setnilaisemproDialog(true);
+    };
+
+    const nilaisemproDialogFooter = (
+        <>
+            <Button
+                label="Cancel"
+                icon="pi pi-times"
+                text
+                onClick={hideDialog}
+            />
+            <Button label="Save" icon="pi pi-check" text onClick={savenilaisempro} />
+        </>
+    );
     const openFile = async () => {
         try {
             const url = `/SuratTugas/sempro/${data_mhss.id_sempro_mhs}`;
@@ -17,10 +192,11 @@ const detailSidang = ({
             console.error(error);
         }
     };
-    console.log(data_mhss);
+    console.log("data mhs :", data_mhss);
+    console.log("dosen id :", dosen_id);
     return (
         <div className="card">
-            {/* <Toast ref={toast} /> */}
+            <Toast ref={toast} />
             <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
             <hr className="tw-my-4" />
             <div className="card">
@@ -44,7 +220,61 @@ const detailSidang = ({
                 </div>
             </div>
             <div className="card">
-                <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
+                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                    <div className="tw-flex tw-items-center">
+                        <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Seminar Proposal</p>
+                    </div>
+                    {data_mhss.pembimbing_1_id === dosen_id && data_mhss.id_booking && (
+                        <>
+                            {data_mhss.nilai_pembimbing_1 === null ? (
+                                <Button
+                                    label="Nilai"
+                                    icon="pi pi-plus"
+                                    severity="success"
+                                    className="mr-2"
+                                    tooltip="Beri Nilai"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={openNew}
+                                />
+                            ) : (
+                                <Button
+                                    label="Nilai"
+                                    icon="pi pi-pencil"
+                                    severity="success"
+                                    className="mr-2"
+                                    tooltip="Edit Nilai"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={() => editnilaisempro(nilaiPembimbing())}
+                                />
+                            )}
+                        </>
+                    )}
+                    {data_mhss.pembimbing_2_id === dosen_id && data_mhss.id_booking && (
+                        <>
+                            {data_mhss.nilai_pembimbing_2 === null ? (
+                                <Button
+                                    label="Nilai"
+                                    icon="pi pi-plus"
+                                    severity="success"
+                                    className="mr-2"
+                                    tooltip="Beri Nilai"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={openNew}
+                                />
+                            ) : (
+                                <Button
+                                    label="Nilai"
+                                    icon="pi pi-pencil"
+                                    severity="success"
+                                    className="mr-2"
+                                    tooltip="Edit Nilai"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={() => editnilaisempro(nilaiPembimbing())}
+                                />
+                            )}
+                        </>
+                    )}
+                </div>
                 <div className="tw-mt-4 tw-space-y-4">
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/3">
@@ -59,49 +289,54 @@ const detailSidang = ({
                     </div>
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">-</p>
+                            <p className="tw-text-gray-600">{!data_mhss.nama_pembimbing_1 ? '-' : data_mhss.nama_pembimbing_1}</p>
                         </div>
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Pembimbing Program Studi</p>
+                            <p className="tw-text-gray-600">Pembimbing 1</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            <p className="tw-text-gray-600">-</p>
+                            {dosen_id === data_mhss.pembimbing_1_id && nilaiPembimbing_1 ? (
+                                <p className="tw-text-gray-600">
+                                    {!nilaiPembimbing() ? 'Belum Dinilai' : nilaiPembimbing().total_nilai}
+                                </p>
+                            ) : (
+                                <p className="tw-text-gray-600">
+                                    {!nilaiPembimbing_1 ? 'Belum Dinilai' : nilaiPembimbing_1.total_nilai}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">-</p>
+                            <p className="tw-text-gray-600">{!data_mhss.nama_pembimbing_2 ? '-' : data_mhss.nama_pembimbing_2}</p>
                         </div>
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Pembimbing dari Industri</p>
+                            <p className="tw-text-gray-600">Pembimbing 2</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            <p className="tw-text-gray-600">-</p>
+                            {dosen_id === data_mhss.pembimbing_2_id && nilaiPembimbing_2 ? (
+                                <p className="tw-text-gray-600">
+                                    {!nilaiPembimbing() ? 'Belum Dinilai' : nilaiPembimbing().total_nilai}
+                                </p>
+                            ) : (
+                                <p className="tw-text-gray-600">
+                                    {!nilaiPembimbing_2 ? 'Belum Dinilai' : nilaiPembimbing_2.total_nilai}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">-</p>
+                            <p className="tw-text-gray-600">{!data_mhss.nama_penguji ? '-' : data_mhss.nama_penguji}</p>
                         </div>
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Penguji 1</p>
+                            <p className="tw-text-gray-600">Penguji</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            <p className="tw-text-gray-600">-</p>
+                            <p className="tw-text-gray-600">{!data_mhss.nilai_penguji ? '-' : data_mhss.nilai_penguji}</p>
                         </div>
                     </div>
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">-</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Penguji 2</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            <p className="tw-text-gray-600">-</p>
-                        </div>
-                    </div>
-                    <hr className="tw-my-2" />
+                    {/* <hr className="tw-my-2" />
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/2">
                             <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
@@ -109,7 +344,7 @@ const detailSidang = ({
                         <div className="tw-w-1/2 tw-text-right">
                             <p className="tw-text-gray-800 tw-font-medium">nilai akhir</p>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="tw-mt-6">
@@ -129,6 +364,14 @@ const detailSidang = ({
                     </div>
                 </div>
             </div>
+            <NilaisemproForm
+                nilaisemproDialog={nilaisemproDialog}
+                nilaisempro={nilaisempro}
+                setnilaisempro={setnilaisempro}
+                submitted={submitted}
+                nilaisemproDialogFooter={nilaisemproDialogFooter}
+                hideDialog={hideDialog}
+            />
         </div>
     )
 };

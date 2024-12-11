@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Booking;
+use App\Models\SemproNilai;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -27,18 +28,27 @@ class MhsSemproResource extends JsonResource
             $ruangan = null;
         }
         $fotoProfile = $this->r_mahasiswa->r_user->images ?? "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80";
+
+        $nilai_pembimbing_1 = SemproNilai::where('dosen_id', $this->pembimbing_1_id)->where('sempro_mhs_id', $this->id_sempro_mhs)->where('sebagai', 'pembimbing_1')->select('nilai')->first();
+        $nilai_pembimbing_2 = SemproNilai::where('dosen_id', $this->pembimbing_2_id)->where('sempro_mhs_id', $this->id_sempro_mhs)->where('sebagai', 'pembimbing_2')->select('nilai')->first();
+        $nilai_penguji = SemproNilai::where('dosen_id', $this->penguji_id)->where('sempro_mhs_id', $this->id_sempro_mhs)->where('sebagai', 'penguji')->select('nilai')->first();
         return [
             'id_sempro_mhs' => $this->id_sempro_mhs,
             'judul_sempro' => $this->judul_sempro,
             'file_sempro' => $this->file_sempro,
             'komentar' => $this->komentar,
             'status_ver_sempro' => $this->status_ver_sempro,
-            'nama_pembimbing_1' => $this->r_pembimbing_1->nama_dosen,
-            'pembimbing_1_id' => $this->r_pembimbing_1_id,
-            'nama_pembimbing_2' => $this->r_pembimbing_2->nama_dosen,
-            'pembimbing_2_id' => $this->r_pembimbing_2_id,
-            'nama_penguji' => $this->r_penguji->nama_dosen,
-            'penguji_id' => $this->penguji_id,
+
+            'nama_pembimbing_1' => $this->r_pembimbing_1->nama_dosen ?? null,
+            'pembimbing_1_id' => $this->pembimbing_1_id ?? null,
+            'nama_pembimbing_2' => $this->r_pembimbing_2->nama_dosen ?? null,
+            'pembimbing_2_id' => $this->pembimbing_2_id ?? null,
+            'nama_penguji' => $this->r_penguji->nama_dosen ?? null,
+            'penguji_id' => $this->penguji_id ?? null,
+
+            'nilai_pembimbing_1' => $nilai_pembimbing_1,
+            'nilai_pembimbing_2' => $nilai_pembimbing_2,
+            'nilai_penguji' => $nilai_penguji,
 
             'tgl_sidang' => $tanggalSidang ?? null,
             'sesi_sidang' => $sesi ?? null,

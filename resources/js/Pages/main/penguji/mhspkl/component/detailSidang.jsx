@@ -243,7 +243,7 @@ const detailSidang = ({
                     <div className="tw-flex tw-items-center">
                         <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
                     </div>
-                    {data_mhss.pembimbing_id === id_dosen && (
+                    {data_mhss.pembimbing_id === id_dosen && data_mhss.id_booking  && (
                         <>
                             {data_mhss.nilai_penguji_1 === null ? (
                                 <Button
@@ -268,7 +268,7 @@ const detailSidang = ({
                             )}
                         </>
                     )}
-                    {data_mhss.penguji_id === id_dosen && (
+                    {data_mhss.penguji_id === id_dosen && data_mhss.id_booking && (
                         <>
                             {data_mhss.nilai_penguji_2 === null ? (
                                 <Button
