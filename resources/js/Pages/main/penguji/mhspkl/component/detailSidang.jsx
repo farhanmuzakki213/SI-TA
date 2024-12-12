@@ -243,7 +243,7 @@ const detailSidang = ({
                     <div className="tw-flex tw-items-center">
                         <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
                     </div>
-                    {data_mhss.pembimbing_id === id_dosen && data_mhss.id_booking  && (
+                    {data_mhss.pembimbing_id === id_dosen && data_mhss.id_booking && (
                         <>
                             {data_mhss.nilai_penguji_1 === null ? (
                                 <Button
@@ -294,6 +294,7 @@ const detailSidang = ({
                         </>
                     )}
                 </div>
+                <hr className="tw-my-4" />
                 <div class="tw-mt-4 tw-space-y-4">
                     <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div class="tw-w-1/3">

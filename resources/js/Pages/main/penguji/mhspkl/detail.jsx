@@ -28,18 +28,6 @@ const MhspklDetail = () => {
                             <h1 className="tw-text-xl tw-font-bold tw-text-gray-900">{data_mhs[0].nama_mahasiswa}</h1>
                             <p className="tw-text-sm tw-text-gray-600">{data_mhs[0].nim_mahasiswa}</p>
                             <p className="tw-mt-2 tw-text-sm tw-text-gray-500">{data_mhs[0].prodi}</p>
-                            <ul className="tw-mt-3 tw-divide-y tw-rounded tw-bg-gray-100 tw-py-2 tw-px-3 tw-text-gray-600 tw-shadow-sm hover:tw-text-gray-700 hover:tw-shadow">
-                                <li className="tw-flex tw-items-center tw-py-3 tw-text-sm">
-                                    <span>Status</span>
-                                    <span className="tw-ml-auto">
-                                        <span className="tw-rounded-full tw-bg-green-200 tw-py-1 tw-px-2 tw-text-xs tw-font-medium tw-text-green-700">{data_mhs[0].status_pkl}</span>
-                                    </span>
-                                </li>
-                                <li className="tw-flex tw-items-center tw-py-3 tw-text-sm">
-                                    <span>Mulai</span>
-                                    <span className="tw-ml-auto">{data_mhs[0].tgl_awal_pkl}</span>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>

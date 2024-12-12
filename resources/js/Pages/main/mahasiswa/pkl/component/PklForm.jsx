@@ -1,18 +1,19 @@
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
-import "primeicons/primeicons.css";
+import { InputText } from "primereact/inputtext";
+import { classNames } from "primereact/utils";
 
-const TempatPklForm = ({
-    tempatpklDialog,
-    tempatpkl,
+const PklForm = ({
+    pklDialog,
+    pkl,
     submitted,
     roleOptions,
     tempatOptions,
-    tempatpklDialogFooter,
+    pklDialogFooter,
     hideDialog,
-    settempatpkl,
+    setpkl,
 }) => {
     const today = new Date();
     const parseDate = (dateString) => {
@@ -20,27 +21,15 @@ const TempatPklForm = ({
         const [year, month, day] = dateString.split("-");
         return new Date(year, month - 1, day);
     };
-
-    const [tglAwalPkl, setTglAwalPkl] = useState(tempatpkl.tgl_awal_pkl ? parseDate(tempatpkl.tgl_awal_pkl) : null);
-    const [tglAkhirPkl, setTglAkhirPkl] = useState(tempatpkl.tgl_akhir_pkl ? parseDate(tempatpkl.tgl_akhir_pkl) : null);
-    const [filteredRoleOptions, setFilteredRoleOptions] = useState([]);
-    // console.log(tempatpkl);  
-
     const minDate = new Date(today);
     minDate.setDate(minDate.getDate() + 1);
-
-    useEffect(() => {
-        // Filter dan urutkan opsi berdasarkan tempat PKL
-        const filteredRoles = roleOptions
-            .filter((role) => role.tempat_pkl_id === tempatpkl.tempat_pkl_id)
-            .sort((a, b) => a.label.localeCompare(b.label));
-        setFilteredRoleOptions(filteredRoles);
-    }, [tempatpkl.tempat_pkl_id, roleOptions]);
+    const [tglAwalPkl, setTglAwalPkl] = useState(pkl.tgl_awal_pkl ? parseDate(pkl.tgl_awal_pkl) : null);
+    const [tglAkhirPkl, setTglAkhirPkl] = useState(pkl.tgl_akhir_pkl ? parseDate(pkl.tgl_akhir_pkl) : null);
 
     const handleAwalChange = (e) => {
         const selectedDate = e.value;
         setTglAwalPkl(selectedDate);
-        settempatpkl((prev) => ({
+        setpkl((prev) => ({
             ...prev,
             tgl_awal_pkl: formatDate(selectedDate),
         }));
@@ -48,7 +37,7 @@ const TempatPklForm = ({
         // Reset tglAkhirPkl jika tanggal awal berubah dan akhir jadi tidak valid
         if (tglAkhirPkl && selectedDate > tglAkhirPkl) {
             setTglAkhirPkl(null);
-            settempatpkl((prev) => ({
+            setpkl((prev) => ({
                 ...prev,
                 tgl_akhir_pkl: "",
             }));
@@ -61,7 +50,7 @@ const TempatPklForm = ({
             alert("Tanggal akhir tidak boleh kurang dari tanggal awal.");
         } else {
             setTglAkhirPkl(selectedDate);
-            settempatpkl((prev) => ({
+            setpkl((prev) => ({
                 ...prev,
                 tgl_akhir_pkl: formatDate(selectedDate),
             }));
@@ -79,20 +68,34 @@ const TempatPklForm = ({
     };
     const onInputChange = (e, field) => {
         const value = e.target ? e.target.value : e.value;
-        settempatpkl((prevState) => ({
+        setpkl((prevState) => ({
             ...prevState,
             [field]: value,
         }));
     };
 
+    const handleNewOption = (value, field) => {
+        if (value && !tempatOptions.some(option => option.value === value)) {
+            const newOption = { label: value, value };
+            if (field === "tempat_pkl_id") {
+                setTempatOptions((prev) => [...prev, newOption]);
+            } else if (field === "role_tempat_pkl_id") {
+                setRoleOptions((prev) => [...prev, newOption]);
+            }
+        }
+
+        setpkl((prev) => ({ ...prev, [field]: value }));
+    };
+
+    console.log(pkl);
     return (
         <Dialog
-            visible={tempatpklDialog}
+            visible={pklDialog}
             style={{ width: "450px" }}
             header="Usulan Tempat Pkl Details"
             modal
             className="p-fluid"
-            footer={tempatpklDialogFooter}
+            footer={pklDialogFooter}
             onHide={hideDialog}
         >
             {/* Tempat Pkl ID */}
@@ -100,32 +103,76 @@ const TempatPklForm = ({
                 <label htmlFor="tempat_pkl_id">Tempat PKL</label>
                 <Dropdown
                     id="tempat_pkl_id"
-                    value={tempatpkl.tempat_pkl_id || ""}
+                    value={pkl.tempat_pkl_id || ""}
                     onChange={(e) => onInputChange(e, "tempat_pkl_id")}
+                    onInput={(e) => handleNewOption(e.target.value, "tempat_pkl_id")}
                     options={tempatOptions}
-                    placeholder="Select a Tempat Pkl"
+                    placeholder="Select or type a Tempat PKL"
                     optionLabel="label"
+                    optionValue="value"
+                    editable
                     required
                 />
-                {submitted && !tempatpkl.tempat_pkl_id && (
-                    <small className="p-invalid"> Tempat Pkl is required.</small>
+                {submitted && !pkl.tempat_pkl_id && (
+                    <small className="p-invalid">Tempat PKL is required.</small>
                 )}
             </div>
+
 
             {/* Role Pkl ID */}
             <div className="field">
                 <label htmlFor="role_tempat_pkl_id">Role PKL</label>
                 <Dropdown
                     id="role_tempat_pkl_id"
-                    value={tempatpkl.role_tempat_pkl_id || ""}
+                    value={pkl.role_tempat_pkl_id || ""}
                     onChange={(e) => onInputChange(e, "role_tempat_pkl_id")}
-                    options={filteredRoleOptions}
-                    placeholder="Select a Role Pkl"
+                    onInput={(e) => handleNewOption(e.target.value, "role_tempat_pkl_id")}
+                    options={roleOptions}
+                    placeholder="Select or type a Role PKL"
                     optionLabel="label"
+                    optionValue="value"
+                    editable
                     required
                 />
-                {submitted && !tempatpkl.role_tempat_pkl_id && (
-                    <small className="p-invalid"> Role Pkl is required.</small>
+                {submitted && !pkl.role_tempat_pkl_id && (
+                    <small className="p-invalid">Role PKL is required.</small>
+                )}
+            </div>
+
+
+            {/* Alamat Perusahaan */}
+            <div className="field">
+                <label htmlFor="alamat_tempat_pkl">Alamat Perusahaan</label>
+                <InputText
+                    id="alamat_tempat_pkl"
+                    value={pkl.alamat_tempat_pkl || ''}
+                    onChange={(e) => onInputChange(e, "alamat_tempat_pkl")}
+                    required
+                    autoFocus
+                    className={classNames({
+                        "p-invalid": submitted && !pkl.alamat_tempat_pkl,
+                    })}
+                />
+                {submitted && !pkl.alamat_tempat_pkl && (
+                    <small className="p-invalid">Alamat Perusahaan is required.</small>
+                )}
+            </div>
+
+            {/* Kota Perusahaan */}
+            <div className="field">
+                <label htmlFor="kota_perusahaan">Kota Perusahaan</label>
+                <InputText
+                    id="kota_perusahaan"
+                    value={pkl.kota_perusahaan || ''}
+                    onChange={(e) => onInputChange(e, "kota_perusahaan")}
+                    required
+                    autoFocus
+                    className={classNames({
+                        "p-invalid": submitted && !pkl.kota_perusahaan,
+                    })}
+                />
+                {submitted && !pkl.kota_perusahaan && (
+                    <small className="p-invalid">Kota Perusahaan is required.</small>
                 )}
             </div>
 
@@ -162,4 +209,4 @@ const TempatPklForm = ({
     );
 };
 
-export default TempatPklForm;
+export default PklForm;

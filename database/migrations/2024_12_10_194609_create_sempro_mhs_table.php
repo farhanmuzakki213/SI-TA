@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('judul_sempro');
             $table->text('file_sempro');
             $table->string('komentar')->nullable();
-            $table->enum('status_ver_sempro', ['1', '2', '3'])->default('2');
+            $table->enum('status_ver_sempro', ['1', '2', '3', '4'])->default('2');
+            // $table->enum('status_sempro', ['1', '2', '3',]);
             $table->timestamps();
         });
 

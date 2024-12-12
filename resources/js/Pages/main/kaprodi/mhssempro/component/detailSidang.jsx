@@ -19,6 +19,18 @@ const detailSidang = ({
     const { props } = usePage();
     const toast = useRef(null);
     const [submitted, setSubmitted] = useState(false);
+
+    const nilaiPenguji = JSON.parse(data_mhss.nilai_penguji?.nilai || null);
+    const nilaiPembimbing_1 = JSON.parse(data_mhss.nilai_pembimbing_1?.nilai || null);
+    const nilaiPembimbing_2 = JSON.parse(data_mhss.nilai_pembimbing_2?.nilai || null);
+    const nilaiAkhir = () => {
+        if (nilaiPenguji != null && nilaiPembimbing_1 != null && nilaiPembimbing_2 != null) {
+            const totalNilai =
+                (nilaiPembimbing_1.total_nilai + nilaiPembimbing_2.total_nilai + nilaiPenguji.total_nilai) / 3;
+            return parseFloat(totalNilai.toFixed(2));
+        }
+        return null;
+    };
     /* Jadwal Sidang */
     let emptybooking = {
         id_booking: null,
@@ -144,7 +156,8 @@ const detailSidang = ({
     /* Pembimbing dan Penguji */
     let emptysempro = {
         id_sempro_mhs: null,
-        pembimbing_id: null,
+        pembimbing_1_id: null,
+        pembimbing_2_id: null,
         penguji_id: null,
     };
     const [sempros, setsempros] = useState([]);
@@ -193,7 +206,8 @@ const detailSidang = ({
 
         const requiredFieldsForUpdate = [
             sempro.id_sempro_mhs,
-            sempro.pembimbing_id,
+            sempro.pembimbing_1_id,
+            sempro.pembimbing_2_id,
             sempro.penguji_id
         ];
 
@@ -209,10 +223,10 @@ const detailSidang = ({
             return;
         }
 
-        const { id_sempro_mhs, pembimbing_id, penguji_id } = sempro;
+        const { id_sempro_mhs, pembimbing_1_id, pembimbing_2_id, penguji_id } = sempro;
 
         try {
-            await router.put(`/Kprodi/Mhssempro/sempro/${id_sempro_mhs}/update`, { pembimbing_id, penguji_id });
+            await router.put(`/Kprodi/MhsSempro/Dosen/${id_sempro_mhs}/update`, { pembimbing_1_id, pembimbing_2_id, penguji_id });
 
             setsempros(prevsempros => {
                 if (!Array.isArray(prevsempros)) {
@@ -253,23 +267,9 @@ const detailSidang = ({
             <Button label="Save" icon="pi pi-check" text onClick={savesempro} />
         </>
     );
-
-    const nilaiPenguji_1 = JSON.parse(data_mhss.nilai_penguji_1?.nilai || null);
-    const nilaiPenguji_2 = JSON.parse(data_mhss.nilai_penguji_2?.nilai || null);
-    const nilaiPembimbing = JSON.parse(data_mhss.nilai_pembimbing?.nilai || '{}');
-    const nilaiAkhir = () => {
-        if (nilaiPembimbing != null && nilaiPenguji_1 != null && nilaiPenguji_2 != null) {
-            const totalNilai =
-                (data_mhss.nilai_industri * 0.30) +
-                (nilaiPembimbing.total_nilai * 0.35) +
-                (((nilaiPenguji_1.total_nilai + nilaiPenguji_2.total_nilai) / 2) * 0.35);
-            return parseFloat(totalNilai.toFixed(2));
-        }
-        return null;
-    };
     const openFile = async () => {
         try {
-            const url = `/SuratTugas/sempro/${data_mhss.id_sempro_mhs}`;
+            const url = `/SuratTugas/Sempro/${data_mhss.id_sempro_mhs}`;
             window.open(url, '_blank');
         } catch (error) {
             console.error(error);
@@ -283,7 +283,8 @@ const detailSidang = ({
                 <div className="tw-flex tw-items-center">
                     <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
                 </div>
-                {data_mhss.status_ver_sempro === "3" && data_mhss.tgl_sidang === null && (
+
+                {data_mhss.status_ver_sempro === "3" && data_mhss.tgl_sidang === null && !nilaiAkhir() && (
                     <Button
                         label="Jadwal"
                         icon="pi pi-plus"
@@ -294,7 +295,7 @@ const detailSidang = ({
                         onClick={bookingopenNew}
                     />
                 )}
-                {data_mhss.status_ver_sempro === "3" && data_mhss.tgl_sidang != null && (
+                {data_mhss.status_ver_sempro === "3" && data_mhss.tgl_sidang != null && !nilaiAkhir() && (
                     <Button
                         label="Jadwal"
                         icon="pi pi-pencil"
@@ -305,9 +306,7 @@ const detailSidang = ({
                         onClick={() => editbooking(bookings)}
                     />
                 )}
-
             </div>
-            <hr className="tw-my-4" />
             <div className="card">
                 <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-sm">
                     <div>
@@ -329,7 +328,17 @@ const detailSidang = ({
                 </div>
             </div>
             <div className="card">
-                <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
+                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                    <div className="tw-flex tw-items-center">
+                        <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Seminar Proposal</p>
+                    </div>
+                    {!nilaiAkhir() && (
+                        <Button icon="pi pi-pencil" severity="success" label="Ubah Dosen"
+                        tooltip="Ubah Pembimbing dan Penguji" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                        onClick={() => editsempro(data_mhss)} />
+                    )}
+                </div>
+                <hr className="tw-my-4" />
                 <div className="tw-mt-4 tw-space-y-4">
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/3">
@@ -344,57 +353,46 @@ const detailSidang = ({
                     </div>
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
+                            <p className="tw-text-gray-600">{!data_mhss.nama_pembimbing_1 ? '-' : data_mhss.nama_pembimbing_1}</p>
                         </div>
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Pembimbing Program Studi</p>
+                            <p className="tw-text-gray-600">Pembimbing 1</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiPembimbing ? (
-                                <p className="tw-text-gray-600">-</p>
+                            {!nilaiPembimbing_1 ? (
+                                <p className="tw-text-gray-600">Belum Dinilai</p>
                             ) : (
-                                <p className="tw-text-gray-600">{nilaiPembimbing.total_nilai}</p>
+                                <p className="tw-text-gray-600">{nilaiPembimbing_1.total_nilai}</p>
                             )}
                         </div>
                     </div>
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{!data_mhss.sempro_pembimbing ? '-' : data_mhss.sempro_pembimbing}</p>
+                            <p className="tw-text-gray-600">{!data_mhss.nama_pembimbing_2 ? '-' : data_mhss.nama_pembimbing_2}</p>
                         </div>
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Pembimbing dari Industri</p>
+                            <p className="tw-text-gray-600">Pembimbing 2</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            <p className="tw-text-gray-600">{!data_mhss.nilai_industri ? '-' : data_mhss.nilai_industri}</p>
-                        </div>
-                    </div>
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{data_mhss.dosen_pembimbing}</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Penguji 1</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiPenguji_1 ? (
-                                <p className="tw-text-gray-600">-</p>
+                            {!nilaiPembimbing_2 ? (
+                                <p className="tw-text-gray-600">Belum Dinilai</p>
                             ) : (
-                                <p className="tw-text-gray-600">{nilaiPenguji_1.total_nilai}</p>
+                                <p className="tw-text-gray-600">{nilaiPembimbing_2.total_nilai}</p>
                             )}
                         </div>
                     </div>
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{data_mhss.dosen_penguji}</p>
+                            <p className="tw-text-gray-600">{!data_mhss.nama_penguji ? '-' : data_mhss.nama_penguji}</p>
                         </div>
                         <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Penguji 2</p>
+                            <p className="tw-text-gray-600">Penguji</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiPenguji_2 ? (
-                                <p className="tw-text-gray-600">-</p>
+                            {!nilaiPenguji ? (
+                                <p className="tw-text-gray-600">Belum Dinilai</p>
                             ) : (
-                                <p className="tw-text-gray-600">{nilaiPenguji_2.total_nilai}</p>
+                                <p className="tw-text-gray-600">{nilaiPenguji.total_nilai}</p>
                             )}
                         </div>
                     </div>
@@ -404,7 +402,7 @@ const detailSidang = ({
                             <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
                         </div>
                         <div className="tw-w-1/2 tw-text-right">
-                            <p className="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? '-' : nilaiAkhir()}</p>
+                            <p className="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? 'Belum Lengkap' : nilaiAkhir()}</p>
                         </div>
                     </div>
                 </div>
@@ -423,6 +421,20 @@ const detailSidang = ({
                                     onClick={openFile} />
                             </div>
                         )}
+                        <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                            <div className="tw-flex tw-items-center">
+                                <span className="tw-text-gray-800">Proposal</span>
+                            </div>
+                            <Button
+                                icon="pi pi-file"
+                                severity="primary"
+                                outlined
+                                label="File"
+                                tooltip="Lihat File"
+                                tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                onClick={() => window.open(`/storage/uploads/sempro/file/${data_sempros?.file_sempro}`, '_blank')}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

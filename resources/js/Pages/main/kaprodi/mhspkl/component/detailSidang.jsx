@@ -292,7 +292,7 @@ const detailSidang = ({
                         tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
                         onClick={bookingopenNew}
                     />
-                )}  
+                )}
                 {data_mhss.status_ver_pkl === "3" && data_mhss.tgl_sidang != null && (
                     <Button
                         label="Jadwal"
@@ -304,7 +304,6 @@ const detailSidang = ({
                         onClick={() => editbooking(bookings)}
                     />
                 )}
-
             </div>
             <hr className="tw-my-4" />
             <div class="card">
@@ -329,6 +328,7 @@ const detailSidang = ({
             </div>
             <div class="card">
                 <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
+                <hr className="tw-my-4" />
                 <div class="tw-mt-4 tw-space-y-4">
                     <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div class="tw-w-1/3">

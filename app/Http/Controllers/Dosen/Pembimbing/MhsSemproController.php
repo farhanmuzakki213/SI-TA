@@ -122,19 +122,23 @@ class MhsSemproController extends Controller
     {
         // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
-            'keaktifan' => 'required',
-            'komunikasi' => 'required',
-            'problem_solving' => 'required',
+            'pendahuluan' => 'required',
+            'tinjauan_pustaka' => 'required',
+            'metodologi_penelitian' => 'required',
+            'bahasa_dan_tata_tulis' => 'required',
+            'presentasi' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error 123', $validator->errors()->first());
+            return back()->with('error', $validator->errors()->first());
         }
-        $total_nilai = ($request->keaktifan * 0.30) + ($request->komunikasi * 0.30) + ($request->problem_solving * 0.40);
+        $total_nilai = ($request->pendahuluan * 0.2) + ($request->tinjauan_pustaka * 0.2) + ($request->metodologi_penelitian * 0.2) + ($request->bahasa_dan_tata_tulis * 0.2) + ($request->presentasi * 0.2);
         $nilai_data = [
-            'keaktifan' => $request->keaktifan,
-            'komunikasi' => $request->komunikasi,
-            'problem_solving' => $request->problem_solving,
+            'pendahuluan' => $request->pendahuluan,
+            'tinjauan_pustaka' => $request->tinjauan_pustaka,
+            'metodologi_penelitian' => $request->metodologi_penelitian,
+            'bahasa_dan_tata_tulis' => $request->bahasa_dan_tata_tulis,
+            'presentasi' => $request->presentasi,
             'total_nilai' => round($total_nilai, 2),
         ];
         DB::beginTransaction();

@@ -58,14 +58,15 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
     Route::middleware('auth')->group(function () {
         //PKL
         Route::get('/MhsPkl', [\App\Http\Controllers\Mahasiswa\PklController::class, 'index'])->name('MhsPkl');
-        Route::post('/MhsPkl/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'store'])->name('MhsPkl.store');
+        Route::post('/MhsPkl/TempatPkl/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeTempatPkl'])->name('MhsPkl.storeTempatPkl');
+        Route::post('/MhsPkl/TempatPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateTempatPkl'])->name('MhsPkl.updateTempatPkl');
         Route::post('/MhsPkl/Ajuan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeAjuan'])->name('MhsPkl.storeAjuan');
         Route::put('/MhsPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'update'])->name('MhsPkl.update');
         Route::delete('/MhsPkl/delete', [\App\Http\Controllers\Mahasiswa\PklController::class, 'destroy'])->name('MhsPkl.destroy');
         Route::post('/MhsPkl/Laporan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeLaporan'])->name('MhsPklLaporan.store');
         Route::post('/MhsPkl/Laporan/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateLaporan'])->name('MhsPklLaporan.update');
 
-        //PKL
+        //Sempro
         Route::get('/MhsSempro', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'index'])->name('MhsSempro');
         Route::post('/MhsSempro/store', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'store'])->name('MhsSempro.store');
         Route::post('/MhsSempro/{id}/update', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'update'])->name('MhsSempro.update');
@@ -108,12 +109,14 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             // Sempro
             Route::get('/Penguji/Mhssempro', [\App\Http\Controllers\Dosen\Penguji\MhsSemproController::class, 'index'])->name('MhsSemproPenguji');
             Route::get('/Penguji/Mhssempro/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsSemproController::class, 'detail']);
+            Route::post('/Penguji/Mhssempro/Nilai/store', [\App\Http\Controllers\Dosen\Penguji\MhsSemproController::class, 'storeNilai'])->name('MhsSemproPenguji.storeNilai');
+            Route::put('/Penguji/Mhssempro/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Penguji\MhsSemproController::class, 'updateNilai'])->name('MhsSemproPenguji.updateNilai');
 
             // PKL
             Route::get('/Penguji/Mhspkl', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'index'])->name('MhsPklPenguji');
             Route::get('/Penguji/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'detail']);
-            Route::post('/Penguji/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'storeNilai'])->name('MhsPklPengujiLaporan.storeNilai');
-            Route::put('/Penguji/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'updateNilai'])->name('MhsPklPengujiLaporan.updateNilai');
+            Route::post('/Penguji/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'storeNilai'])->name('MhsPklPenguji.storeNilai');
+            Route::put('/Penguji/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Penguji\MhsPklController::class, 'updateNilai'])->name('MhsPklPenguji.updateNilai');
         });
 
         // Route Kepala Prodi
@@ -143,6 +146,7 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             Route::get('/Kprodi/MhsSempro', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'index'])->name('MhsSemproKprodi');
             Route::get('/Kprodi/MhsSempro/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'detail']);
             Route::put('/Kprodi/MhsSempro/Penugasan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updatePenugasan'])->name('MhsSemproKprodi.updatePenugasan');
+            Route::put('/Kprodi/MhsSempro/Dosen/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updateDosen'])->name('MhsSemproKprodi.updateDosen');
             Route::post('/Kprodi/Mhssempro/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'storeJadwal'])->name('MhsSemproKprodi.storeJadwal');
             Route::put('/Kprodi/Mhssempro/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updateJadwal'])->name('MhsSemproKprodi.updateJadwal');
 

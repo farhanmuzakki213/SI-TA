@@ -211,28 +211,33 @@ const detailSidang = ({
                     <div className="tw-flex tw-items-center">
                         <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
                     </div>
-                    {!nilaiPembimbing() && data_mhss.id_booking ? (
-                        <Button
-                            label="Nilai"
-                            icon="pi pi-plus"
-                            severity="success"
-                            className="mr-2"
-                            tooltip="Beri Nilai"
-                            tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                            onClick={openNew}
-                        />
-                    ) : (
-                        <Button
-                            label="Nilai"
-                            icon="pi pi-pencil"
-                            severity="success"
-                            className="mr-2"
-                            tooltip="Edit Nilai"
-                            tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                            onClick={() => editnilaipkl(nilaiPembimbing())}
-                        />
+                    {data_mhss.id_booking && (
+                        <>
+                            {!nilaiPembimbing() ? (
+                                <Button
+                                    label="Nilai"
+                                    icon="pi pi-plus"
+                                    severity="success"
+                                    className="mr-2"
+                                    tooltip="Beri Nilai"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={openNew}
+                                />
+                            ) : (
+                                <Button
+                                    label="Nilai"
+                                    icon="pi pi-pencil"
+                                    severity="success"
+                                    className="mr-2"
+                                    tooltip="Edit Nilai"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={() => editnilaipkl(nilaiPembimbing())}
+                                />
+                            )}
+                        </>
                     )}
                 </div>
+                <hr className="tw-my-4" />
                 <div class="tw-mt-4 tw-space-y-4">
                     <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div class="tw-w-1/3">

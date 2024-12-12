@@ -20,6 +20,17 @@ const index = () => {
     const [sempro, setsempro] = useState(emptysempro);
     const [submitted, setSubmitted] = useState(false);
     const toast = useRef(null);
+    const nilaiPenguji = JSON.parse(data_sempros.nilai_penguji?.nilai || null);
+    const nilaiPembimbing_1 = JSON.parse(data_sempros.nilai_pembimbing_1?.nilai || null);
+    const nilaiPembimbing_2 = JSON.parse(data_sempros.nilai_pembimbing_2?.nilai || null);
+    const nilaiAkhir = () => {
+        if (nilaiPenguji != null && nilaiPembimbing_1 != null && nilaiPembimbing_2 != null) {
+            const totalNilai =
+                (nilaiPembimbing_1.total_nilai + nilaiPembimbing_2.total_nilai + nilaiPenguji.total_nilai) / 3;
+            return parseFloat(totalNilai.toFixed(2));
+        }
+        return null;
+    };
 
     useEffect(() => {
         setsempros(data_sempro);
@@ -171,6 +182,15 @@ const index = () => {
                             <h1 className="tw-text-xl tw-font-bold tw-text-gray-900">{data_mahasiswa[0].nama_mahasiswa}</h1>
                             <p className="tw-text-sm tw-text-gray-600">{data_mahasiswa[0].nim_mahasiswa}</p>
                             <p className="tw-mt-2 tw-text-sm tw-text-gray-500">{data_mahasiswa[0].prodi}</p>
+
+                            <ul className="tw-mt-3 tw-divide-y tw-rounded tw-bg-gray-100 tw-py-2 tw-px-3 tw-text-gray-600 tw-shadow-sm hover:tw-text-gray-700 hover:tw-shadow">
+                                <li className="tw-flex tw-items-center tw-py-3 tw-text-sm">
+                                    <span>Status Proposal</span>
+                                    <span className="tw-ml-auto">
+                                        <span className="tw-rounded-full tw-bg-green-200 tw-py-1 tw-px-2 tw-text-xs tw-font-medium tw-text-green-700">{data_sempros.status}</span>
+                                    </span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -213,32 +233,78 @@ const index = () => {
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <hr className="tw-my-3" />
                                             <div className="card">
-                                                <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
+                                                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                                                    <div className="tw-flex tw-items-center">
+                                                        <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Seminar Proposal</p>
+                                                    </div>
+                                                </div>
+                                                <hr className="tw-my-4" />
                                                 <div className="tw-mt-4 tw-space-y-4">
-                                                    {["Pembimbing Program Studi", "Pembimbing dari Industri", "Penguji 1", "Penguji 2"].map((jabatan, index) => (
-                                                        <div key={index} className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                                                            <div className="tw-w-1/3">
-                                                                <p className="tw-text-gray-600">-</p>
-                                                            </div>
-                                                            <div className="tw-w-1/3">
-                                                                <p className="tw-text-gray-600">{jabatan}</p>
-                                                            </div>
-                                                            <div className="tw-w-1/3 tw-text-right">
-                                                                <p className="tw-text-gray-600">-</p>
-                                                            </div>
+                                                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                                        <div className="tw-w-1/3">
+                                                            <p className="tw-text-gray-800 tw-font-medium">Nama Dosen</p>
                                                         </div>
-                                                    ))}
-
+                                                        <div className="tw-w-1/3">
+                                                            <p className="tw-text-gray-800 tw-font-medium">Jabatan</p>
+                                                        </div>
+                                                        <div className="tw-w-1/3 tw-text-right">
+                                                            <p className="tw-text-gray-800 tw-font-medium">Nilai</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                                        <div className="tw-w-1/3">
+                                                            <p className="tw-text-gray-600">{!data_sempros.nama_pembimbing_1 ? '-' : data_sempros.nama_pembimbing_1}</p>
+                                                        </div>
+                                                        <div className="tw-w-1/3">
+                                                            <p className="tw-text-gray-600">Pembimbing 1</p>
+                                                        </div>
+                                                        <div className="tw-w-1/3 tw-text-right">
+                                                            {!nilaiPembimbing_1 ? (
+                                                                <p className="tw-text-gray-600">Belum Dinilai</p>
+                                                            ) : (
+                                                                <p className="tw-text-gray-600">{nilaiPembimbing_1.total_nilai}</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                                        <div className="tw-w-1/3">
+                                                            <p className="tw-text-gray-600">{!data_sempros.nama_pembimbing_2 ? '-' : data_sempros.nama_pembimbing_2}</p>
+                                                        </div>
+                                                        <div className="tw-w-1/3">
+                                                            <p className="tw-text-gray-600">Pembimbing 2</p>
+                                                        </div>
+                                                        <div className="tw-w-1/3 tw-text-right">
+                                                            {!nilaiPembimbing_2 ? (
+                                                                <p className="tw-text-gray-600">Belum Dinilai</p>
+                                                            ) : (
+                                                                <p className="tw-text-gray-600">{nilaiPembimbing_2.total_nilai}</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                                        <div className="tw-w-1/3">
+                                                            <p className="tw-text-gray-600">{!data_sempros.nama_penguji ? '-' : data_sempros.nama_penguji}</p>
+                                                        </div>
+                                                        <div className="tw-w-1/3">
+                                                            <p className="tw-text-gray-600">Penguji</p>
+                                                        </div>
+                                                        <div className="tw-w-1/3 tw-text-right">
+                                                            {!nilaiPenguji ? (
+                                                                <p className="tw-text-gray-600">Belum Dinilai</p>
+                                                            ) : (
+                                                                <p className="tw-text-gray-600">{nilaiPenguji.total_nilai}</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                     <hr className="tw-my-2" />
                                                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                                                         <div className="tw-w-1/2">
                                                             <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
                                                         </div>
                                                         <div className="tw-w-1/2 tw-text-right">
-                                                            <p className="tw-text-gray-800 tw-font-medium">nilai akhir</p>
+                                                            <p className="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? 'Belum Lengkap' : nilaiAkhir()}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -267,7 +333,15 @@ const index = () => {
                                             </div>
                                         </div>
                                     ) : (
-                                        <p>edit</p>
+                                        <Button
+                                            label="Sempro"
+                                            icon="pi pi-pencil"
+                                            severity="success"
+                                            className="mr-2"
+                                            tooltip="Ubah Sempro"
+                                            tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                            onClick={() => editsempro(sempros)}
+                                        />
                                     )
                                 )}
                             </div>

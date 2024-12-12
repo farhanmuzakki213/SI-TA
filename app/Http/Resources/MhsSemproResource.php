@@ -32,12 +32,21 @@ class MhsSemproResource extends JsonResource
         $nilai_pembimbing_1 = SemproNilai::where('dosen_id', $this->pembimbing_1_id)->where('sempro_mhs_id', $this->id_sempro_mhs)->where('sebagai', 'pembimbing_1')->select('nilai')->first();
         $nilai_pembimbing_2 = SemproNilai::where('dosen_id', $this->pembimbing_2_id)->where('sempro_mhs_id', $this->id_sempro_mhs)->where('sebagai', 'pembimbing_2')->select('nilai')->first();
         $nilai_penguji = SemproNilai::where('dosen_id', $this->penguji_id)->where('sempro_mhs_id', $this->id_sempro_mhs)->where('sebagai', 'penguji')->select('nilai')->first();
+
+        if($this->status_ver_sempro == '1'){
+            $status = 'Ditolak';
+        }else if($this->status_ver_sempro == '2'){
+            $status = 'Belum diverifikasi';
+        }else{
+            $status = 'Diterima';
+        }
         return [
             'id_sempro_mhs' => $this->id_sempro_mhs,
             'judul_sempro' => $this->judul_sempro,
             'file_sempro' => $this->file_sempro,
             'komentar' => $this->komentar,
             'status_ver_sempro' => $this->status_ver_sempro,
+            'status' => $status,
 
             'nama_pembimbing_1' => $this->r_pembimbing_1->nama_dosen ?? null,
             'pembimbing_1_id' => $this->pembimbing_1_id ?? null,

@@ -51,11 +51,13 @@ class MhsSemproController extends Controller
     public function detail($id)
     {
         $data_mhs = SemproMhs::where('id_sempro_mhs', $id)
-            ->with('r_mahasiswa.r_kelas.r_prodi.r_jurusan',
-            'r_mahasiswa.r_user',
-            'r_pembimbing_1',
-            'r_pembimbing_2',
-            'r_penguji')
+            ->with(
+                'r_mahasiswa.r_kelas.r_prodi.r_jurusan',
+                'r_mahasiswa.r_user',
+                'r_pembimbing_1',
+                'r_pembimbing_2',
+                'r_penguji'
+            )
             ->get();
         // dd($data_mhs->toArray());
         $RSTterpakai = Booking::select('ruangan_id', 'sesi_id', 'tgl_booking')->where('status_booking', '1')->get()->toArray();
@@ -66,7 +68,7 @@ class MhsSemproController extends Controller
             ->unique()
             ->values()
             ->toArray();
-            // dd($id_dosens);
+        // dd($id_dosens);
         $mahasiswa_id = SemproMhs::where('status_ver_sempro', '3')
             ->where(function ($query) use ($id_dosens) {
                 $query->whereIn('pembimbing_1_id', $id_dosens)
@@ -78,7 +80,7 @@ class MhsSemproController extends Controller
                 return $sempro->mahasiswa_id;
             })
             ->toArray();
-            // dd($mahasiswa_id);
+        // dd($mahasiswa_id);
         $STDosen = Booking::select('sesi_id', 'tgl_booking')->where('status_booking', '1')
             ->whereIn('mahasiswa_id', $mahasiswa_id)
             ->get()
@@ -137,6 +139,35 @@ class MhsSemproController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return to_route('MhsSemproKprodi')->with('error', 'Verifikasi Sempro updated failed');
+        }
+    }
+
+    public function updateDosen(Request $request, string $id)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'pembimbing_1_id' => 'required',
+            'pembimbing_2_id' => 'required',
+            'penguji_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $data_penugasan = [
+                'pembimbing_1_id' => $request->pembimbing_1_id,
+                'pembimbing_2_id' => $request->pembimbing_2_id,
+                'penguji_id' => $request->penguji_id,
+            ];
+            $sempro = SemproMhs::findOrFail($id);
+            $sempro->update($data_penugasan);
+            DB::commit();
+            return back()->with('success', 'Verifikasi Sempro updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Verifikasi Sempro updated failed');
         }
     }
 

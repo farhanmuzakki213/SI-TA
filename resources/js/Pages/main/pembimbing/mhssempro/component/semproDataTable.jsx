@@ -90,9 +90,9 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
             rowsPerPageOptions={[5, 10, 25]}
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Jadwal Ruangan"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Mahasiswa Sempro"
             globalFilter={globalFilter}
-            emptyMessage="No Jadwal Ruangan found."
+            emptyMessage="No Mahasiswa Sempro found."
             header={header}
             responsiveLayout="scroll"
             removableSort

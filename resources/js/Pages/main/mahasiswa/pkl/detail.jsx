@@ -6,6 +6,7 @@ const MhspklDetail = ({
     data_mhs,
     data_laporan,
     data_nilai,
+    nextNumberLaporan
 }) => {
     console.log("data_mhs", data_mhs);
     // console.log("data_laporan", data_laporan);
@@ -44,9 +45,9 @@ const MhspklDetail = ({
             </div>
             <div className="tw-w-full sm:tw-max-w-96">
                 <div className="tw-grid tw-gap-1">
-                    {<div className="tw-col-12">
-                        <DetailPkl data_mhs={data_mhs} data_laporan={data_laporan} />
-                    </div>}
+                    <div className="tw-col-12">
+                        <DetailPkl data_mhs={data_mhs} data_laporan={data_laporan} nextNumberLaporan={nextNumberLaporan}/>
+                    </div>
                     <div className="tw-col-12">
                         <DetailSidang data_mhs={data_mhs} data_nilai={data_nilai} />
                     </div>

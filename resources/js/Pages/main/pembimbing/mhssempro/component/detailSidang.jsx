@@ -47,22 +47,32 @@ const detailSidang = ({
 
     console.log("Hasil Nilai Pembimbing:", nilaiPembimbing());
 
-    const nilaiPenguji = JSON.parse(data_mhss.nilai_penguji?.nilai || null);
+    const nilaiPenguji = JSON.parse(data_mhss.nilai_penguji?.nilai || '{}');
     const nilaiPembimbing_1 = JSON.parse(data_mhss.nilai_pembimbing_1?.nilai || null);
     const nilaiPembimbing_2 = JSON.parse(data_mhss.nilai_pembimbing_2?.nilai || null);
     console.log("Hasil Nilai Penguji:", nilaiPenguji);
     console.log("Hasil Nilai Pembimbing 1:", nilaiPembimbing_1);
     console.log("Hasil Nilai Pembimbing 2:", nilaiPembimbing_2);
-    // const nilaiAkhir = () => {
-    //     if (nilaiPembimbing() != null && nilaiPembimbing_1 != null && nilaiPembimbing_2 != null) {
-    //         const totalNilai =
-    //             (data_mhss.nilai_industri * 0.30) +
-    //             (nilaiPembimbing().total_nilai * 0.35) +
-    //             (((nilaiPembimbing_1.total_nilai + nilaiPembimbing_2.total_nilai) / 2) * 0.35);
-    //         return parseFloat(totalNilai.toFixed(2));
-    //     }
-    //     return null;
-    // };
+    const nilaiAkhir = () => {
+        if (nilaiPembimbing_1 != null && nilaiPembimbing_2 != null) {
+            if (nilaiPembimbing() != null) {
+                if (data_mhss.pembimbing_1_id === dosen_id) {
+                    const totalNilai =
+                        (nilaiPembimbing().total_nilai + nilaiPembimbing_2.total_nilai + nilaiPenguji.total_nilai) / 3;
+                    return parseFloat(totalNilai.toFixed(2));
+                }
+
+                if (data_mhss.pembimbing_2_id === dosen_id) {
+                    const totalNilai =
+                        (nilaiPembimbing_1.total_nilai + nilaiPembimbing().total_nilai + nilaiPenguji.total_nilai) / 3;
+                    return parseFloat(totalNilai.toFixed(2));
+                }
+                return null
+            }
+            return null
+        }
+        return null
+    };
     // console.log("Hasil Nilai Akhir:", nilaiAkhir());
     const openNew = () => {
         setnilaisempro(emptynilaisempro);
@@ -186,7 +196,7 @@ const detailSidang = ({
     );
     const openFile = async () => {
         try {
-            const url = `/SuratTugas/sempro/${data_mhss.id_sempro_mhs}`;
+            const url = `/SuratTugas/Sempro/${data_mhss.id_sempro_mhs}`;
             window.open(url, '_blank');
         } catch (error) {
             console.error(error);
@@ -296,9 +306,13 @@ const detailSidang = ({
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
                             {dosen_id === data_mhss.pembimbing_1_id && nilaiPembimbing_1 ? (
-                                <p className="tw-text-gray-600">
-                                    {!nilaiPembimbing() ? 'Belum Dinilai' : nilaiPembimbing().total_nilai}
-                                </p>
+                                <>
+                                    {!nilaiPembimbing() ? (
+                                        <p className="tw-text-gray-600">-</p>
+                                    ) : (
+                                        <p className="tw-text-gray-600">{nilaiPembimbing().total_nilai}</p>
+                                    )}
+                                </>
                             ) : (
                                 <p className="tw-text-gray-600">
                                     {!nilaiPembimbing_1 ? 'Belum Dinilai' : nilaiPembimbing_1.total_nilai}
@@ -315,9 +329,13 @@ const detailSidang = ({
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
                             {dosen_id === data_mhss.pembimbing_2_id && nilaiPembimbing_2 ? (
-                                <p className="tw-text-gray-600">
-                                    {!nilaiPembimbing() ? 'Belum Dinilai' : nilaiPembimbing().total_nilai}
-                                </p>
+                                <>
+                                    {!nilaiPembimbing() ? (
+                                        <p className="tw-text-gray-600">-</p>
+                                    ) : (
+                                        <p className="tw-text-gray-600">{nilaiPembimbing().total_nilai}</p>
+                                    )}
+                                </>
                             ) : (
                                 <p className="tw-text-gray-600">
                                     {!nilaiPembimbing_2 ? 'Belum Dinilai' : nilaiPembimbing_2.total_nilai}
@@ -333,18 +351,18 @@ const detailSidang = ({
                             <p className="tw-text-gray-600">Penguji</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            <p className="tw-text-gray-600">{!data_mhss.nilai_penguji ? '-' : data_mhss.nilai_penguji}</p>
+                            <p className="tw-text-gray-600">{!nilaiPenguji.total_nilai ? 'Belum Dinilai' : nilaiPenguji.total_nilai}</p>
                         </div>
                     </div>
-                    {/* <hr className="tw-my-2" />
+                    <hr className="tw-my-2" />
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
                         <div className="tw-w-1/2">
                             <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
                         </div>
                         <div className="tw-w-1/2 tw-text-right">
-                            <p className="tw-text-gray-800 tw-font-medium">nilai akhir</p>
+                            <p className="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? 'Belum Lengkap' : nilaiAkhir()}</p>
                         </div>
-                    </div> */}
+                    </div>
                 </div>
             </div>
             <div className="tw-mt-6">
@@ -361,6 +379,20 @@ const detailSidang = ({
                                     onClick={openFile} />
                             </div>
                         )}
+                        <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                            <div className="tw-flex tw-items-center">
+                                <span className="tw-text-gray-800">Proposal</span>
+                            </div>
+                            <Button
+                                icon="pi pi-file"
+                                severity="primary"
+                                outlined
+                                label="File"
+                                tooltip="Lihat File"
+                                tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                onClick={() => window.open(`/storage/uploads/sempro/file/${data_sempros?.file_sempro}`, '_blank')}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
