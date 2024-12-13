@@ -59,7 +59,7 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         //PKL
         Route::get('/MhsPkl', [\App\Http\Controllers\Mahasiswa\PklController::class, 'index'])->name('MhsPkl');
         Route::post('/MhsPkl/TempatPkl/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeTempatPkl'])->name('MhsPkl.storeTempatPkl');
-        Route::post('/MhsPkl/TempatPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateTempatPkl'])->name('MhsPkl.updateTempatPkl');
+        Route::put('/MhsPkl/TempatPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateTempatPkl'])->name('MhsPkl.updateTempatPkl');
         Route::post('/MhsPkl/Ajuan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeAjuan'])->name('MhsPkl.storeAjuan');
         Route::put('/MhsPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'update'])->name('MhsPkl.update');
         Route::delete('/MhsPkl/delete', [\App\Http\Controllers\Mahasiswa\PklController::class, 'destroy'])->name('MhsPkl.destroy');

@@ -4,6 +4,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
+import EditableDropdown from "@/Components/EditableDropdown";
 
 const PklForm = ({
     pklDialog,
@@ -15,6 +16,7 @@ const PklForm = ({
     hideDialog,
     setpkl,
 }) => {
+    console.log(pkl);
     const today = new Date();
     const parseDate = (dateString) => {
         if (!dateString) return null;
@@ -74,20 +76,12 @@ const PklForm = ({
         }));
     };
 
-    const handleNewOption = (value, field) => {
-        if (value && !tempatOptions.some(option => option.value === value)) {
-            const newOption = { label: value, value };
-            if (field === "tempat_pkl_id") {
-                setTempatOptions((prev) => [...prev, newOption]);
-            } else if (field === "role_tempat_pkl_id") {
-                setRoleOptions((prev) => [...prev, newOption]);
-            }
-        }
-
-        setpkl((prev) => ({ ...prev, [field]: value }));
+    const onInputDrChange = (value, field) => {
+        setpkl((prevState) => ({
+            ...prevState,
+            [field]: value, // Update the pkl state with the new value
+        }));
     };
-
-    console.log(pkl);
     return (
         <Dialog
             visible={pklDialog}
@@ -100,20 +94,16 @@ const PklForm = ({
         >
             {/* Tempat Pkl ID */}
             <div className="field">
-                <label htmlFor="tempat_pkl_id">Tempat PKL</label>
-                <Dropdown
-                    id="tempat_pkl_id"
-                    value={pkl.tempat_pkl_id || ""}
-                    onChange={(e) => onInputChange(e, "tempat_pkl_id")}
-                    onInput={(e) => handleNewOption(e.target.value, "tempat_pkl_id")}
+                <label htmlFor="nama_tempat_pkl">Tempat PKL</label>
+                <EditableDropdown
+                    id="nama_tempat_pkl"
+                    value={pkl.nama_tempat_pkl || ""}
+                    onChange={(value) => onInputDrChange(value, "nama_tempat_pkl")}
                     options={tempatOptions}
                     placeholder="Select or type a Tempat PKL"
-                    optionLabel="label"
-                    optionValue="value"
-                    editable
-                    required
+                    required={true}
                 />
-                {submitted && !pkl.tempat_pkl_id && (
+                {submitted && !pkl.nama_tempat_pkl && (
                     <small className="p-invalid">Tempat PKL is required.</small>
                 )}
             </div>
@@ -121,20 +111,16 @@ const PklForm = ({
 
             {/* Role Pkl ID */}
             <div className="field">
-                <label htmlFor="role_tempat_pkl_id">Role PKL</label>
-                <Dropdown
-                    id="role_tempat_pkl_id"
-                    value={pkl.role_tempat_pkl_id || ""}
-                    onChange={(e) => onInputChange(e, "role_tempat_pkl_id")}
-                    onInput={(e) => handleNewOption(e.target.value, "role_tempat_pkl_id")}
+                <label htmlFor="nama_role">Role PKL</label>
+                <EditableDropdown
+                    id="nama_role"
+                    value={pkl.nama_role || ""}
+                    onChange={(value) => onInputDrChange(value, "nama_role")}
                     options={roleOptions}
                     placeholder="Select or type a Role PKL"
-                    optionLabel="label"
-                    optionValue="value"
-                    editable
-                    required
+                    required={true}
                 />
-                {submitted && !pkl.role_tempat_pkl_id && (
+                {submitted && !pkl.nama_role && (
                     <small className="p-invalid">Role PKL is required.</small>
                 )}
             </div>

@@ -1,6 +1,7 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
-import withMT from '@material-tailwind/react/utils/withMT';
+// import withMT from '@material-tailwind/react/utils/withMT';
+import withMT from '@material-tailwind/html/utils/withMT';
 
 /** @type {import('tailwindcss').Config} */
 export default withMT({
@@ -17,10 +18,11 @@ export default withMT({
             },
         },
     },
-    plugins: [forms],
+    plugins: [
+        forms,
+    ],
     corePlugins: {
         preflight: false,
     },
     prefix: 'tw-',
 });
-

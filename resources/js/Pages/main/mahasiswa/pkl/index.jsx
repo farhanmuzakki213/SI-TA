@@ -5,21 +5,20 @@ import PklForm from "./component/PklForm";
 import { Toast } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from "react";
 import DetailMhs from "./detail";
-import { data } from "autoprefixer";
 const index = () => {
     const { props } = usePage();
     const { data_pkl, data_laporan, data_usulan, nextNumberUsulan, nextNumberLaporan, roleOptions: initialRoleOptions, tempatOptions: initialTempatOptions } = props
     let emptypkl = {
         id_usulan: null,
-        role_tempat_pkl_id: "",
-        tempat_pkl_id: "",
+        nama_role: "",
+        nama_tempat_pkl: "",
         kota_perusahaan: "",
         alamat_tempat_pkl: "",
         tgl_awal_pkl: "",
         tgl_akhir_pkl: "",
     };
-    const data_pkls = data_pkl[0];
-    console.log(data_pkl);
+    console.log(data_usulan);
+    const data_usulans = data_usulan[0];
     const [pkls, setpkls] = useState(null);
     const [roleOptions, setRoleOptions] = useState([]);
     const [tempatOptions, setTempatOptions] = useState([]);
@@ -42,10 +41,10 @@ const index = () => {
     useEffect(() => {
         setRoleOptions(initialRoleOptions);
         setTempatOptions(initialTempatOptions);
-        setpkls(data_pkl);
+        setpkls(data_usulans);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_pkl, props.flash, initialRoleOptions, initialTempatOptions]);
+    }, [data_usulans, props.flash, initialRoleOptions, initialTempatOptions]);
 
     const openNew = () => {
         setpkl(emptypkl);
@@ -86,8 +85,8 @@ const index = () => {
         setSubmitted(true);
 
         const requiredFieldsForCreate = [
-            pkl.role_tempat_pkl_id,
-            pkl.tempat_pkl_id,
+            pkl.nama_role,
+            pkl.nama_tempat_pkl,
             pkl.kota_perusahaan,
             pkl.alamat_tempat_pkl,
             pkl.tgl_awal_pkl,
@@ -95,8 +94,8 @@ const index = () => {
         ];
 
         const requiredFieldsForUpdate = [
-            pkl.role_tempat_pkl_id,
-            pkl.tempat_pkl_id,
+            pkl.nama_role,
+            pkl.nama_tempat_pkl,
             pkl.kota_perusahaan,
             pkl.alamat_tempat_pkl,
             pkl.tgl_awal_pkl,
@@ -125,8 +124,8 @@ const index = () => {
         try {
 
             const formData = new FormData();
-            formData.append("role_tempat_pkl_id", pkl.role_tempat_pkl_id);
-            formData.append("tempat_pkl_id", pkl.tempat_pkl_id);
+            formData.append("nama_role", pkl.nama_role);
+            formData.append("nama_tempat_pkl", pkl.nama_tempat_pkl);
             formData.append("kota_perusahaan", pkl.kota_perusahaan);
             formData.append("alamat_tempat_pkl", pkl.alamat_tempat_pkl);
             formData.append("tgl_awal_pkl", pkl.tgl_awal_pkl);
@@ -139,23 +138,23 @@ const index = () => {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
             } else {
-                await router.post(`/MhsPkl/TempatPkl/${pkl.id_usulan}/update`, formData, {
-                    _method: 'put',
-                    forceFormData: true,
+                await router.put(`/MhsPkl/TempatPkl/${pkl.id_usulan}/update`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
                 });
             }
 
             if (isCreating) {
                 setpkls((prev) => [...prev, pkl]);
             } else {
-                setpkls((prev) =>
-                    prev.map((item) =>
+                setpkls((prev) => {
+                    const prevArray = Array.isArray(prev) ? prev : [];
+                    return prevArray.map((item) =>
                         item.id_usulan === pkl.id_usulan ? pkl : item
-                    )
-                );
+                    );
+                });
             }
         } catch (error) {
-            console.log("error:",error);
+            console.log("error:", error);
             const errorMessage = error.response?.data?.message || "Failed to save pkl.";
             toast.current?.show({
                 severity: "error",
@@ -213,15 +212,21 @@ const index = () => {
                         nextNumberLaporan={nextNumberLaporan}
                     />
                 ) : (
-                    <Button
-                        label="Tempat PKL"
-                        icon="pi pi-pencil"
-                        severity="success"
-                        className="mr-2"
-                        tooltip="Ubah Tempat Pkl"
-                        tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                        onClick={() => editpkl(pkls)}
-                    />
+                    <div className="grid crud-demo">
+                        <div className="col-12">
+                            <div className="card">
+                                <Button
+                                    label="Tempat PKL"
+                                    icon="pi pi-pencil"
+                                    severity="success"
+                                    className="mr-2"
+                                    tooltip="Ubah Tempat Pkl"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={() => editpkl(data_usulan[0])}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 )
             )}
 
@@ -234,6 +239,8 @@ const index = () => {
                 tempatOptions={tempatOptions}
                 pklDialogFooter={pklDialogFooter}
                 hideDialog={hideDialog}
+                setRoleOptions={setRoleOptions}
+                setTempatOptions={setTempatOptions}
             />
         </Layout>
     );
