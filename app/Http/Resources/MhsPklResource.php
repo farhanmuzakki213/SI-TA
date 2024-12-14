@@ -78,7 +78,7 @@ class MhsPklResource extends JsonResource
             'sesi_sidang' => $sesi ?? null,
             'ruangan_sidang' => $ruangan ?? null,
 
-            'nilai_industri' => $this->nilai_industri ?? null,
+            'nilai_industri' => $this->nilai_industri,
             'nilai_pembimbing' => $nilai_pembimbing,
             'nilai_penguji_1' => $nilai_penguji_1,
             'nilai_penguji_2' => $nilai_penguji_2,

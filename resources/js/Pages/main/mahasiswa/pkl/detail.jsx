@@ -15,8 +15,8 @@ const MhspklDetail = ({
 
     return (
         <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-4">
-            <div className="tw-w-full sm:tw-max-w-sm">
-                <div className="tw-rounded-[12px] tw-border tw-bg-white tw-px-4 tw-pt-8 tw-pb-10 tw-shadow-lg">
+            <div className="tw-w-full sm:tw-max-w-sm tw-gap-4">
+                <div className="card">
                     <div className="tw-relative tw-mx-auto tw-w-40 tw-h-40 tw-rounded-full tw-overflow-hidden">
                         <img
                             src={data_mhs[0].foto_mahasiswa}
@@ -44,9 +44,9 @@ const MhspklDetail = ({
                 </div>
             </div>
             <div className="tw-w-full sm:tw-max-w-96">
-                <div className="tw-grid tw-gap-1">
+                <div className="tw-grid tw-gap-4">
                     <div className="tw-col-12">
-                        <DetailPkl data_mhs={data_mhs} data_laporan={data_laporan} nextNumberLaporan={nextNumberLaporan}/>
+                        <DetailPkl data_mhs={data_mhs} data_laporan={data_laporan} nextNumberLaporan={nextNumberLaporan} />
                     </div>
                     <div className="tw-col-12">
                         <DetailSidang data_mhs={data_mhs} data_nilai={data_nilai} />

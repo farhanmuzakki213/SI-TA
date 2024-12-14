@@ -1,11 +1,154 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Button } from "primereact/button";
+import { Messages } from "primereact/messages";
+import AjukansidangForm from './ajukansidangForm';
+import { Toast } from "primereact/toast";
+import { router, usePage } from "@inertiajs/react";
 
 const detailSidang = ({
     data_mhs,
 }) => {
     const data_mhss = data_mhs[0];
-    console.log("data_mhs", data_mhss);
+    // console.log("data_mhs", data_mhss);
+    let emptyajukansidang = {
+        id_pkl_mhs: null,
+        pkl_pembimbing: '',
+        nilai_industri: '',
+        judul: '',
+        file_laporan: '',
+        file_nilai: '',
+    };
+    const msgs = useRef(null);
+
+    const { props } = usePage();
+    const [ajukansidangs, setajukansidangs] = useState([]);
+    const [ajukansidangDialog, setajukansidangDialog] = useState(false);
+    const [ajukansidang, setajukansidang] = useState(emptyajukansidang);
+    const [submitted, setSubmitted] = useState(false);
+    const toast = useRef(null);
+
+    useEffect(() => {
+        setajukansidangs(data_mhss);
+        displaySuccessMessage(props.flash?.success);
+        displayErrorMessage(props.flash?.error);
+        if (msgs.current && data_mhss.status_ver_pkl === '1') {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'error', summary: 'Error', detail: 'Pengajuan Sidang Gagal. Pastikan data sudah benar', closable: true }
+            ]);
+        }
+        if (msgs.current && data_mhss.status_ver_pkl === '2') {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'info', summary: 'info', detail: 'Pengajuan Sidang Sedang Diproses, Pastikan data sudah benar', closable: true }
+            ]);
+        }
+        if (msgs.current && data_mhss.status_ver_pkl === '3') {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, life: 1000, severity: 'success', summary: 'success', detail: 'Pengajuan Sidang Berhasil', closable: true },
+            ]);
+        }
+        if (msgs.current && data_mhss.id_booking ) {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'info', summary: 'info', detail: 'Anda Sudah Memiliki Jadwal Sidang', closable: true }
+            ]);
+        }
+    }, [data_mhss, props.flash]);
+
+    const hideDialog = () => {
+        setSubmitted(false);
+        setajukansidangDialog(false);
+    };
+
+    const displaySuccessMessage = (successMessage) => {
+        if (successMessage !== null) {
+            const message = successMessage || "Operation successful";
+            toast.current?.show({
+                severity: "success",
+                summary: "Successful",
+                detail: message,
+                life: 3000,
+            });
+        }
+    };
+
+    const displayErrorMessage = (errorMessage) => {
+        if (errorMessage !== null) {
+            const message = errorMessage || "Operation failed";
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: message,
+                life: 3000,
+            });
+        }
+    };
+
+    const saveajukansidang = async () => {
+        setSubmitted(true);
+
+        const requiredFieldsForUpdate = [
+            ajukansidang.pkl_pembimbing,
+            ajukansidang.nilai_industri,
+            ajukansidang.judul,
+            ajukansidang.file_laporan,
+            ajukansidang.file_nilai,
+        ];
+        // console.log(ajukansidang);
+
+        const isValid = requiredFieldsForUpdate.every(field => field);
+
+        if (!isValid) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: "Please fill in all required fields.",
+                life: 3000,
+            });
+            console.log(ajukansidang);
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('pkl_pembimbing', ajukansidang.pkl_pembimbing);
+        formData.append('nilai_industri', ajukansidang.nilai_industri);
+        formData.append('judul', ajukansidang.judul);
+        formData.append('file_laporan', ajukansidang.file_laporan);
+        formData.append('file_nilai', ajukansidang.file_nilai);
+
+        try {
+            console.log(ajukansidang);
+            await router.post(`/MhsPkl/Sidang/${ajukansidang.id_pkl_mhs}/update`, formData, {
+                _method: 'put',
+                forceFormData: true,
+            });
+            setajukansidangs(prevAjukansidangs =>
+                Array.isArray(prevAjukansidangs)
+                    ? prevAjukansidangs.map(d => d.id_pkl_mhs === ajukansidang.id_pkl_mhs ? ajukansidang : d)
+                    : []
+            );
+
+        } catch (error) {
+            console.log("error:", error);
+            const errorMessage = error.response?.data?.message || "Failed to save ajukansidang.";
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: errorMessage,
+                life: 3000,
+            });
+        } finally {
+            setajukansidang(emptyajukansidang);
+            setajukansidangDialog(false);
+        }
+    };
+
+    const editajukansidang = (ajukansidang) => {
+        setajukansidang({ ...ajukansidang });
+        setajukansidangDialog(true);
+    };
 
     const nilaiPenguji_1 = JSON.parse(data_mhss.nilai_penguji_1?.nilai || null);
     const nilaiPenguji_2 = JSON.parse(data_mhss.nilai_penguji_2?.nilai || null);
@@ -20,37 +163,39 @@ const detailSidang = ({
         }
         return null;
     };
+    const ajukansidangDialogFooter = (
+        <>
+            <Button
+                label="Cancel"
+                icon="pi pi-times"
+                text
+                onClick={hideDialog}
+            />
+            <Button label="Save" icon="pi pi-check" text onClick={saveajukansidang} />
+        </>
+    );
     return (
         <div className="card">
+            <Toast ref={toast} />
             <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
                 <div className="tw-flex tw-items-center">
                     <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
                 </div>
-                {data_mhss.status_ver_pkl === "3" && (
+                {(data_mhss.status_ver_pkl === "2" || data_mhss.status_ver_pkl === "1") && (
                     <Button
-                        label="Jadwal"
-                        icon="pi pi-plus"
-                        severity="sucess"
+                        label={data_mhss.status_ver_pkl === "1" ? "Perbaiki Sidang" : "Sidang"}
+                        icon={data_mhss.status_ver_pkl === "1" ? "pi pi-pencil" : "pi pi-plus"}
+                        severity={data_mhss.status_ver_pkl === "1" ? "success" : "sucess"}
                         className="mr-2"
-                        tooltip="Tambah Jadwal"
+                        tooltip={data_mhss.status_ver_pkl === "1" ? "Perbaiki Data Sidang" : "Pengajuan Sidang"}
                         tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                        onClick={bookingopenNew}
-                    />
-                )}
-                {data_mhss.status_ver_pkl === "3" && data_mhss.tgl_sidang != null && (
-                    <Button
-                        label="Jadwal"
-                        icon="pi pi-pencil"
-                        severity="success"
-                        className="mr-2"
-                        tooltip="Ubah Jadwal"
-                        tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                        onClick={() => editbooking(bookings)}
+                        onClick={() => editajukansidang(ajukansidangs)}
                     />
                 )}
             </div>
             <hr className="tw-my-4" />
             <div className="card">
+                <Messages ref={msgs} className="tw-mb-2" />
                 <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-sm">
                     <div>
                         <p className="tw-text-gray-800 tw-font-semibold">Judul</p>
@@ -215,6 +360,14 @@ const detailSidang = ({
                     </div>
                 </div>
             </div>
+            <AjukansidangForm
+                ajukansidangDialog={ajukansidangDialog}
+                ajukansidang={ajukansidang}
+                setajukansidang={setajukansidang}
+                submitted={submitted}
+                ajukansidangDialogFooter={ajukansidangDialogFooter}
+                hideDialog={hideDialog}
+            />
         </div>
     )
 };

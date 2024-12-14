@@ -20,9 +20,9 @@ const index = () => {
     const [sempro, setsempro] = useState(emptysempro);
     const [submitted, setSubmitted] = useState(false);
     const toast = useRef(null);
-    const nilaiPenguji = JSON.parse(data_sempros.nilai_penguji?.nilai || null);
-    const nilaiPembimbing_1 = JSON.parse(data_sempros.nilai_pembimbing_1?.nilai || null);
-    const nilaiPembimbing_2 = JSON.parse(data_sempros.nilai_pembimbing_2?.nilai || null);
+    const nilaiPenguji = JSON.parse(data_sempros?.nilai_penguji?.nilai || null);
+    const nilaiPembimbing_1 = JSON.parse(data_sempros?.nilai_pembimbing_1?.nilai || null);
+    const nilaiPembimbing_2 = JSON.parse(data_sempros?.nilai_pembimbing_2?.nilai || null);
     const nilaiAkhir = () => {
         if (nilaiPenguji != null && nilaiPembimbing_1 != null && nilaiPembimbing_2 != null) {
             const totalNilai =
@@ -187,7 +187,7 @@ const index = () => {
                                 <li className="tw-flex tw-items-center tw-py-3 tw-text-sm">
                                     <span>Status Proposal</span>
                                     <span className="tw-ml-auto">
-                                        <span className="tw-rounded-full tw-bg-green-200 tw-py-1 tw-px-2 tw-text-xs tw-font-medium tw-text-green-700">{data_sempros.status}</span>
+                                        <span className="tw-rounded-full tw-bg-green-200 tw-py-1 tw-px-2 tw-text-xs tw-font-medium tw-text-green-700">{data_sempros?.status ? data_sempros.status : "Belum Pengajuan"}</span>
                                     </span>
                                 </li>
                             </ul>

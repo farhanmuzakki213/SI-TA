@@ -317,8 +317,8 @@ class PklController extends Controller
     {
         // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
-            'pembimbing_pkl' => 'required|string',
-            'judul_laporan' => 'required|string',
+            'pkl_pembimbing' => 'required|string',
+            'judul' => 'required|string',
             'nilai_industri' => 'required|string',
             'file_nilai' => 'required|file|mimes:pdf|max:10240',
             'file_laporan' => 'required|file|mimes:pdf|max:10240',
@@ -332,43 +332,35 @@ class PklController extends Controller
         try {
             $oldData = PklMhs::where('id_pkl_mhs', $id)->first();
 
-            if (!$oldData->file_laporan !== null && $request->hasFile('file_laporan')) {
-                $oldFiles = json_decode($oldData->file_laporan, true) ?? [];
-                foreach ($oldFiles as $oldFile) {
-                    Storage::delete('public/uploads/pkl/laporan_akhir/' . $oldFile);
-                }
+            if ($oldData->file_laporan !== null && $request->hasFile('file_laporan')) {
+                Storage::delete('public/uploads/pkl/laporan_akhir/' . $oldData->file_laporan);
             }
-
+            $filenamelaporan = null;
             if ($request->hasFile('file_laporan')) {
-                foreach ($request->file('file_laporan') as $file) {
-                    $filename = time() . '-' . $file->getClientOriginalName();
-                    $path = 'public/uploads/pkl/laporan_akhir/';
-                    $file->storeAs($path, $filename);
-                    $uploadedFileLaporan = $filename;
-                }
+                $file = $request->file('file_laporan');
+                $filenamelaporan = $file->getClientOriginalName();
+                $path = 'public/uploads/pkl/laporan_akhir/';
+                $file->storeAs($path, $filenamelaporan);
             }
 
-            if (!$oldData->file_nilai !== null && $request->hasFile('file_nilai')) {
-                $oldFiles = json_decode($oldData->file_nilai, true) ?? [];
-                foreach ($oldFiles as $oldFile) {
-                    Storage::delete('public/uploads/pkl/laporan_akhir/' . $oldFile);
-                }
+            if ($oldData->file_nilai !== null && $request->hasFile('file_nilai')) {
+                Storage::delete('public/uploads/pkl/nilai_industri/' . $oldData->file_nilai);
             }
-
+            $filenamenilai = null;
             if ($request->hasFile('file_nilai')) {
-                foreach ($request->file('file_nilai') as $file) {
-                    $filename = time() . '-' . $file->getClientOriginalName();
-                    $path = 'public/uploads/pkl/nilai_industri/';
-                    $file->storeAs($path, $filename);
-                    $uploadedFileNilai = $filename;
-                }
+                $file = $request->file('file_nilai');
+                $filenamenilai = $file->getClientOriginalName();
+                $path = 'public/uploads/pkl/nilai_industri/';
+                $file->storeAs($path, $filenamenilai);
             }
 
             $data = [
-                'judul_laporan' => $request->judul_laporan,
-                'pembimbing_pkl' => $request->pembimbing_pkl,
-                'laporan_akhir' => $uploadedFileLaporan,
-                'laporan_nilai' => $uploadedFileNilai,
+                'judul_laporan' => $request->judul,
+                'pembimbing_pkl' => $request->pkl_pembimbing,
+                'nilai_industri' => $request->nilai_industri,
+                'file_laporan' => $filenamelaporan,
+                'file_nilai' => $filenamenilai,
+                'status_ver_pkl' => '2',
             ];
 
             $oldData->update($data);
@@ -376,7 +368,7 @@ class PklController extends Controller
             return to_route('MhsPkl')->with('success', 'Pengajuan Sidang updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsPkl')->with('error', 'Pengajuan Sidang updated failed');
+            return to_route('MhsPkl')->with('error', 'Pengajuan Sidang updated failed'. $e->getMessage());
         }
     }
 }
