@@ -20,7 +20,7 @@ const jurusan = () => {
 
     const { props } = usePage();
     const { data_jurusan, nextNumber } = props;
-    const [jurusans, setjurusans] = useState(null);
+    const [jurusans, setjurusans] = useState([]);
     const [jurusanDialog, setjurusanDialog] = useState(false);
     const [deletejurusanDialog, setDeletejurusanDialog] = useState(false);
     const [deletejurusansDialog, setDeletejurusansDialog] = useState(false);

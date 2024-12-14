@@ -24,7 +24,6 @@ const TempatPklForm = ({
     const [tglAwalPkl, setTglAwalPkl] = useState(tempatpkl.tgl_awal_pkl ? parseDate(tempatpkl.tgl_awal_pkl) : null);
     const [tglAkhirPkl, setTglAkhirPkl] = useState(tempatpkl.tgl_akhir_pkl ? parseDate(tempatpkl.tgl_akhir_pkl) : null);
     const [filteredRoleOptions, setFilteredRoleOptions] = useState([]);
-    // console.log(tempatpkl);  
 
     const minDate = new Date(today);
     minDate.setDate(minDate.getDate() + 1);

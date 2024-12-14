@@ -10,7 +10,7 @@ const UsulansidangpklDataTable = ({ usulansidangpkls, selectedusulansidangpkls, 
         return (
             <>
                 <span className="p-column-title">Nama Mahasiswa</span>
-                {rowData.r_usulan?.r_mahasiswa?.nama_mahasiswa || 'N/A'}
+                {rowData.nama_mahasiswa || 'N/A'}
             </>
         );
     };
@@ -28,45 +28,58 @@ const UsulansidangpklDataTable = ({ usulansidangpkls, selectedusulansidangpkls, 
         return (
             <>
                 <span className="p-column-title">Pembimbing PKL</span>
-                {rowData.pembimbing_pkl || 'N/A'}
+                {rowData.pkl_pembimbing || 'N/A'}
             </>
         );
     };
 
-    const fileBodyTemplate = (rowData) => {
-        if (rowData.dokumen_pendukung) {
-            try {
-                const fileArray = JSON.parse(rowData.dokumen_pendukung);
+    const filelaporanBodyTemplate = (rowData) => {
+        return rowData.file_laporan ? (
+            <>
+                <span className="p-column-title">Files</span>
+                <Button
+                    icon="pi pi-file"
+                    severity="info"
+                    rounded
+                    outlined
+                    onClick={() =>
+                        window.open(
+                            `/storage/uploads/pkl/laporan_akhir/${rowData.file_laporan}`,
+                            "_blank"
+                        )
+                    }
+                    tooltip="Lihat File Laporan"
+                    tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
+                />
+            </>
+        ) : (
+            <>
+                <span className="p-column-title">Files</span>
+                N/A
+            </>
+        );
+    };
 
-                return (
-                    <>
-                        <span className="p-column-title">Files</span>
-                        <div>
-                            {/* Menampilkan setiap file dalam array dokumen_pendukung */}
-                            {fileArray.map((file, index) => (
-                                <div key={index}>
-                                    <a
-                                        href={`/storage/uploads/pkl/dokumen_pendukung_sidang/${file}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {file}
-                                    </a>
-                                </div>
-                            ))}
-                        </div>
-                    </>
-                );
-            } catch (error) {
-                return (
-                    <>
-                        <span className="p-column-title">Files</span>
-                        <div>Error parsing files.</div>
-                    </>
-                );
-            }
-        }
-        return (
+    const filenilaiBodyTemplate = (rowData) => {
+        return rowData.file_nilai ? (
+            <>
+                <span className="p-column-title">Files</span>
+                <Button
+                    icon="pi pi-file"
+                    severity="info"
+                    rounded
+                    outlined
+                    onClick={() =>
+                        window.open(
+                            `/storage/uploads/pkl/laporan_akhir/${rowData.file_nilai}`,
+                            "_blank"
+                        )
+                    }
+                    tooltip="Lihat File Nilai Industri"
+                    tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
+                />
+            </>
+        ) : (
             <>
                 <span className="p-column-title">Files</span>
                 N/A
@@ -117,10 +130,11 @@ const UsulansidangpklDataTable = ({ usulansidangpkls, selectedusulansidangpkls, 
             removableSort
         >
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="r_usulan.r_mahasiswa.nama_mahasiswa" header="Nama Mahasiswa" sortable body={mahasiswaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="nama_mahasiswa" header="Nama Mahasiswa" sortable body={mahasiswaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="judul" header="Judul" body={judulBodyTemplate} sortable></Column>
-            <Column field="pembimbing_pkl" header="Pembimbing PKL" body={pembimbingpklBodyTemplate} sortable></Column>
-            <Column field="dokumen_laporan" header="File" body={fileBodyTemplate} sortable></Column>
+            <Column field="pkl_pembimbing" header="Pembimbing PKL" body={pembimbingpklBodyTemplate} sortable></Column>
+            <Column field="file_laporan" header="Laporan" body={filelaporanBodyTemplate} sortable></Column>
+            <Column field="file_nilai" header="Nilai Industri" body={filenilaiBodyTemplate} sortable></Column>
             <Column field="status_ver_pkl" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>

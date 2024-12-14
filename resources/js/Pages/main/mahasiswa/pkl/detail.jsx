@@ -8,9 +8,9 @@ const MhspklDetail = ({
     data_nilai,
     nextNumberLaporan
 }) => {
-    console.log("data_mhs", data_mhs);
+    // console.log("data_mhs", data_mhs);
     // console.log("data_laporan", data_laporan);
-    console.log("data_nilai", data_nilai);
+    // console.log("data_nilai", data_nilai);
 
 
     return (

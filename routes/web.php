@@ -60,23 +60,14 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         Route::get('/MhsPkl', [\App\Http\Controllers\Mahasiswa\PklController::class, 'index'])->name('MhsPkl');
         Route::post('/MhsPkl/TempatPkl/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeTempatPkl'])->name('MhsPkl.storeTempatPkl');
         Route::put('/MhsPkl/TempatPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateTempatPkl'])->name('MhsPkl.updateTempatPkl');
-        Route::post('/MhsPkl/Ajuan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeAjuan'])->name('MhsPkl.storeAjuan');
-        Route::put('/MhsPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'update'])->name('MhsPkl.update');
-        Route::delete('/MhsPkl/delete', [\App\Http\Controllers\Mahasiswa\PklController::class, 'destroy'])->name('MhsPkl.destroy');
-        Route::post('/MhsPkl/Laporan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeLaporan'])->name('MhsPklLaporan.store');
-        Route::post('/MhsPkl/Laporan/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateLaporan'])->name('MhsPklLaporan.update');
+        Route::post('/MhsPkl/Laporan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeLaporan'])->name('MhsPklLaporan.storeLaporan');
+        Route::post('/MhsPkl/Laporan/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateLaporan'])->name('MhsPklLaporan.updateLaporan');
+        Route::put('/MhsPkl/Sidang/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateSidang'])->name('MhsPkl.updateSidang');
 
         //Sempro
         Route::get('/MhsSempro', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'index'])->name('MhsSempro');
         Route::post('/MhsSempro/store', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'store'])->name('MhsSempro.store');
         Route::post('/MhsSempro/{id}/update', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'update'])->name('MhsSempro.update');
-
-        // Data Log Book MHS PKL / Laporan MHS PKL
-        Route::get('/logbookmhs', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'index'])->name('logbookmhs');
-        Route::post('/logbookmhs/store', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'store'])->name('logbookmhs.store');
-        Route::post('/logbookmhs/{id}/update', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'update'])->name('logbookmhs.update');
-        Route::delete('/logbookmhs/{laporanpkl}/delete', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'destroy'])->name('logbookmhs.destroy');
-        Route::delete('/logbookmhs/destroyMultiple', [\App\Http\Controllers\Mahasiswa\LogBookMhsController::class, 'destroyMultiple'])->name('logbookmhs.destroyMultiple');
 
         // Data Ajuan Sidang
         Route::get('/ajukansidang', [\App\Http\Controllers\Mahasiswa\AjukanSidangController::class, 'index'])->name('ajukansidang');

@@ -23,7 +23,7 @@ class PMhsPklLaporanResource extends JsonResource
         return [
             "id_log_book_pkl" => $this->id_log_book_pkl,
             "tanggal" => $tanggal,
-            "kegiatan" => json_decode($this->kegiatan, true),
+            "kegiatan" => $this->kegiatan,
             "status" => $this->status,
             "file" => $this->dokumen_laporan,
             "keaktifan" => $ka,

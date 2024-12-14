@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\PklMhs;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -33,6 +34,10 @@ class MhsPklUsulanResource extends JsonResource
             'nama_tempat_pkl' => $this->r_tempat_pkl->nama_tempat_pkl,
             'alamat_tempat_pkl' => $this->alamat_tempat_pkl,
             'kota_perusahaan' => $this->kota_perusahaan,
+            'tglAwal' => Carbon::parse($this->tgl_awal_pkl)->format('M d, Y'),
+            'tgl_awal_pkl' => $this->tgl_awal_pkl,
+            'tgl_akhir_pkl' => $this->tgl_akhir_pkl,
+            'tglAkhir' => Carbon::parse($this->tgl_akhir_pkl)->format('M d, Y'),
             'status_usulan' => $this->status_usulan,
             'komentar' => $this->komentar,
             'id_pkl_mhs' => $id_pkl_mhs,

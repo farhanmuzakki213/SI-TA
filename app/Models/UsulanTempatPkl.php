@@ -9,7 +9,7 @@ class UsulanTempatPkl extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_usulan',  'tempat_pkl_id', 'role_tempat_pkl_id', 'kota_perusahaan', 'alamat_tempat_pkl', 'mahasiswa_id', 'tgl_awal_pkl', 'tgl_akhir_pkl', 'komentar', 'status_usulan'
+        'id_usulan', 'tempat_pkl_id', 'role_tempat_pkl_id', 'kota_perusahaan', 'alamat_tempat_pkl', 'mahasiswa_id', 'tgl_awal_pkl', 'tgl_akhir_pkl', 'komentar', 'status_usulan'
     ];
     protected $table = 'usulan_tempat_pkls';
     protected $primaryKey = 'id_usulan';

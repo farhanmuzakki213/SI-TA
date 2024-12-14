@@ -11,14 +11,16 @@ import { Toolbar } from "primereact/toolbar";
 const detailPkl = ({
     data_mhs,
     data_laporan,
+    nextNumberLaporan,
 }) => {
     let emptylaporanpkl = {
         id_log_book_pkl: '',
-        kegiatan: [],
+        kegiatan: '',
         tgl_awal_kegiatan: '',
         tgl_akhir_kegiatan: '',
         dokumen_laporan: '',
     };
+    // console.log("data_laporan", data_laporan);
     const { props } = usePage();
     const data_mhss = data_mhs[0];
     const data_laporanpkl = data_laporan;
@@ -103,7 +105,7 @@ const detailPkl = ({
             });
             return;
         }
-        console.log(laporanpkl);
+        // console.log(laporanpkl);
 
         try {
 
@@ -114,12 +116,12 @@ const detailPkl = ({
             formData.append("dokumen_laporan", laporanpkl.dokumen_laporan);
 
             if (isCreating) {
-                formData.append("id_log_book_pkl", nextNumber);
-                await router.post("/logbookmhs/store", formData, {
+                formData.append("id_log_book_pkl", nextNumberLaporan);
+                await router.post("/MhsPkl/Laporan/store", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
             } else {
-                await router.post(`/logbookmhs/${laporanpkl.id_log_book_pkl}/update`, formData, {
+                await router.post(`/MhsPkl/Laporan/${laporanpkl.id_log_book_pkl}/update`, formData, {
                     _method: 'put',
                     forceFormData: true,
                 });
@@ -135,6 +137,7 @@ const detailPkl = ({
                 );
             }
         } catch (error) {
+            console.log("error:",error);
             const errorMessage = error.response?.data?.message || "Failed to save laporanpkl.";
             toast.current?.show({
                 severity: "error",
@@ -238,18 +241,10 @@ const detailPkl = ({
                         left={leftToolbarTemplate}
                         right={rightToolbarTemplate}
                     />
-                    <DataTable value={laporanpkls} rows={3} paginator responsiveLayout="scroll">
+                    <DataTable value={laporanpkls} rows={1} paginator responsiveLayout="scroll">
                         <Column field="tanggal" header="Tanggal Kegiatan" style={{ width: '20%' }} body={(data) => data.tanggal} />
                         <Column field="kegiatan" header="Kegiatan" style={{ width: '65%' }}
-                            body={(data) =>
-                                <div>
-                                    {Object.entries(data.kegiatan).map(([key, value]) => (
-                                        <div key={key}>
-                                            <p className="tw-text-gray-600">{value}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            } />
+                            body={(data) => <div dangerouslySetInnerHTML={{ __html: data.kegiatan }} />} />
                         <Column
                             header="File"
                             style={{ width: '5%' }}

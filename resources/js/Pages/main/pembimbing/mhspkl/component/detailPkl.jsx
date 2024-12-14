@@ -15,6 +15,7 @@ const detailPkl = ({
         id_log_book_pkl: null,
         komentar: "",
     };
+    console.log("laporan",data_laporan);
     const { props } = usePage();
     const data_mhss = data_mhs[0];
     const data_laporanpkl = data_laporan;
@@ -170,13 +171,7 @@ const detailPkl = ({
                         <Column field="tanggal" header="Tanggal Kegiatan" style={{ width: '20%' }} body={(data) => data.tanggal} />
                         <Column field="kegiatan" header="Kegiatan" style={{ width: '65%' }}
                             body={(data) =>
-                                <div>
-                                    {Object.entries(data.kegiatan).map(([key, value]) => (
-                                        <div key={key}>
-                                            <p className="tw-text-gray-600">{value}</p>
-                                        </div>
-                                    ))}
-                                </div>
+                                <div dangerouslySetInnerHTML={{ __html: data.kegiatan }}/>
                             } />
                         <Column
                             header="File"

@@ -16,6 +16,7 @@ use App\Models\TempatPkl;
 use App\Models\UsulanTempatPkl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -59,7 +60,7 @@ class PklController extends Controller
 
     public function storeTempatPkl(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $id_user = auth()->user()->id;
         $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
         // dd($id_mahasiswa);
@@ -118,14 +119,15 @@ class PklController extends Controller
                 $tempatId = CariNomor::getCariNomor(TempatPkl::class, 'id_tempat_pkl');
                 TempatPkl::create([
                     'id_tempat_pkl' => $tempatId,
-                    'nama_tempat_pkl' => $request->tempat_pkl_id,
+                    'nama_tempat_pkl' => $request->nama_tempat_pkl,
                 ]);
             }
+            // dd($tempatId, $roleId);
 
             UsulanTempatPkl::create([
                 'id_usulan' => $request->id_usulan,
-                'nama_role' => $roleId,
-                'nama_tempat_pkl' => $tempatId,
+                'role_tempat_pkl_id' => $roleId,
+                'tempat_pkl_id' => $tempatId,
                 'mahasiswa_id' => $id_mahasiswa,
                 'alamat_tempat_pkl' => $request->alamat_tempat_pkl,
                 'kota_perusahaan' => $request->kota_perusahaan,
@@ -138,13 +140,13 @@ class PklController extends Controller
             return to_route('MhsPkl')->with('success', 'Usulan Tempat Pkl created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsPkl')->with('error', 'Usulan Tempat Pkl created failed', $e->getMessage());
+            return to_route('MhsPkl')->with('error', 'Usulan Tempat Pkl created failed 123', $e->getMessage());
         }
     }
 
     public function updateTempatPkl(Request $request, string $id)
     {
-        dd($request->all(), $id);
+        // dd($request->all(), $id);
         // dd($id_mahasiswa);
         $validator = Validator::make($request->all(), [
             'nama_tempat_pkl' => 'required',
@@ -200,12 +202,12 @@ class PklController extends Controller
                 $tempatId = CariNomor::getCariNomor(TempatPkl::class, 'id_tempat_pkl');
                 TempatPkl::create([
                     'id_tempat_pkl' => $tempatId,
-                    'nama_tempat_pkl' => $request->tempat_pkl_id,
+                    'nama_tempat_pkl' => $request->nama_tempat_pkl,
                 ]);
             }
             $data = [
-                'nama_role' => $roleId,
-                'nama_tempat_pkl' => $tempatId,
+                'role_tempat_pkl_id' => $roleId,
+                'tempat_pkl_id' => $tempatId,
                 'alamat_tempat_pkl' => $request->alamat_tempat_pkl,
                 'kota_perusahaan' => $request->kota_perusahaan,
                 'tgl_awal_pkl' => $request->tgl_awal_pkl,
@@ -219,6 +221,162 @@ class PklController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return to_route('MhsPkl')->with('error', 'Usulan Tempat Pkl updated failed');
+        }
+    }
+
+    public function storeLaporan(Request $request)
+    {
+        dd($request->all());
+        $id_user = auth()->user()->id;
+        $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
+        $pkl_mhs_id = PklMhs::whereHas('r_usulan', function ($q) use ($id_mahasiswa) {
+            $q->where('mahasiswa_id', $id_mahasiswa);
+        })->first()->id_pkl_mhs;
+        // dd($request->all(), $pkl_mhs_id);
+        // dd($id_mahasiswa, $pkl_mhs_id);
+        $validator = Validator::make($request->all(), [
+            'id_log_book_pkl' => 'required',
+            'kegiatan' => 'required',
+            'tgl_awal_kegiatan' => 'required|date',
+            'tgl_akhir_kegiatan' => 'required|date|after_or_equal:tgl_awal_kegiatan',
+            'dokumen_laporan' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('dokumen_laporan')) {
+                $file = $request->file('dokumen_laporan');
+                $filename = $file->getClientOriginalName();
+                $path = 'public/uploads/pkl/laporan/';
+                $file->storeAs($path, $filename);
+                log_book_pkl::create([
+                    'id_log_book_pkl' => $request->id_log_book_pkl,
+                    'kegiatan' => $request->kegiatan,
+                    'pkl_mhs_id' => $pkl_mhs_id,
+                    'tgl_awal_kegiatan' => $request->tgl_awal_kegiatan,
+                    'tgl_akhir_kegiatan' => $request->tgl_akhir_kegiatan,
+                    'dokumen_laporan' => $filename
+                ]);
+            }
+            DB::commit();
+
+            return to_route('MhsPkl')->with('success', 'Laporan Pkl created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('MhsPkl')->with('error', 'Laporan Pkl created failed');
+        }
+    }
+
+    public function updateLaporan(Request $request, string $id)
+    {
+        // dd($request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'kegiatan' => 'required',
+            'tgl_awal_kegiatan' => 'required|date',
+            'tgl_akhir_kegiatan' => 'required|date|after_or_equal:tgl_awal_kegiatan',
+            'dokumen_laporan' => 'sometimes|required|mimes:pdf'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $oldData = log_book_pkl::where('id_log_book_pkl', $id)->first();
+            if ($oldData->dokumen_laporan !== null && $request->hasFile('dokumen_laporan')) {
+                Storage::delete('public/uploads/pkl/laporan/' . $oldData->dokumen_laporan);
+            }
+            $filename = null;
+            if ($request->hasFile('dokumen_laporan')) {
+                $file = $request->file('dokumen_laporan');
+                $filename = $file->getClientOriginalName();
+                $path = 'public/uploads/pkl/laporan/';
+                $file->storeAs($path, $filename);
+            }
+            $data = [
+                'kegiatan' => $request->kegiatan,
+                'tgl_awal_kegiatan' => $request->tgl_awal_kegiatan,
+                'tgl_akhir_kegiatan' => $request->tgl_akhir_kegiatan,
+                'dokumen_laporan' => $filename
+            ];
+            // dd($data);
+            $oldData->update($data);
+            DB::commit();
+            return to_route('MhsPkl')->with('success', 'Laporan Pkl updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('MhsPkl')->with('error', 'Laporan Pkl updated failed');
+        }
+    }
+
+    public function updateSidang(Request $request, string $id)
+    {
+        // dd($request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'pembimbing_pkl' => 'required|string',
+            'judul_laporan' => 'required|string',
+            'nilai_industri' => 'required|string',
+            'file_nilai' => 'required|file|mimes:pdf|max:10240',
+            'file_laporan' => 'required|file|mimes:pdf|max:10240',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+
+        DB::beginTransaction();
+        try {
+            $oldData = PklMhs::where('id_pkl_mhs', $id)->first();
+
+            if (!$oldData->file_laporan !== null && $request->hasFile('file_laporan')) {
+                $oldFiles = json_decode($oldData->file_laporan, true) ?? [];
+                foreach ($oldFiles as $oldFile) {
+                    Storage::delete('public/uploads/pkl/laporan_akhir/' . $oldFile);
+                }
+            }
+
+            if ($request->hasFile('file_laporan')) {
+                foreach ($request->file('file_laporan') as $file) {
+                    $filename = time() . '-' . $file->getClientOriginalName();
+                    $path = 'public/uploads/pkl/laporan_akhir/';
+                    $file->storeAs($path, $filename);
+                    $uploadedFileLaporan = $filename;
+                }
+            }
+
+            if (!$oldData->file_nilai !== null && $request->hasFile('file_nilai')) {
+                $oldFiles = json_decode($oldData->file_nilai, true) ?? [];
+                foreach ($oldFiles as $oldFile) {
+                    Storage::delete('public/uploads/pkl/laporan_akhir/' . $oldFile);
+                }
+            }
+
+            if ($request->hasFile('file_nilai')) {
+                foreach ($request->file('file_nilai') as $file) {
+                    $filename = time() . '-' . $file->getClientOriginalName();
+                    $path = 'public/uploads/pkl/nilai_industri/';
+                    $file->storeAs($path, $filename);
+                    $uploadedFileNilai = $filename;
+                }
+            }
+
+            $data = [
+                'judul_laporan' => $request->judul_laporan,
+                'pembimbing_pkl' => $request->pembimbing_pkl,
+                'laporan_akhir' => $uploadedFileLaporan,
+                'laporan_nilai' => $uploadedFileNilai,
+            ];
+
+            $oldData->update($data);
+            DB::commit();
+            return to_route('MhsPkl')->with('success', 'Pengajuan Sidang updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('MhsPkl')->with('error', 'Pengajuan Sidang updated failed');
         }
     }
 }

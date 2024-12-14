@@ -20,7 +20,7 @@ class MhsPklLaporanResource extends JsonResource
             'tanggal' => Carbon::parse($this->tgl_awal_kegiatan)->format('M d, Y') . " - " . Carbon::parse($this->tgl_akhir_kegiatan)->format('M d, Y'),
             'tgl_awal_kegiatan' => $this->tgl_awal_kegiatan,
             'tgl_akhir_kegiatan' => $this->tgl_akhir_kegiatan,
-            'kegiatan' => json_decode($this->kegiatan, true),
+            'kegiatan' => $this->kegiatan,
             'file' => $this->dokumen_laporan,
             'komentar' => $this->komentar,
             'status' => $this->status,

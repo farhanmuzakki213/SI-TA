@@ -4,23 +4,23 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
 
-const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanpkls, globalFilter, header, editusulanpkl, confirmDeleteusulanpkl, dt }) => {
+const pklDataTable = ({ pkls, globalFilter, header, editpkl, dt }) => {
 
-    // console.log(usulanpkls);
-    const namaBodyTemplate = (rowData) => {
+    // console.log(pkls);
+    const komentarBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Nama Mahasiswa</span>
-                {rowData.nama_mahasiswa || 'N/A'}
+                <span className="p-column-title">Komentar</span>
+                {rowData.komentar || 'N/A'}
             </>
         );
     };
 
-    const nimBodyTemplate = (rowData) => {
+    const tanggalBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Nim Mahasiswa</span>
-                {rowData.nim_mahasiswa || 'N/A'}
+                <span className="p-column-title">Tanggal PKL</span>
+                {rowData.tglAwal || 'N/A'} - {rowData.tglAkhir || 'N/A'}
             </>
         );
     };
@@ -74,23 +74,14 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
         // console.log(rowData.id_pkl_mhs);
         return (
             <>
-                {!rowData.id_pkl_mhs && (
+                {!rowData.id_pkl_mhs && rowData.status_usulan === "1" && (
                     <Button
                     icon="pi pi-pencil"
                     severity="success"
                     rounded
                     className="mr-2"
-                    onClick={() => editusulanpkl(rowData)}
+                    onClick={() => editpkl(rowData)}
                 />
-                )}
-                {rowData.id_pkl_mhs && (
-                    <Link
-                        href={'/Kprodi/Mhspkl/' + rowData.id_pkl_mhs}
-                        className="text-blue-500 hover:underline"
-                        title="View Details"
-                    >
-                        <Button icon="pi pi-eye" rounded outlined />
-                    </Link>
                 )}
             </>
         );
@@ -99,9 +90,7 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
     return (
         <DataTable
             ref={dt}
-            value={usulanpkls}
-            selection={selectedusulanpkls}
-            onSelectionChange={(e) => setSelectedusulanpkls(e.value)}
+            value={pkls}
             dataKey="id_usulan"
             paginator
             rows={10}
@@ -116,16 +105,16 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
             removableSort
         >
             <Column headerStyle={{ width: "4rem" }}></Column>
-            <Column field="nama_mahasiswa" header="Nama Mahasiswa" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="nim_mahasiswa" header="Nim Mahasiswa" sortable body={nimBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
             <Column field="nama_tempat_pkl" header="Nama Perusahaan" sortable body={namaPBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="kota_perusahan" header="Domisili Perusahaan" sortable body={domisiliBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nama_role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
+            <Column header="Tanggal PKL" sortable body={tanggalBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="status_usulan" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column field="komentar" header="Komentar" sortable body={komentarBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );
 };
 
-export default UsulanpklDataTable;
+export default pklDataTable;

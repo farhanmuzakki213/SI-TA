@@ -1,6 +1,5 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { Dialog } from "primereact/dialog";
-import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
@@ -23,10 +22,12 @@ const PklForm = ({
         const [year, month, day] = dateString.split("-");
         return new Date(year, month - 1, day);
     };
+
+    const [tglAwalPkl, setTglAwalPkl] = useState(null);
+    const [tglAkhirPkl, setTglAkhirPkl] = useState(null);
+
     const minDate = new Date(today);
     minDate.setDate(minDate.getDate() + 1);
-    const [tglAwalPkl, setTglAwalPkl] = useState(pkl.tgl_awal_pkl ? parseDate(pkl.tgl_awal_pkl) : null);
-    const [tglAkhirPkl, setTglAkhirPkl] = useState(pkl.tgl_akhir_pkl ? parseDate(pkl.tgl_akhir_pkl) : null);
 
     const handleAwalChange = (e) => {
         const selectedDate = e.value;
@@ -35,8 +36,6 @@ const PklForm = ({
             ...prev,
             tgl_awal_pkl: formatDate(selectedDate),
         }));
-
-        // Reset tglAkhirPkl jika tanggal awal berubah dan akhir jadi tidak valid
         if (tglAkhirPkl && selectedDate > tglAkhirPkl) {
             setTglAkhirPkl(null);
             setpkl((prev) => ({
@@ -45,6 +44,10 @@ const PklForm = ({
             }));
         }
     };
+    useEffect(() => {
+        setTglAwalPkl(pkl.tgl_awal_pkl ? parseDate(pkl.tgl_awal_pkl) : null);
+        setTglAkhirPkl(pkl.tgl_akhir_pkl ? parseDate(pkl.tgl_akhir_pkl) : null);
+    }, [pkl]);
 
     const handleAkhirChange = (e) => {
         const selectedDate = e.value;

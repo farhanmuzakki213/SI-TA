@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MhsPklResource;
 use App\Models\PklMhs;
 use App\Models\User;
 use App\Notifications\PenugasanDosen;
@@ -16,8 +17,9 @@ class UsulanSidangPklController extends Controller
 {
     public function index()
     {
+        $pkl_mhs = PklMhs::with('r_usulan.r_mahasiswa')->whereNotNull('judul_laporan')->get();
         return Inertia::render('main/admin/usulansidangpkl/usulansidangpkl', [
-            'data_pkl_mhs' => PklMhs::with('r_usulan.r_mahasiswa')->whereNotNull('judul')->get(),
+            'data_pkl_mhs' => MhsPklResource::collection($pkl_mhs),
         ]);
     }
 

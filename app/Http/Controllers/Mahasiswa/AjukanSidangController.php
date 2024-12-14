@@ -36,8 +36,10 @@ class AjukanSidangController extends Controller
         // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
             'pembimbing_pkl' => 'required|string',
-            'judul' => 'required|string',
-            'dokumen_pendukung.*' => 'required|file|mimes:pdf,doc,docx|max:40960',
+            'judul_laporan' => 'required|string',
+            'nilai_industri' => 'required|string',
+            'file_nilai' => 'required|file|mimes:pdf|max:10240',
+            'file_laporan' => 'required|file|mimes:pdf|max:10240',
         ]);
 
         if ($validator->fails()) {
@@ -48,34 +50,51 @@ class AjukanSidangController extends Controller
         try {
             $oldData = PklMhs::where('id_pkl_mhs', $id)->first();
 
-            if (!$oldData->dokumen_pendukung !== null && $request->hasFile('dokumen_pendukung')) {
-                $oldFiles = json_decode($oldData->dokumen_pendukung, true) ?? [];
+            if (!$oldData->file_laporan !== null && $request->hasFile('file_laporan')) {
+                $oldFiles = json_decode($oldData->file_laporan, true) ?? [];
                 foreach ($oldFiles as $oldFile) {
-                    Storage::delete('public/uploads/pkl/dokumen_pendukung_sidang/' . $oldFile);
+                    Storage::delete('public/uploads/pkl/laporan_akhir/' . $oldFile);
                 }
             }
 
-            $uploadedFiles = [];
-            if ($request->hasFile('dokumen_pendukung')) {
-                foreach ($request->file('dokumen_pendukung') as $file) {
+            if ($request->hasFile('file_laporan')) {
+                foreach ($request->file('file_laporan') as $file) {
                     $filename = time() . '-' . $file->getClientOriginalName();
-                    $path = 'public/uploads/pkl/dokumen_pendukung_sidang/';
+                    $path = 'public/uploads/pkl/laporan_akhir/';
                     $file->storeAs($path, $filename);
-                    $uploadedFiles[] = $filename;
+                    $uploadedFileLaporan = $filename;
                 }
             }
+
+            if (!$oldData->file_nilai !== null && $request->hasFile('file_nilai')) {
+                $oldFiles = json_decode($oldData->file_nilai, true) ?? [];
+                foreach ($oldFiles as $oldFile) {
+                    Storage::delete('public/uploads/pkl/laporan_akhir/' . $oldFile);
+                }
+            }
+
+            if ($request->hasFile('file_nilai')) {
+                foreach ($request->file('file_nilai') as $file) {
+                    $filename = time() . '-' . $file->getClientOriginalName();
+                    $path = 'public/uploads/pkl/nilai_industri/';
+                    $file->storeAs($path, $filename);
+                    $uploadedFileNilai = $filename;
+                }
+            }
+
             $data = [
-                'judul' => $request->judul,
+                'judul_laporan' => $request->judul_laporan,
                 'pembimbing_pkl' => $request->pembimbing_pkl,
-                'dokumen_pendukung' => json_encode($uploadedFiles),
+                'laporan_akhir' => $uploadedFileLaporan,
+                'laporan_nilai' => $uploadedFileNilai,
             ];
 
             $oldData->update($data);
             DB::commit();
-            return to_route('ajukansidang')->with('success', 'Pengajuan Sidang updated successfully');
+            return to_route('MhsPkl')->with('success', 'Pengajuan Sidang updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('ajukansidang')->with('error', 'Pengajuan Sidang updated failed');
+            return to_route('MhsPkl')->with('error', 'Pengajuan Sidang updated failed');
         }
     }
 }

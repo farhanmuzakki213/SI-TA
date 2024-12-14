@@ -114,7 +114,6 @@ const AppMenu = () => {
                         items: [
                             { label: 'PKL', icon: 'pi pi-fw pi-file', to: route('MhsPkl') },
                             { label: 'Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSempro') },
-                            { label: 'Laporan', icon: 'pi pi-fw pi-file', to: route('logbookmhs') },
                             { label: 'Pengajuan Sidang', icon: 'pi pi-fw pi-file', to: route('ajukansidang') },
                         ]
                     }}
