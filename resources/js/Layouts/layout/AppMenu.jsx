@@ -4,7 +4,7 @@ import { MenuProvider } from './context/menucontext';
 import { usePermission } from './composables/permission';
 
 const AppMenu = () => {
-    const { hasRole } = usePermission();
+    const { hasRole, hasJenjangProdi } = usePermission();
     return (
         <MenuProvider>
             <ul className="layout-menu">
@@ -113,8 +113,9 @@ const AppMenu = () => {
                         label: 'Mahasiswa',
                         items: [
                             { label: 'PKL', icon: 'pi pi-fw pi-file', to: route('MhsPkl') },
-                            { label: 'Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSempro') },
-                            { label: 'Pengajuan Sidang', icon: 'pi pi-fw pi-file', to: route('ajukansidang') },
+                            ...(hasJenjangProdi('D4') ? [
+                                { label: 'Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSempro') },
+                            ] : []),
                         ]
                     }}
                     root={true}

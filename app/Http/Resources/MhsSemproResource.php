@@ -37,8 +37,10 @@ class MhsSemproResource extends JsonResource
             $status = 'Ditolak';
         }else if($this->status_ver_sempro == '2'){
             $status = 'Belum diverifikasi';
-        }else{
+        }else if($this->status_ver_sempro == '3'){
             $status = 'Diterima';
+        }else{
+            $status = 'Butuh Revisi';
         }
         return [
             'id_sempro_mhs' => $this->id_sempro_mhs,

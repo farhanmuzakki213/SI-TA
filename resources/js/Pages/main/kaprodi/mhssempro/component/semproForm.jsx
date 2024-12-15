@@ -109,7 +109,17 @@ const SemproForm = ({
                             onChange={onStatusChange}
                             checked={sempro.status_ver_sempro === "1"}
                         />
-                        <label htmlFor="status_ver_sempro2">Ditolak</label>
+                        <label htmlFor="status_ver_sempro1">Ditolak</label>
+                    </div>
+                    <div className="field-radiobutton col-4">
+                        <RadioButton
+                            inputId="status_ver_sempro4"
+                            name="status_ver_sempro"
+                            value="4"
+                            onChange={onStatusChange}
+                            checked={sempro.status_ver_sempro === "4"}
+                        />
+                        <label htmlFor="status_ver_sempro4">Butuh Revisi</label>
                     </div>
                     <div className="field-radiobutton col-4">
                         <RadioButton

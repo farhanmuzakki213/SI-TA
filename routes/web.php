@@ -65,14 +65,11 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         Route::post('/MhsPkl/Sidang/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateSidang'])->name('MhsPkl.updateSidang');
 
         //Sempro
-        Route::get('/MhsSempro', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'index'])->name('MhsSempro');
-        Route::post('/MhsSempro/store', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'store'])->name('MhsSempro.store');
-        Route::post('/MhsSempro/{id}/update', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'update'])->name('MhsSempro.update');
-
-        // Data Ajuan Sidang
-        Route::get('/ajukansidang', [\App\Http\Controllers\Mahasiswa\AjukanSidangController::class, 'index'])->name('ajukansidang');
-        Route::post('/ajukansidang/{id}/update', [\App\Http\Controllers\Mahasiswa\AjukanSidangController::class, 'update'])->name('ajukansidang.update');
-        Route::delete('/ajukansidang/{ajukansidang}/delete', [\App\Http\Controllers\Mahasiswa\AjukanSidangController::class, 'destroy'])->name('ajukansidang.destroy');
+        Route::middleware(['auth', 'JenjangProdi:D4'])->group(function () {
+            Route::get('/MhsSempro', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'index'])->name('MhsSempro');
+            Route::post('/MhsSempro/store', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'store'])->name('MhsSempro.store');
+            Route::post('/MhsSempro/{id}/update', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'update'])->name('MhsSempro.update');
+        });
     });
 });
 

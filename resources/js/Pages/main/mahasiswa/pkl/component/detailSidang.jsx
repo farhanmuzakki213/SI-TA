@@ -27,29 +27,43 @@ const detailSidang = ({
     const [submitted, setSubmitted] = useState(false);
     const toast = useRef(null);
 
+    const nilaiPenguji_1 = JSON.parse(data_mhss.nilai_penguji_1?.nilai || null);
+    const nilaiPenguji_2 = JSON.parse(data_mhss.nilai_penguji_2?.nilai || null);
+    const nilaiPembimbing = JSON.parse(data_mhss.nilai_pembimbing?.nilai || null);
+    const nilaiAkhir = () => {
+        if (nilaiPembimbing != null && nilaiPenguji_1 != null && nilaiPenguji_2 != null) {
+            const totalNilai =
+                (data_mhss.nilai_industri * 0.30) +
+                (nilaiPembimbing.total_nilai * 0.35) +
+                (((nilaiPenguji_1.total_nilai + nilaiPenguji_2.total_nilai) / 2) * 0.35);
+            return parseFloat(totalNilai.toFixed(2));
+        }
+        return null;
+    };
+    // console.log(nilaiAkhir());
     useEffect(() => {
         setajukansidangs(data_mhss);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-        if (msgs.current && data_mhss.status_ver_pkl === '1') {
+        if (msgs.current && data_mhss.status_ver_pkl === '1' && nilaiAkhir() === null) {
             msgs.current.clear();
             msgs.current.show([
                 { sticky: true, severity: 'error', summary: 'Error', detail: 'Pengajuan Sidang Gagal. Pastikan data sudah benar', closable: true }
             ]);
         }
-        if (msgs.current && data_mhss.status_ver_pkl === '2') {
+        if (msgs.current && data_mhss.status_ver_pkl === '2' && nilaiAkhir() === null) {
             msgs.current.clear();
             msgs.current.show([
                 { sticky: true, severity: 'info', summary: 'info', detail: 'Pengajuan Sidang Sedang Diproses, Pastikan data sudah benar', closable: true }
             ]);
         }
-        if (msgs.current && data_mhss.status_ver_pkl === '3') {
+        if (msgs.current && data_mhss.status_ver_pkl === '3' && nilaiAkhir() === null) {
             msgs.current.clear();
             msgs.current.show([
                 { sticky: true, life: 1000, severity: 'success', summary: 'success', detail: 'Pengajuan Sidang Berhasil', closable: true },
             ]);
         }
-        if (msgs.current && data_mhss.id_booking ) {
+        if (msgs.current && data_mhss.id_booking && nilaiAkhir() === null ) {
             msgs.current.clear();
             msgs.current.show([
                 { sticky: true, severity: 'info', summary: 'info', detail: 'Anda Sudah Memiliki Jadwal Sidang', closable: true }
@@ -148,20 +162,6 @@ const detailSidang = ({
     const editajukansidang = (ajukansidang) => {
         setajukansidang({ ...ajukansidang });
         setajukansidangDialog(true);
-    };
-
-    const nilaiPenguji_1 = JSON.parse(data_mhss.nilai_penguji_1?.nilai || null);
-    const nilaiPenguji_2 = JSON.parse(data_mhss.nilai_penguji_2?.nilai || null);
-    const nilaiPembimbing = JSON.parse(data_mhss.nilai_pembimbing?.nilai || null);
-    const nilaiAkhir = () => {
-        if (nilaiPembimbing != null && nilaiPenguji_1 != null && nilaiPenguji_2 != null) {
-            const totalNilai =
-                (data_mhss.nilai_industri * 0.30) +
-                (nilaiPembimbing.total_nilai * 0.35) +
-                (((nilaiPenguji_1.total_nilai + nilaiPenguji_2.total_nilai) / 2) * 0.35);
-            return parseFloat(totalNilai.toFixed(2));
-        }
-        return null;
     };
     const ajukansidangDialogFooter = (
         <>

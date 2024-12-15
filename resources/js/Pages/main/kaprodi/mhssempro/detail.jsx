@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/Layouts/layout/layout.jsx';
 import DetailSidang from './component/detailSidang';
 
-const MhspklDetail = () => {
+const MhsSemproDetail = () => {
     const { props } = usePage();
     const { data_mhs,
         dosenOptions,
@@ -56,4 +56,4 @@ const MhspklDetail = () => {
     );
 };
 
-export default MhspklDetail;
+export default MhsSemproDetail;

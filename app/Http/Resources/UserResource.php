@@ -20,6 +20,9 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'roles' => $this->getRoleNames(),
             'permissions' => $this->getPermissionNames(),
+            'jenjangProdi' => $this->whenLoaded('mahasiswas', function () {
+                return optional($this->mahasiswas->r_kelas->r_prodi)->jenjang;
+            }),
         ];
     }
 }

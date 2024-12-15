@@ -35,7 +35,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth.user' => fn() => $request->user()
-                ? UserResource::make($request->user())
+                ? UserResource::make($request->user()->load('mahasiswas.r_kelas.r_prodi'))
                 : null,
             'ziggy' => Inertia::lazy(fn() => cache()->remember('ziggy_routes', now()->addMinutes(10), function () use ($request) {
                 return [

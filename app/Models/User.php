@@ -47,11 +47,11 @@ class User extends Authenticatable
 
     public function dosens()
     {
-        return $this->hasMany(Dosen::class, 'user_id');
+        return $this->hasOne(Dosen::class, 'user_id');
     }
 
     public function mahasiswas()
     {
-        return $this->hasMany(Mahasiswa::class, 'user_id');
+        return $this->hasOne(Mahasiswa::class, 'user_id');
     }
 }
