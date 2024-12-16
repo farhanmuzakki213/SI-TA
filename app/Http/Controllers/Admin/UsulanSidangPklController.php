@@ -40,15 +40,15 @@ class UsulanSidangPklController extends Controller
             $data = [
                 'status_ver_pkl' => $request->status_ver_pkl,
             ];
-            if ($request->status_ver_pkl == 3) {
-                $data_pembimbing = User::where('id', $pkl_mhs->r_pembimbing->user_id)->first();
-                $data_penguji = User::where('id', $pkl_mhs->r_penguji->user_id)->first();
+            // if ($request->status_ver_pkl == 3) {
+            //     $data_pembimbing = User::where('id', $pkl_mhs->r_pembimbing->user_id)->first();
+            //     $data_penguji = User::where('id', $pkl_mhs->r_penguji->user_id)->first();
 
-                if($data_pembimbing && $data_penguji){
-                    Notification::send($data_pembimbing, new PenugasanDosen($pkl_mhs));
-                    Notification::send($data_penguji, new PenugasanDosen($pkl_mhs));
-                }
-            }
+            //     if($data_pembimbing && $data_penguji){
+            //         Notification::send($data_pembimbing, new PenugasanDosen($pkl_mhs));
+            //         Notification::send($data_penguji, new PenugasanDosen($pkl_mhs));
+            //     }
+            // }
 
             $pkl_mhs->update($data);
             DB::commit();

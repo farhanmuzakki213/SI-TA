@@ -26,7 +26,7 @@ const SemproForm = ({
     // console.log(dosenOptions);
     const onStatusChange = (e) => {
         let _sempro = { ...sempro };
-        _sempro["status_ver_sempro"] = e.value;
+        _sempro["status_judul_sempro"] = e.value;
 
         setsempro(_sempro);
 
@@ -103,33 +103,33 @@ const SemproForm = ({
                 <div className="formgrid grid">
                     <div className="field-radiobutton col-4">
                         <RadioButton
-                            inputId="status_ver_sempro1"
-                            name="status_ver_sempro"
+                            inputId="status_judul_sempro1"
+                            name="status_judul_sempro"
                             value="1"
                             onChange={onStatusChange}
-                            checked={sempro.status_ver_sempro === "1"}
+                            checked={sempro.status_judul_sempro === "1"}
                         />
-                        <label htmlFor="status_ver_sempro1">Ditolak</label>
+                        <label htmlFor="status_judul_sempro1">Ditolak</label>
                     </div>
                     <div className="field-radiobutton col-4">
                         <RadioButton
-                            inputId="status_ver_sempro4"
-                            name="status_ver_sempro"
+                            inputId="status_judul_sempro4"
+                            name="status_judul_sempro"
                             value="4"
                             onChange={onStatusChange}
-                            checked={sempro.status_ver_sempro === "4"}
+                            checked={sempro.status_judul_sempro === "4"}
                         />
-                        <label htmlFor="status_ver_sempro4">Butuh Revisi</label>
+                        <label htmlFor="status_judul_sempro4">Butuh Revisi</label>
                     </div>
                     <div className="field-radiobutton col-4">
                         <RadioButton
-                            inputId="status_ver_sempro3"
-                            name="status_ver_sempro"
+                            inputId="status_judul_sempro3"
+                            name="status_judul_sempro"
                             value="3"
                             onChange={onStatusChange}
-                            checked={sempro.status_ver_sempro === "3"}
+                            checked={sempro.status_judul_sempro === "3"}
                         />
-                        <label htmlFor="status_ver_sempro3">Diterima</label>
+                        <label htmlFor="status_judul_sempro3">Diterima</label>
                     </div>
                 </div>
             </div>

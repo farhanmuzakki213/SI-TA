@@ -110,7 +110,7 @@ class MhsSemproController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'status_ver_sempro' => 'required',
+            'status_judul_sempro' => 'required',
             'komentar' => 'required',
         ]);
 
@@ -119,7 +119,7 @@ class MhsSemproController extends Controller
         }
         DB::beginTransaction();
         try {
-            if ($request->status_ver_sempro == '3') {
+            if ($request->status_judul_sempro == '3') {
                 $data_penugasan = [
                     'pembimbing_1_id' => $request->pembimbing_1_id,
                     'pembimbing_2_id' => $request->pembimbing_2_id,
@@ -129,7 +129,7 @@ class MhsSemproController extends Controller
                 $sempro->update($data_penugasan);
             }
             $data = [
-                'status_ver_sempro' => $request->status_ver_sempro,
+                'status_judul_sempro' => $request->status_judul_sempro,
                 'komentar' => $request->komentar,
             ];
             $sempro = SemproMhs::findOrFail($id);

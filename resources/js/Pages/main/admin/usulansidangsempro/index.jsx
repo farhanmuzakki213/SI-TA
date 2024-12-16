@@ -13,17 +13,13 @@ const index = () => {
     let emptysempro = {
         id_sempro_mhs: null,
         komentar: "",
-        status_judul_sempro: "",
-        pembimbing_1_id: null,
-        pembimbing_2_id: null,
-        penguji_id: null,
+        status_ver_sempro: "",
     };
 
 
     const { props } = usePage();
-    const { data_sempro, dosenOptions: initialDosenOptions} = props;
+    const { data_sempro} = props;
     const [sempros, setsempros] = useState(null);
-    const [dosenOptions, setDosenOptions] = useState([]);
     const [semproDialog, setsemproDialog] = useState(false);
     const [sempro, setsempro] = useState(emptysempro);
     const [selectedsempros, setSelectedsempros] = useState(null);
@@ -33,11 +29,10 @@ const index = () => {
     const dt = useRef(null);
 
     useEffect(() => {
-        setDosenOptions(initialDosenOptions);
         setsempros(data_sempro);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_sempro, props.flash, initialDosenOptions]);
+    }, [data_sempro, props.flash]);
 
     const hideDialog = () => {
         setSubmitted(false);
@@ -75,11 +70,8 @@ const index = () => {
         const requiredFieldsForUpdate = [
             sempro.id_sempro_mhs,
             sempro.komentar,
-            sempro.status_judul_sempro,
+            sempro.status_ver_sempro,
         ];
-        if(sempro.status_judul_sempro === "3"){
-            requiredFieldsForUpdate.push(sempro.pembimbing_1_id, sempro.pembimbing_2_id, sempro.penguji_id);
-        }
         const isValid = requiredFieldsForUpdate.every(field => field);
 
 
@@ -96,7 +88,7 @@ const index = () => {
         let _sempro = { ...sempro };
 
         try {
-            await router.put(`/Kprodi/MhsSempro/Penugasan/${sempro.id_sempro_mhs}/update`, _sempro);
+            await router.put(`/usulansidangsempro/${sempro.id_sempro_mhs}/update`, _sempro);
 
             setsempros(prevsempros =>
                 prevsempros.map(d => d.id_sempro_mhs === sempro.id_sempro_mhs ? _sempro : d)
@@ -198,7 +190,6 @@ const index = () => {
                             submitted={submitted}
                             semproDialogFooter={semproDialogFooter}
                             hideDialog={hideDialog}
-                            dosenOptions={dosenOptions}
                         />
                     </div>
                 </div>

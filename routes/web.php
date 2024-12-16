@@ -165,6 +165,10 @@ Route::group(['middleware' => ['role:admin']], function () {
         Route::get('/usulansidangpkl', [\App\Http\Controllers\Admin\UsulanSidangPklController::class, 'index'])->name('usulansidangpkl');
         Route::put('/usulansidangpkl/{id}/update', [\App\Http\Controllers\Admin\UsulanSidangPklController::class, 'update'])->name('usulansidangpkl.update');
 
+        // Persetujuan Sidang SEMPRO
+        Route::get('/usulansidangsempro', [\App\Http\Controllers\Admin\UsulanSidangSemproController::class, 'index'])->name('usulansidangsempro');
+        Route::put('/usulansidangsempro/{id}/update', [\App\Http\Controllers\Admin\UsulanSidangSemproController::class, 'update'])->name('usulansidangsempro.update');
+
         // Data Dosen
         Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');
         Route::post('/dosen/store', [\App\Http\Controllers\Admin\DosenController::class, 'store'])->name('dosen.store');

@@ -75,7 +75,7 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status_ver_sempro === "1" ? "Ditolak" : rowData.status_ver_sempro === "2" ? "Belum" : "Diterima"}
+                {rowData.status_judul_sempro === "1" ? "Ditolak" : rowData.status_judul_sempro === "2" ? "Belum" : rowData.status_judul_sempro === "3" ? "Diterima" : "Butuh Revisi"}
             </>
         );
     };
@@ -92,7 +92,7 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
         // console.log(rowData.id_pkl_mhs, status);
         return (
             <>
-                {rowData.status_ver_sempro === '3' ? (
+                {rowData.status_judul_sempro === '3' ? (
                     <Link
                         href={'/Kprodi/MhsSempro/' + rowData.id_sempro_mhs}
                         className="text-blue-500 hover:underline"
@@ -140,7 +140,7 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
             {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
             <Column field="judul_sempro" header="Judul" sortable body={judulBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column header="File" sortable body={fileBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_ver_sempro" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column field="status_judul_sempro" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

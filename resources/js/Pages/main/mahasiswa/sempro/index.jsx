@@ -74,7 +74,6 @@ const index = () => {
 
         const requiredFieldsForCreate = [
             sempro.judul_sempro,
-            sempro.file_sempro
         ];
 
         const requiredFieldsForUpdate = [

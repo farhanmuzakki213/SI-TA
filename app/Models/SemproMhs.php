@@ -9,7 +9,7 @@ class SemproMhs extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_sempro_mhs', 'mahasiswa_id', 'pembimbing_1_id', 'pembimbing_2_id', 'penguji_id',  'judul_sempro', 'file_sempro', 'komentar', 'status_ver_sempro'
+        'id_sempro_mhs', 'mahasiswa_id', 'pembimbing_1_id', 'pembimbing_2_id', 'penguji_id',  'judul_sempro', 'file_sempro', 'komentar', 'status_judul_sempro', 'status_ver_sempro'
     ];
     protected $table = 'sempro_mhs';
     protected $primaryKey = 'id_sempro_mhs';

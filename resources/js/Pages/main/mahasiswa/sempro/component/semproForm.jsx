@@ -26,7 +26,7 @@ const semproForm = ({
             file_sempro: files,
         }));
     };
-
+    // console.log(sempro);
     return (
         <Dialog
             visible={semproDialog}
@@ -56,17 +56,20 @@ const semproForm = ({
             </div>
 
             {/* Upload Dokumen */}
-            <div className="field">
-                <label htmlFor="file_sempro">Dokumen Sempro</label>
-                <FileUploadC
-                    multiple={false}
-                    name="file_sempro"
-                    onFileSelect={onFileSelect}
-                />
-                {submitted && !sempro?.file_sempro && (
-                    <small className="p-invalid">Dokumen Sempro is required.</small>
-                )}
-            </div>
+            {sempro.id_sempro_mhs && sempro.status_judul_sempro === '3' && (
+                <div className="field">
+                    <label htmlFor="file_sempro">Dokumen Sempro</label>
+                    <FileUploadC
+                        multiple={false}
+                        name="file_sempro"
+                        onFileSelect={onFileSelect}
+                    />
+                    {submitted && !sempro?.file_sempro && (
+                        <small className="p-invalid">Dokumen Sempro is required.</small>
+                    )}
+                </div>
+            )}
+
         </Dialog>
     );
 };

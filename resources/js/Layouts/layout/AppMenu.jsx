@@ -47,6 +47,7 @@ const AppMenu = () => {
                             { label: 'Jabatan Pimpinan', icon: 'pi pi-fw pi-file', to: route('jabatanpimpinan') },
                             { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
                             { label: 'Usulan Sidang PKL', icon: 'pi pi-fw pi-file', to: route('usulansidangpkl') },
+                            { label: 'Usulan Sidang Sempro', icon: 'pi pi-fw pi-file', to: route('usulansidangsempro') },
                         ]
                     }}
                     root={true}

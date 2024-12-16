@@ -2,15 +2,35 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { Link } from '@inertiajs/react';
+import { Avatar } from 'primereact/avatar';
 
-const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
+const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalFilter, header, editsempro, confirmDeletesempro, dt }) => {
 
-    console.log(sempros);
-    const komentarBodyTemplate = (rowData) => {
+    // console.log(sempros);
+    const namaBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Komentar</span>
-                {rowData.komentar || 'N/A'}
+                <span className="p-column-title">Nama Mahasiswa</span>
+                {rowData.nama_mahasiswa || 'N/A'}
+            </>
+        );
+    };
+
+    const nimBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Nim Mahasiswa</span>
+                {rowData.nim_mahasiswa || 'N/A'}
+            </>
+        );
+    };
+
+    const prodiBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Prodi Mahasiswa</span>
+                {rowData.prodi || 'N/A'}
             </>
         );
     };
@@ -51,26 +71,19 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
         );
     };
 
-    const statusjudulBodyTemplate = (rowData) => {
+    const statusBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Status Judul</span>
-                {rowData.status_judul_sempro === "1" ? "Ditolak" : rowData.status_judul_sempro === "2" ? "Sedang Diproses" : rowData.status_judul_sempro === "3" ? "Diterima" : "Butuh Revisi"}
+                <span className="p-column-title">Status</span>
+                {rowData.status_ver_sempro === "1" ? "Ditolak" : rowData.status_ver_sempro === "2" ? "Belum" : rowData.status_ver_sempro === "3" ? "Diterima" : "Butuh Revisi"}
             </>
         );
     };
-    const statusberkasBodyTemplate = (rowData) => {
+    const gambarBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Status Berkas</span>
-                {rowData.status_judul_sempro === '3' ? (
-                    rowData.status_ver_sempro === "1" ? "Ditolak" : rowData.status_ver_sempro === "2" ? "Sedang Diproses" : rowData.status_ver_sempro === "3" ? "Diterima" : "Butuh Revisi"
-                ) : (
-                    <>
-                        <span className="p-column-title">Status Berkas</span>
-                        Berkas Belum Diupload
-                    </>
-                )}
+                <span className="p-column-title">Foto Profil</span>
+                <Avatar image={rowData.foto_mahasiswa} size="xlarge" />
             </>
         );
     };
@@ -79,26 +92,23 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
         // console.log(rowData.id_pkl_mhs, status);
         return (
             <>
-                {(rowData.status_ver_sempro === "2" || rowData.status_ver_sempro === "4") && (
-                    <Button
-                        label="Sempro"
-                        icon="pi pi-pencil"
-                        severity="success"
-                        className="mr-2"
-                        tooltip="Upload Berkas Sempro"
-                        tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                        onClick={() => editsempro(rowData)}
-                    />
-                )}
+                <Button
+                    icon="pi pi-pencil"
+                    severity="success"
+                    rounded
+                    className="mr-2"
+                    onClick={() => editsempro(rowData)}
+                />
             </>
         );
     };
-    // console.log(sempros);
 
     return (
         <DataTable
             ref={dt}
             value={sempros}
+            selection={selectedsempros}
+            onSelectionChange={(e) => setSelectedsempros(e.value)}
             dataKey="id_sempro_mhs"
             paginator
             rows={10}
@@ -113,11 +123,13 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
             removableSort
         >
             <Column headerStyle={{ width: "4rem" }}></Column>
+            <Column field="foto_mahasiswa" header="Gambar" sortable body={gambarBodyTemplate}></Column>
+            <Column field="nama_mahasiswa" header="Nama Mahasiswa" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="nim_mahasiswa" header="Nim Mahasiswa" sortable body={nimBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
             <Column field="judul_sempro" header="Judul" sortable body={judulBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column header="File" sortable body={fileBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="komentar" header="Komentar" sortable body={komentarBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_judul_sempro" header="Status Judul" body={statusjudulBodyTemplate} headerStyle={{ minWidth: "15rem" }} sortable></Column>
-            <Column field="status_ver_sempro" header="Status Berkas" body={statusberkasBodyTemplate} headerStyle={{ minWidth: "15rem" }} sortable></Column>
+            <Column field="status_ver_sempro" header="Status Berkas" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );
