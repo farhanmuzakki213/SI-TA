@@ -70,6 +70,9 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
             Route::post('/MhsSempro/store', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'store'])->name('MhsSempro.store');
             Route::post('/MhsSempro/{id}/update', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'update'])->name('MhsSempro.update');
         });
+
+        //Tugas Akhir
+        Route::get('/MhsTA', [\App\Http\Controllers\Mahasiswa\TAController::class, 'index'])->name('MhsTA');
     });
 });
 
@@ -130,6 +133,9 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             Route::put('/sesi/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'update'])->name('sesi.update');
             Route::delete('/sesi/{sesi}/delete', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroy'])->name('sesi.destroy');
             Route::delete('/sesi/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroyMultiple'])->name('sesi.destroyMultiple');
+
+            // Tugas Akhir
+            Route::get('/Kprodi/MhsTA', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'index'])->name('MhsTAKprodi');
 
             // Sempro
             Route::middleware(['auth', 'JenjangProdiKaprodi:D4'])->group(function () {

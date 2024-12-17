@@ -77,6 +77,7 @@ const AppMenu = () => {
                             ...(hasJenjangProdiKaprodi('D4') ? [
                                 { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproKprodi') },
                             ] : []),
+                            { label: 'Mahasiswa TA', icon: 'pi pi-fw pi-file', to: route('MhsTAKprodi') },
                         ],
                     }}
                     root={true}
@@ -121,6 +122,7 @@ const AppMenu = () => {
                             ...(hasJenjangProdi('D4') ? [
                                 { label: 'Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSempro') },
                             ] : []),
+                            { label: 'TA', icon: 'pi pi-fw pi-file', to: route('MhsTA') },
                         ]
                     }}
                     root={true}
