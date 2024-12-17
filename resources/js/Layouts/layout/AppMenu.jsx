@@ -93,6 +93,7 @@ const AppMenu = () => {
                             ...(hasJenjangProdiPembimbing('D4') ? [
                                 { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproPembimbing') },
                             ] : []),
+                            { label: 'Mahasiswa TA', icon: 'pi pi-fw pi-file', to: route('MhsTAPembimbing') },
                         ],
                     }}
                     root={true}

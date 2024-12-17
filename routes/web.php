@@ -93,6 +93,9 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             Route::put('/Pembimbing/Mhspkl/Laporan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateLaporan'])->name('MhsPklPembimbing.updateLaporan');
             Route::post('/Pembimbing/Mhspkl/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'storeNilai'])->name('MhsPklPembimbing.storeNilai');
             Route::put('/Pembimbing/Mhspkl/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'updateNilai'])->name('MhsPklPembimbing.updateNilai');
+
+            // Tugas Akhir
+            Route::get('/Pembimbing/MhsTA', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'index'])->name('MhsTAPembimbing');
         });
 
         // Route Dosen Penguji
