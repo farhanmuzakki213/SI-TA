@@ -72,5 +72,7 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
 
         'JenjangProdi' => \App\Http\Middleware\CheckJenjangProdi::class,
+        'JenjangProdiKaprodi' => \App\Http\Middleware\CheckJenjangProdiKaprodi::class,
+        'JenjangProdiPembimbing' => \App\Http\Middleware\CheckJenjangProdiPembimbing::class,
     ];
 }

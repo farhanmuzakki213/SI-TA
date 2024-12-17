@@ -8,6 +8,7 @@ const MhspklDetail = () => {
     const { props } = usePage();
     const { data_mhs,
         dosenOptions,
+        dosenPembimbingOptions,
         ruanganOptions,
         sesiOptions,
         nextNumber,
@@ -17,8 +18,7 @@ const MhspklDetail = () => {
     // console.log("data_laporan", data_laporan);
     // console.log("data_nilai", data_nilai);
     const data_mhss = data_mhs[0];
-
-
+    console.log("1:",dosenPembimbingOptions)
     return (
         <Layout>
             <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-4">
@@ -53,7 +53,7 @@ const MhspklDetail = () => {
                 <div className="tw-w-full sm:tw-max-w-96">
                     <div className="tw-grid tw-gap-1">
                         {<div className="tw-col-12">
-                            <DetailPkl data_mhs={data_mhs} dosenOptions={dosenOptions} />
+                            <DetailPkl data_mhs={data_mhs} dosenOptions={dosenOptions} dosenPembimbingOptions={dosenPembimbingOptions}/>
                         </div>}
                         <div className="tw-col-12">
                             <DetailSidang
@@ -63,7 +63,8 @@ const MhspklDetail = () => {
                             ruanganOptions={ruanganOptions}
                             nextNumber={nextNumber}
                             bookingused={bookingused}
-                            jambookingused={jambookingused} />
+                            jambookingused={jambookingused}
+                            />
                         </div>
                     </div>
                 </div>

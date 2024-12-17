@@ -13,7 +13,8 @@ const UsulanpklForm = ({
     usulanpklDialogFooter,
     hideDialog,
     setusulanpkl,
-    dosenOptions
+    dosenOptions,
+    dosenPembimbingOptions,
 }) => {
     const [showAdditionalForm, setShowAdditionalForm] = useState(false);
     const onInputChange = (e, field) => {
@@ -33,26 +34,24 @@ const UsulanpklForm = ({
         setShowAdditionalForm(e.value === "3");
     };
 
-    const filteredPengujiOptions = dosenOptions.filter((dosen) => {
-        if (usulanpkl.pembimbing_id) {
+    const filteredPembimbingOptions = dosenPembimbingOptions.filter((dosen) => {
+        if (usulanpkl.penguji_id) {
             return (
-                dosen.value !== usulanpkl.pembimbing_id &&
+                dosen.value !== usulanpkl.penguji_id &&
                 dosen.golongan >=
-                dosenOptions.find((d) => d.value === usulanpkl.pembimbing_id)
-                    ?.golongan
+                dosenOptions.find((d) => d.value === usulanpkl.penguji_id)?.golongan
             );
         }
         return true;
     });
 
 
-    const filteredPembimbingOptions = dosenOptions.filter((dosen) => {
-        if (usulanpkl.penguji_id) {
+    const filteredPengujiOptions = dosenOptions.filter((dosen) => {
+        if (usulanpkl.pembimbing_id) {
             return (
-                dosen.value !== usulanpkl.penguji_id &&
+                dosen.value !== usulanpkl.pembimbing_id &&
                 dosen.golongan >=
-                dosenOptions.find((d) => d.value === usulanpkl.penguji_id)
-                    ?.golongan
+                dosenPembimbingOptions.find((d) => d.value === usulanpkl.pembimbing_id)?.golongan
             );
         }
         return true;

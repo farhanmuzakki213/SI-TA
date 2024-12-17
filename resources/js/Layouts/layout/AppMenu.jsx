@@ -4,7 +4,7 @@ import { MenuProvider } from './context/menucontext';
 import { usePermission } from './composables/permission';
 
 const AppMenu = () => {
-    const { hasRole, hasJenjangProdi } = usePermission();
+    const { hasRole, hasJenjangProdi, hasJenjangProdiKaprodi, hasJenjangProdiPembimbing } = usePermission();
     return (
         <MenuProvider>
             <ul className="layout-menu">
@@ -74,7 +74,9 @@ const AppMenu = () => {
                         label: 'Kepala Prodi',
                         items: [
                             { label: 'Mahasiswa Pkl', icon: 'pi pi-fw pi-file', to: route('MhsPklKprodi') },
-                            { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproKprodi') },
+                            ...(hasJenjangProdiKaprodi('D4') ? [
+                                { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproKprodi') },
+                            ] : []),
                         ],
                     }}
                     root={true}
@@ -87,7 +89,9 @@ const AppMenu = () => {
                         label: 'Pembimbing',
                         items: [
                             { label: 'Mahasiswa PKL', icon: 'pi pi-fw pi-file', to: route('MhsPklPembimbing') },
-                            { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproPembimbing') },
+                            ...(hasJenjangProdiPembimbing('D4') ? [
+                                { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproPembimbing') },
+                            ] : []),
                         ],
                     }}
                     root={true}

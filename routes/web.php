@@ -78,11 +78,12 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
         // Route Dosen Pembimbing
         Route::group(['middleware' => ['role:dosenPembimbing']], function () {
             // Sempro
-            Route::get('/Pembimbing/Mhssempro', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'index'])->name('MhsSemproPembimbing');
-            Route::get('/Pembimbing/Mhssempro/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'detail']);
-            Route::post('/Pembimbing/Mhssempro/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'storeNilai'])->name('MhsSemproPembimbing.storeNilai');
-            Route::put('/Pembimbing/Mhssempro/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'updateNilai'])->name('MhsSemproPembimbing.updateNilai');
-
+            Route::middleware(['auth', 'JenjangProdiPembimbing:D4'])->group(function () {
+                Route::get('/Pembimbing/Mhssempro', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'index'])->name('MhsSemproPembimbing');
+                Route::get('/Pembimbing/Mhssempro/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'detail']);
+                Route::post('/Pembimbing/Mhssempro/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'storeNilai'])->name('MhsSemproPembimbing.storeNilai');
+                Route::put('/Pembimbing/Mhssempro/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsSemproController::class, 'updateNilai'])->name('MhsSemproPembimbing.updateNilai');
+            });
             // PKL
             Route::get('/Pembimbing/Mhspkl', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'index'])->name('MhsPklPembimbing');
             Route::get('/Pembimbing/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsPklController::class, 'detail']);
@@ -131,13 +132,14 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             Route::delete('/sesi/destroyMultiple', [\App\Http\Controllers\Dosen\Kprodi\SesiController::class, 'destroyMultiple'])->name('sesi.destroyMultiple');
 
             // Sempro
-            Route::get('/Kprodi/MhsSempro', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'index'])->name('MhsSemproKprodi');
-            Route::get('/Kprodi/MhsSempro/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'detail']);
-            Route::put('/Kprodi/MhsSempro/Penugasan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updatePenugasan'])->name('MhsSemproKprodi.updatePenugasan');
-            Route::put('/Kprodi/MhsSempro/Dosen/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updateDosen'])->name('MhsSemproKprodi.updateDosen');
-            Route::post('/Kprodi/Mhssempro/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'storeJadwal'])->name('MhsSemproKprodi.storeJadwal');
-            Route::put('/Kprodi/Mhssempro/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updateJadwal'])->name('MhsSemproKprodi.updateJadwal');
-
+            Route::middleware(['auth', 'JenjangProdiKaprodi:D4'])->group(function () {
+                Route::get('/Kprodi/MhsSempro', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'index'])->name('MhsSemproKprodi');
+                Route::get('/Kprodi/MhsSempro/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'detail']);
+                Route::put('/Kprodi/MhsSempro/Penugasan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updatePenugasan'])->name('MhsSemproKprodi.updatePenugasan');
+                Route::put('/Kprodi/MhsSempro/Dosen/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updateDosen'])->name('MhsSemproKprodi.updateDosen');
+                Route::post('/Kprodi/Mhssempro/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'storeJadwal'])->name('MhsSemproKprodi.storeJadwal');
+                Route::put('/Kprodi/Mhssempro/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsSemproController::class, 'updateJadwal'])->name('MhsSemproKprodi.updateJadwal');
+            });
             // PKL
             Route::get('/Kprodi/Mhspkl', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'index'])->name('MhsPklKprodi');
             Route::get('/Kprodi/Mhspkl/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhspklController::class, 'detail']);

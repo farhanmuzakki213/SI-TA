@@ -29,7 +29,7 @@ class MhspklController extends Controller
         $id_user = auth()->user()->id;
         $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
         $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
-        $usulan = UsulanTempatPkl::with('r_mahasiswa.r_kelas.r_prodi', 'r_tempat_pkl' ,'r_role_tempat_pkl')
+        $usulan = UsulanTempatPkl::with('r_mahasiswa.r_kelas.r_prodi', 'r_tempat_pkl', 'r_role_tempat_pkl')
             ->whereHas('r_mahasiswa.r_kelas', function ($query) use ($kaprodi) {
                 $query->where('prodi_id', $kaprodi);
             })
@@ -43,16 +43,27 @@ class MhspklController extends Controller
                     'golongan' => $dosen->golongan_id,
                 ];
             }),
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->get()->map(function ($dosen) {
+                return [
+                    'value' => $dosen->id_dosen,
+                    'label' => $dosen->nama_dosen,
+                    'golongan' => $dosen->golongan_id,
+                ];
+            }),
         ]);
     }
 
     public function detail($id)
     {
         $data_mhs = PklMhs::where('id_pkl_mhs', $id)
-            ->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi',
-            'r_usulan.r_tempat_pkl',
-            'r_usulan.r_role_tempat_pkl',
-            'r_pembimbing', 'r_penguji')
+            ->with(
+                'r_usulan.r_mahasiswa.r_user',
+                'r_usulan.r_mahasiswa.r_kelas.r_prodi',
+                'r_usulan.r_tempat_pkl',
+                'r_usulan.r_role_tempat_pkl',
+                'r_pembimbing',
+                'r_penguji'
+            )
             ->get();
         $mahasiswa_id = PklMhs::where('id_pkl_mhs', $id)->with('r_usulan')->first();
         // dd($data_mhs->toArray());
@@ -81,6 +92,9 @@ class MhspklController extends Controller
             ->whereIn('mahasiswa_id', $mahasiswa_id)
             ->get()
             ->toArray();
+        $id_user = auth()->user()->id;
+        $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
+        $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
         return Inertia::render('main/kaprodi/mhspkl/detail', [
             'data_mhs' => MhsPklResource::collection($data_mhs),
             'dosenOptions' => Dosen::all()->map(function ($dosen) {
@@ -98,7 +112,14 @@ class MhspklController extends Controller
                 return new BaseOptionsResource($p, 'periode_sesi', 'id_sesi');
             })),
             'bookingused' => $RSTterpakai,
-            'jambookingused' => $STDosen
+            'jambookingused' => $STDosen,
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->get()->map(function ($dosen) {
+                return [
+                    'value' => $dosen->id_dosen,
+                    'label' => $dosen->nama_dosen,
+                    'golongan' => $dosen->golongan_id,
+                ];
+            }),
         ]);
     }
 

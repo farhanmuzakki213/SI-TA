@@ -21,9 +21,10 @@ const index = () => {
 
 
     const { props } = usePage();
-    const { data_sempro, dosenOptions: initialDosenOptions} = props;
+    const { data_sempro, dosenOptions: initialDosenOptions, dosenPembimbingOptions: initialDosenPembimbingOptions} = props;
     const [sempros, setsempros] = useState(null);
     const [dosenOptions, setDosenOptions] = useState([]);
+    const [dosenPembimbingOptions, setDosenPembimbingOptions] = useState([]);
     const [semproDialog, setsemproDialog] = useState(false);
     const [sempro, setsempro] = useState(emptysempro);
     const [selectedsempros, setSelectedsempros] = useState(null);
@@ -35,9 +36,10 @@ const index = () => {
     useEffect(() => {
         setDosenOptions(initialDosenOptions);
         setsempros(data_sempro);
+        setDosenPembimbingOptions(initialDosenPembimbingOptions);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_sempro, props.flash, initialDosenOptions]);
+    }, [data_sempro, props.flash, initialDosenOptions, initialDosenPembimbingOptions]);
 
     const hideDialog = () => {
         setSubmitted(false);
@@ -199,6 +201,7 @@ const index = () => {
                             semproDialogFooter={semproDialogFooter}
                             hideDialog={hideDialog}
                             dosenOptions={dosenOptions}
+                            dosenPembimbingOptions={dosenPembimbingOptions}
                         />
                     </div>
                 </div>

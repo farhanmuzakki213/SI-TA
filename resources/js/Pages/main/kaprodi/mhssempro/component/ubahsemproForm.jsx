@@ -7,69 +7,66 @@ const SemproForm = ({
     sempro,
     submitted,
     semproDialogFooter,
-    hideDialog,
+    semprohideDialog,
     setsempro,
-    dosenOptions
+    dosenOptions,
+    dosenPembimbingOptions
 }) => {
     const onInputChange = (e, field) => {
         const value = e.target ? e.target.value : e.value;
+
+        // Perbarui nilai di state
         setsempro((prevState) => ({
             ...prevState,
             [field]: value,
         }));
     };
 
+    // Data yang dipilih
     const selectedOptions = {
         penguji: sempro.penguji_id,
         pembimbing1: sempro.pembimbing_1_id,
         pembimbing2: sempro.pembimbing_2_id,
     };
 
-    // Filter options for Penguji
+    // Helper untuk mendapatkan golongan
+    const getGolongan = (options, value) => {
+        return options.find((d) => d.value === value)?.golongan ?? 0;
+    };
+
+    // Filter Penguji
     const filteredPengujiOptions = dosenOptions.filter((dosen) => {
-        const pembimbing1Golongan = dosenOptions.find(
-            (d) => d.value === selectedOptions.pembimbing1
-        )?.golongan;
-        const pembimbing2Golongan = dosenOptions.find(
-            (d) => d.value === selectedOptions.pembimbing2
-        )?.golongan;
+        const pembimbing1Golongan = getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing1);
+        const pembimbing2Golongan = getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing2);
 
         return (
             dosen.value !== selectedOptions.pembimbing1 &&
             dosen.value !== selectedOptions.pembimbing2 &&
-            dosen.golongan >= Math.max(pembimbing1Golongan ?? 0, pembimbing2Golongan ?? 0)
+            dosen.golongan >= Math.max(pembimbing1Golongan, pembimbing2Golongan)
         );
     });
 
-    // Filter options for Pembimbing 1
-    const filteredPembimbing1Options = dosenOptions.filter((dosen) => {
-        const pengujiGolongan = dosenOptions.find(
-            (d) => d.value === selectedOptions.penguji
-        )?.golongan;
-        const pembimbing2Golongan = dosenOptions.find(
-            (d) => d.value === selectedOptions.pembimbing2
-        )?.golongan;
+    // Filter Pembimbing 1
+    const filteredPembimbing1Options = dosenPembimbingOptions.filter((dosen) => {
+        const pengujiGolongan = getGolongan(dosenOptions, selectedOptions.penguji);
+        const pembimbing2Golongan = getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing2);
 
         return (
             dosen.value !== selectedOptions.penguji &&
             dosen.value !== selectedOptions.pembimbing2 &&
-            dosen.golongan >= Math.max(pengujiGolongan ?? 0, pembimbing2Golongan ?? 0)
+            dosen.golongan >= Math.max(pengujiGolongan, pembimbing2Golongan)
         );
     });
 
-    // Filter options for Pembimbing 2
-    const filteredPembimbing2Options = dosenOptions.filter((dosen) => {
-        const pengujiGolongan = dosenOptions.find(
-            (d) => d.value === selectedOptions.penguji
-        )?.golongan;
-        const pembimbing1Golongan = dosenOptions.find(
-            (d) => d.value === selectedOptions.pembimbing1
-        )?.golongan;
+    // Filter Pembimbing 2
+    const filteredPembimbing2Options = dosenPembimbingOptions.filter((dosen) => {
+        const pengujiGolongan = getGolongan(dosenOptions, selectedOptions.penguji);
+        const pembimbing1Golongan = getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing1);
 
         return (
             dosen.value !== selectedOptions.penguji &&
             dosen.value !== selectedOptions.pembimbing1 &&
-            dosen.golongan >= Math.max(pengujiGolongan ?? 0, pembimbing1Golongan ?? 0)
+            dosen.golongan >= Math.max(pengujiGolongan, pembimbing1Golongan)
         );
     });
 
@@ -81,7 +78,7 @@ const SemproForm = ({
             modal
             className="p-fluid"
             footer={semproDialogFooter}
-            onHide={hideDialog}
+            onHide={semprohideDialog}
         >
 
             {/* Pembimbing 1*/}

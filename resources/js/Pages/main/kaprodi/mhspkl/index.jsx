@@ -21,9 +21,10 @@ const index = () => {
 
 
     const { props } = usePage();
-    const { data_usulanpkl, dosenOptions: initialDosenOptions} = props;
+    const { data_usulanpkl, dosenOptions: initialDosenOptions, dosenPembimbingOptions: initialDosenPembimbingOptions} = props;
     const [usulanpkls, setusulanpkls] = useState(null);
     const [dosenOptions, setDosenOptions] = useState([]);
+    const [dosenPembimbingOptions, setDosenPembimbingOptions] = useState([]);
     const [usulanpklDialog, setusulanpklDialog] = useState(false);
     const [usulanpkl, setusulanpkl] = useState(emptyusulanpkl);
     const [selectedusulanpkls, setSelectedusulanpkls] = useState(null);
@@ -32,12 +33,15 @@ const index = () => {
     const toast = useRef(null);
     const dt = useRef(null);
 
+    // console.log("dosenOptions",dosenOptions)
+    // console.log("dosenPembimbingOptions",dosenPembimbingOptions)
     useEffect(() => {
         setDosenOptions(initialDosenOptions);
+        setDosenPembimbingOptions(initialDosenPembimbingOptions);
         setusulanpkls(data_usulanpkl);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_usulanpkl, props.flash, initialDosenOptions]);
+    }, [data_usulanpkl, props.flash, initialDosenOptions, initialDosenPembimbingOptions]);
 
     const hideDialog = () => {
         setSubmitted(false);
@@ -199,6 +203,7 @@ const index = () => {
                             usulanpklDialogFooter={usulanpklDialogFooter}
                             hideDialog={hideDialog}
                             dosenOptions={dosenOptions}
+                            dosenPembimbingOptions={dosenPembimbingOptions}
                         />
                     </div>
                 </div>

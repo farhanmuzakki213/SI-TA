@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import "primeicons/primeicons.css";
 import { Dropdown } from "primereact/dropdown";
@@ -10,40 +10,57 @@ const pklForm = ({
     pklDialogFooter,
     hideDialog,
     setpkl,
-    dosenOptions
+    dosenOptions,
+    dosenPembimbingOptions
 }) => {
-    const onInputChange = (e, field) => {
-        const value = e.target ? e.target.value : e.value;
-        setpkl((prevState) => ({
-            ...prevState,
-            [field]: value,
-        }));
+    const [filteredPengujiOptions, setFilteredPengujiOptions] = useState([]);
+    const [filteredPembimbingOptions, setFilteredPembimbingOptions] = useState([]);
+
+    const updateFilteredOptions = (key, value) => {
+        if (key === "pembimbing_id") {
+            const pengujiOptions = dosenOptions.filter((dosen) => {
+                if (value) {
+                    return (
+                        dosen.value !== value &&
+                        dosen.golongan >=
+                        dosenPembimbingOptions.find((d) => d.value === value)?.golongan
+                    );
+                }
+                return true;
+            });
+            setFilteredPengujiOptions(pengujiOptions);
+        }
+
+        if (key === "penguji_id") {
+            const pembimbingOptions = dosenPembimbingOptions.filter((dosen) => {
+                if (value) {
+                    return (
+                        dosen.value !== value &&
+                        dosen.golongan >=
+                        dosenOptions.find((d) => d.value === value)?.golongan
+                    );
+                }
+                return true;
+            });
+            setFilteredPembimbingOptions(pembimbingOptions);
+        }
     };
 
-    const filteredPengujiOptions = dosenOptions.filter((dosen) => {
-        if (pkl.pembimbing_id) {
-            return (
-                dosen.value !== pkl.pembimbing_id &&
-                dosen.golongan >=
-                dosenOptions.find((d) => d.value === pkl.pembimbing_id)
-                    ?.golongan
-            );
-        }
-        return true;
-    });
+    const onInputChange = (e, key) => {
+        const value = e.target.value;
 
+        // Update PKL state here (assume there's a `setpkl` function)
+        setpkl((prevPkl) => ({ ...prevPkl, [key]: value }));
 
-    const filteredPembimbingOptions = dosenOptions.filter((dosen) => {
-        if (pkl.penguji_id) {
-            return (
-                dosen.value !== pkl.penguji_id &&
-                dosen.golongan >=
-                dosenOptions.find((d) => d.value === pkl.penguji_id)
-                    ?.golongan
-            );
-        }
-        return true;
-    });
+        // Update filtered options
+        updateFilteredOptions(key, value);
+    };
+
+    useEffect(() => {
+        // Initial filter setup
+        setFilteredPengujiOptions(dosenOptions);
+        setFilteredPembimbingOptions(dosenPembimbingOptions);
+    }, [dosenOptions, dosenPembimbingOptions]);
 
     return (
         <Dialog

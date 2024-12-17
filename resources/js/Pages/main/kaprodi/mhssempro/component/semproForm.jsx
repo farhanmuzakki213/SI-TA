@@ -13,7 +13,8 @@ const SemproForm = ({
     semproDialogFooter,
     hideDialog,
     setsempro,
-    dosenOptions
+    dosenOptions,
+    dosenPembimbingOptions
 }) => {
     const [showAdditionalForm, setShowAdditionalForm] = useState(false);
     const onInputChange = (e, field) => {
@@ -41,10 +42,10 @@ const SemproForm = ({
 
     // Filter options for Penguji
     const filteredPengujiOptions = dosenOptions.filter((dosen) => {
-        const pembimbing1Golongan = dosenOptions.find(
+        const pembimbing1Golongan = dosenPembimbingOptions.find(
             (d) => d.value === selectedOptions.pembimbing1
         )?.golongan;
-        const pembimbing2Golongan = dosenOptions.find(
+        const pembimbing2Golongan = dosenPembimbingOptions.find(
             (d) => d.value === selectedOptions.pembimbing2
         )?.golongan;
 
@@ -56,11 +57,11 @@ const SemproForm = ({
     });
 
     // Filter options for Pembimbing 1
-    const filteredPembimbing1Options = dosenOptions.filter((dosen) => {
+    const filteredPembimbing1Options = dosenPembimbingOptions.filter((dosen) => {
         const pengujiGolongan = dosenOptions.find(
             (d) => d.value === selectedOptions.penguji
         )?.golongan;
-        const pembimbing2Golongan = dosenOptions.find(
+        const pembimbing2Golongan = dosenPembimbingOptions.find(
             (d) => d.value === selectedOptions.pembimbing2
         )?.golongan;
 
@@ -72,11 +73,11 @@ const SemproForm = ({
     });
 
     // Filter options for Pembimbing 2
-    const filteredPembimbing2Options = dosenOptions.filter((dosen) => {
+    const filteredPembimbing2Options = dosenPembimbingOptions.filter((dosen) => {
         const pengujiGolongan = dosenOptions.find(
             (d) => d.value === selectedOptions.penguji
         )?.golongan;
-        const pembimbing1Golongan = dosenOptions.find(
+        const pembimbing1Golongan = dosenPembimbingOptions.find(
             (d) => d.value === selectedOptions.pembimbing1
         )?.golongan;
 

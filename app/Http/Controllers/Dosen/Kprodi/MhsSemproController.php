@@ -45,6 +45,13 @@ class MhsSemproController extends Controller
                     'golongan' => $dosen->golongan_id,
                 ];
             }),
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->get()->map(function ($dosen) {
+                return [
+                    'value' => $dosen->id_dosen,
+                    'label' => $dosen->nama_dosen,
+                    'golongan' => $dosen->golongan_id,
+                ];
+            }),
         ]);
     }
 
@@ -85,6 +92,9 @@ class MhsSemproController extends Controller
             ->whereIn('mahasiswa_id', $mahasiswa_id)
             ->get()
             ->toArray();
+        $id_user = auth()->user()->id;
+        $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
+        $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
         return Inertia::render('main/kaprodi/mhssempro/detail', [
             'data_mhs' => MhsSemproResource::collection($data_mhs),
             'dosenOptions' => Dosen::all()->map(function ($dosen) {
@@ -102,7 +112,14 @@ class MhsSemproController extends Controller
                 return new BaseOptionsResource($p, 'periode_sesi', 'id_sesi');
             })),
             'bookingused' => $RSTterpakai,
-            'jambookingused' => $STDosen
+            'jambookingused' => $STDosen,
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->get()->map(function ($dosen) {
+                return [
+                    'value' => $dosen->id_dosen,
+                    'label' => $dosen->nama_dosen,
+                    'golongan' => $dosen->golongan_id,
+                ];
+            }),
         ]);
     }
 

@@ -8,6 +8,7 @@ import { Toast } from "primereact/toast";
 const detailPkl = ({
     data_mhs,
     dosenOptions : initialDosenOptions,
+    dosenPembimbingOptions : initialDosenPembimbingOptions,
 }) => {
     let emptypkl = {
         id_pkl_mhs: null,
@@ -18,6 +19,7 @@ const detailPkl = ({
     const data_mhss = data_mhs[0];
     const [pkls, setpkls] = useState([]);
     const [dosenOptions, setDosenOptions] = useState([]);
+    const [dosenPembimbingOptions, setDosenPembimbingOptions] = useState([]);
     const [pklDialog, setpklDialog] = useState(false);
     const [pkl, setpkl] = useState(emptypkl);
     const [submitted, setSubmitted] = useState(false);
@@ -26,10 +28,12 @@ const detailPkl = ({
     useEffect(() => {
         setpkls(data_mhss);
         setDosenOptions(initialDosenOptions);
+        setDosenPembimbingOptions(initialDosenPembimbingOptions);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_mhss, props.flash, initialDosenOptions]);
+    }, [data_mhss, props.flash, initialDosenOptions, initialDosenPembimbingOptions]);
 
+    // console.log("2:",initialDosenOptions)
     const hideDialog = () => {
         setSubmitted(false);
         setpklDialog(false);
@@ -182,6 +186,7 @@ const detailPkl = ({
                 pklDialog={pklDialog}
                 pkl={pkl}
                 dosenOptions={dosenOptions}
+                dosenPembimbingOptions={dosenPembimbingOptions}
                 setpkl={setpkl}
                 submitted={submitted}
                 pklDialogFooter={pklDialogFooter}

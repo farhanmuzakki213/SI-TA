@@ -9,6 +9,7 @@ const MhsSemproDetail = () => {
         dosenOptions,
         ruanganOptions,
         sesiOptions,
+        dosenPembimbingOptions,
         nextNumber,
         bookingused,
         jambookingused} = props;
@@ -47,7 +48,8 @@ const MhsSemproDetail = () => {
                             ruanganOptions={ruanganOptions}
                             nextNumber={nextNumber}
                             bookingused={bookingused}
-                            jambookingused={jambookingused} />
+                            jambookingused={jambookingused}
+                            dosenPembimbingOptions={dosenPembimbingOptions} />
                         </div>
                     </div>
                 </div>

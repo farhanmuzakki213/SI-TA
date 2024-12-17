@@ -8,6 +8,7 @@ import BookingForm from "./BookingForm";
 const detailSidang = ({
     data_mhs,
     dosenOptions: initialDosenOptions,
+    dosenPembimbingOptions: initialDosenPembimbingOptions,
     ruanganOptions: initialRuanganOptions,
     sesiOptions: initialSesiOptions,
     nextNumber,
@@ -162,15 +163,17 @@ const detailSidang = ({
     };
     const [sempros, setsempros] = useState([]);
     const [dosenOptions, setDosenOptions] = useState([]);
+    const [dosenPembimbingOptions, setDosenPembimbingOptions] = useState([]);
     const [semproDialog, setsemproDialog] = useState(false);
     const [sempro, setsempro] = useState(emptysempro);
 
     useEffect(() => {
         setsempros(data_mhss);
         setDosenOptions(initialDosenOptions);
+        setDosenPembimbingOptions(initialDosenPembimbingOptions);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_mhss, props.flash, initialDosenOptions]);
+    }, [data_mhss, props.flash, initialDosenOptions, initialDosenPembimbingOptions]);
 
     const semprohideDialog = () => {
         setSubmitted(false);
@@ -442,6 +445,7 @@ const detailSidang = ({
                 semproDialog={semproDialog}
                 sempro={sempro}
                 dosenOptions={dosenOptions}
+                dosenPembimbingOptions={dosenPembimbingOptions}
                 setsempro={setsempro}
                 submitted={submitted}
                 semproDialogFooter={semproDialogFooter}
