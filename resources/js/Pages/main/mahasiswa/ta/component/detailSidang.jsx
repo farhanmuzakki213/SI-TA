@@ -6,18 +6,6 @@ const detailTa = ({
 }) => {
     // console.log("data_ta", data_ta);
     const data_tas = data_ta[0];
-
-    const nilaiPenguji = JSON.parse(data_tas?.nilai_penguji?.nilai || null);
-    const nilaiPembimbing_1 = JSON.parse(data_tas?.nilai_pembimbing_1?.nilai || null);
-    const nilaiPembimbing_2 = JSON.parse(data_tas?.nilai_pembimbing_2?.nilai || null);
-    const nilaiAkhir = () => {
-        if (nilaiPenguji != null && nilaiPembimbing_1 != null && nilaiPembimbing_2 != null) {
-            const totalNilai =
-                (nilaiPembimbing_1.total_nilai + nilaiPembimbing_2.total_nilai + nilaiPenguji.total_nilai) / 3;
-            return parseFloat(totalNilai.toFixed(2));
-        }
-        return null;
-    };
     return (
         <div className="card">
             <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
@@ -70,11 +58,8 @@ const detailTa = ({
                             <p className="tw-text-gray-600">Pembimbing 1</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiPembimbing_1 ? (
                                 <p className="tw-text-gray-600">Belum Dinilai</p>
-                            ) : (
-                                <p className="tw-text-gray-600">{nilaiPembimbing_1.total_nilai}</p>
-                            )}
+                            
                         </div>
                     </div>
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
@@ -85,11 +70,7 @@ const detailTa = ({
                             <p className="tw-text-gray-600">Pembimbing 2</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiPembimbing_2 ? (
                                 <p className="tw-text-gray-600">Belum Dinilai</p>
-                            ) : (
-                                <p className="tw-text-gray-600">{nilaiPembimbing_2.total_nilai}</p>
-                            )}
                         </div>
                     </div>
                     <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
@@ -100,11 +81,7 @@ const detailTa = ({
                             <p className="tw-text-gray-600">Penguji</p>
                         </div>
                         <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiPenguji ? (
                                 <p className="tw-text-gray-600">Belum Dinilai</p>
-                            ) : (
-                                <p className="tw-text-gray-600">{nilaiPenguji.total_nilai}</p>
-                            )}
                         </div>
                     </div>
                     <hr className="tw-my-2" />
@@ -113,7 +90,7 @@ const detailTa = ({
                             <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
                         </div>
                         <div className="tw-w-1/2 tw-text-right">
-                            <p className="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? 'Belum Lengkap' : nilaiAkhir()}</p>
+                            <p className="tw-text-gray-800 tw-font-medium">Belum Lengkap</p>
                         </div>
                     </div>
                 </div>

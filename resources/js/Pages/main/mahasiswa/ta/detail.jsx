@@ -1,6 +1,7 @@
 import { usePage } from '@inertiajs/react';
 import React from 'react';
-// import DetailSidang from './component/detailSidang';
+import DetailSidang from './component/detailSidang';
+import Bimbingan from './component/bimbingan';
 
 const MhsTaDetail = () => {
     const { props } = usePage();
@@ -36,13 +37,11 @@ const MhsTaDetail = () => {
             </div>
             <div className="tw-w-full sm:tw-max-w-96">
                 <div className="tw-grid tw-gap-4">
-                    <div className="tw-w-full sm:tw-max-w-96">
-                        <div className="tw-grid tw-gap-4">
-                            <div className="tw-col-12">
-                                test detail sidang
-                                {/* <DetailSidang data_ta={data_ta} /> */}
-                            </div>
-                        </div>
+                    <div className="tw-col-12">
+                        <Bimbingan data_ta={data_ta} />
+                    </div>
+                    <div className="tw-col-12">
+                        <DetailSidang data_ta={data_ta} />
                     </div>
                 </div>
             </div>

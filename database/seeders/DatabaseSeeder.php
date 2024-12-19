@@ -33,5 +33,6 @@ class DatabaseSeeder extends Seeder
         $this->call([BookingSeeder::class,]);
         $this->call([PklNilaiSeeder::class,]);
         $this->call([SemproMhsSeeder::class,]);
+        $this->call([TaMhsSeeder::class,]);
     }
 }

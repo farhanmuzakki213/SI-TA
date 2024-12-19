@@ -16,10 +16,16 @@ class SemproMhsSeeder extends Seeder
         DB::table('sempro_mhs')->insert([
             [
                 'id_sempro_mhs' => 1,
-                'mahasiswa_id' => 78,
+                'mahasiswa_id' => 73,
+                'pembimbing_1_id' => 13,
+                'pembimbing_2_id' => 14,
+                'penguji_id' => 312,
                 'judul_sempro' => 'judul1',
                 'file_sempro' => 'test1.pdf',
-                'komentar' => null,
+                'komentar' => 'ok',
+                'status_sempro' => '3',
+                'status_judul_sempro' => '3',
+                'status_ver_sempro' => '3',
             ],
         ]);
     }
