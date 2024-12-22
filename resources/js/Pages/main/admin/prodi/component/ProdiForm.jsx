@@ -68,6 +68,24 @@ const ProdiForm = ({
                 )}
             </div>
 
+            {/* Jenjang Prodi */}
+            <div className="field">
+                <label htmlFor="jenjang">Jenjang Prodi</label>
+                <InputText
+                    id="jenjang"
+                    value={prodi.jenjang || ''}
+                    onChange={(e) => onInputChange(e, "jenjang")}
+                    required
+                    autoFocus
+                    className={classNames({
+                        "p-invalid": submitted && !prodi.nama_prodi,
+                    })}
+                />
+                {submitted && !prodi.jenjang && (
+                    <small className="p-invalid">Jenjang Prodi is required.</small>
+                )}
+            </div>
+
             {/* Jurusan ID */}
             <div className="field">
                 <label htmlFor="jurusan_id">Jurusan</label>

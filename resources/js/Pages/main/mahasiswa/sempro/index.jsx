@@ -79,7 +79,7 @@ const index = () => {
         const requiredFieldsForUpdate = [
             sempro.judul_sempro,
         ];
-        if(data_sempros.status_judul_sempro === "3"){
+        if (data_sempros.status_judul_sempro === "3") {
             requiredFieldsForUpdate.push(sempro.file_sempro);
         }
 
@@ -153,15 +153,23 @@ const index = () => {
 
     const leftToolbarTemplate = () => {
         return (
-            <Button
-                label="Sempro"
-                icon="pi pi-plus"
-                severity="success"
-                className="mr-2"
-                tooltip="Pengajuan Sempro"
-                tooltipOptions={{ position: 'right', mouseTrack: false, mouseTrackRight: 15 }}
-                onClick={openNew}
-            />
+            <>
+                {data_sempros.status_ver_sempro === "3" ? (
+                    (data_sempros.status_ver_sempro === "1" || data_sempros.status_judul_sempro === "1") && (
+                        <Button
+                            label="Sempro"
+                            icon="pi pi-plus"
+                            severity="success"
+                            className="mr-2"
+                            tooltip="Pengajuan Sempro"
+                            tooltipOptions={{ position: 'right', mouseTrack: false, mouseTrackRight: 15 }}
+                            onClick={openNew}
+                        />
+                    )
+                ) : (
+                    <p>Anda Belum Menyelesaikan Sidang PKL</p>
+                )}
+            </>
         );
     };
 
@@ -202,13 +210,11 @@ const index = () => {
                             <div className="col-12">
                                 <div className="card">
                                     <Toast ref={toast} />
-                                    {(data_sempros.status_ver_sempro === "1" || data_sempros.status_judul_sempro === "1") &&
-                                    data_pkl?.status_ver_pkl === "3" && (
-                                        <Toolbar
-                                            className="mb-4"
-                                            left={leftToolbarTemplate}
-                                        ></Toolbar>
-                                    )}
+                                    <Toolbar
+                                        className="mb-4"
+                                        left={leftToolbarTemplate}
+                                    ></Toolbar>
+
                                     <SemproDataTable
                                         dt={dt}
                                         sempros={sempros}

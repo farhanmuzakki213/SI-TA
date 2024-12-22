@@ -60,7 +60,7 @@ class BookingController extends Controller
             ->whereIn('mahasiswa_id', $mahasiswa_id)
             ->get()
             ->toArray();
-        dd($RSTterpakai, $mahasiswa_id, $STDosen);
+        // dd($RSTterpakai, $mahasiswa_id, $STDosen);
         /* Pkl */
         $bookingsidangpkl = Booking::where('status_booking', '1')->pluck('mahasiswa_id')->toArray();
         $pklmhs = PklMhs::where('status_ver_pkl', '3')->whereHas('r_usulan.r_mahasiswa.r_kelas', function ($query) use ($kaprodi) {

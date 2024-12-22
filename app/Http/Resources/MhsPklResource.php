@@ -48,8 +48,10 @@ class MhsPklResource extends JsonResource
 
             'id_mahasiswa' => $this->r_usulan->r_mahasiswa->id_mahasiswa,
             'nama_mahasiswa' => $this->r_usulan->r_mahasiswa->nama_mahasiswa,
+            'gender' => $this->r_usulan->r_mahasiswa->nama_mahasiswa,
             'nim_mahasiswa' => $this->r_usulan->r_mahasiswa->nim_mahasiswa,
             'prodi' => $this->r_usulan->r_mahasiswa->r_kelas->r_prodi->nama_prodi,
+            'kelas' => $this->r_usulan->r_mahasiswa->r_kelas->nama_kelas,
             'jenjang' => $this->r_usulan->r_mahasiswa->r_kelas->r_prodi->jenjang,
             'jurusan' => $this->r_usulan->r_mahasiswa->r_kelas->r_prodi->r_jurusan->nama_jurusan,
             'foto_mahasiswa' => $fotoProfile,
@@ -64,6 +66,7 @@ class MhsPklResource extends JsonResource
 
             'status_pkl' => $status_pkl,
             'status_ver_pkl' => $this->status_ver_pkl,
+            'pembimbing_pkl' => $this->pembimbing_pkl,
             'dosen_pembimbing' => $this->r_pembimbing->nama_dosen,
             'pembimbing_id' => $this->pembimbing_id,
             'dosen_penguji' => $this->r_penguji->nama_dosen,

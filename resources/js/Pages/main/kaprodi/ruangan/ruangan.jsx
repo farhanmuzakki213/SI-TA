@@ -235,14 +235,10 @@ const ruangan = () => {
         },
         { header: 'Kode ruangan', field: 'kode_ruangan' },
     ];
-    const handleImport = (importedData) => {
-        setRuangans(prevRuangans => [...prevRuangans, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={ruangans} toast={toast} fileName="ruangan_data.csv" columns={columns} />
             </React.Fragment>
         );

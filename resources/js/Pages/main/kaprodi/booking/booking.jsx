@@ -32,7 +32,7 @@ const booking = () => {
         mahasiswaTaOptions: initialMahasiswaTaOptions,
         nextNumber,
         bookingused,
-        jambookingused} = props;
+        jambookingused } = props;
     const [bookings, setbookings] = useState(null);
     const [ruanganOptions, setRuanganOptions] = useState([]);
     const [sesiOptions, setSesiOptions] = useState([]);
@@ -239,7 +239,7 @@ const booking = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button
+                    {/* <Button
                         label="New"
                         icon="pi pi-plus"
                         severity="sucess"
@@ -252,7 +252,7 @@ const booking = () => {
                         severity="danger"
                         onClick={confirmDeleteSelected}
                         disabled={!selectedbookings || !selectedbookings.length}
-                    />
+                    /> */}
                 </div>
             </React.Fragment>
         );
@@ -261,25 +261,29 @@ const booking = () => {
     const columns = [
         { header: 'ID', field: 'id_booking' },
         {
-            header: 'Name',
-            field: (booking) => `"${booking.nama_booking}"`
+            header: 'Nama Mahasiswa',
+            field: (booking) => `"${booking.r_mahasiswa?.nama_mahasiswa}"`,
         },
-        { header: 'Nim', field: 'nim_booking' },
-        { header: 'Kelas', field: 'r_kelas.nama_kelas' },
-        { header: 'Gender', field: 'gender' },
+        { header: 'Nim Mahasiswa', field: 'r_mahasiswa.nim_mahasiswa' },
+        { header: 'Kelas', field: 'r_mahasiswa.r_kelas.nama_kelas' },
+        { header: 'Prodi', field: 'r_mahasiswa.r_kelas.r_prodi.nama_prodi' },
+        { header: 'Gender', field: 'r_mahasiswa.gender' },
+        { header: 'Tanggal Sidang', field: 'tgl_booking' },
+        { header: 'Ruangan Sidang', field: 'r_ruangan.kode_ruangan' },
+        { header: 'Jam Sidang', field: 'r_sesi.periode_sesi' },
+        {
+            header: 'Tipe Sidang',
+            field: (booking) => booking.tipe === "1" ? "PKL" : booking.tipe === "2" ? "Seminar Proposal" : "Tugas Akhir"
+        },
         {
             header: 'Status',
             field: (booking) => booking.status_booking === "1" ? "Aktif" : "Tidak Aktif"
         }
     ];
-    const handleImport = (importedData) => {
-        setbookings(prevbookings => [...prevbookings, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={bookings} toast={toast} fileName="Jadwal_Ruangan_data.csv" columns={columns} />
             </React.Fragment>
         );

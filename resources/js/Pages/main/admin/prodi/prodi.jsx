@@ -17,6 +17,7 @@ const prodi = () => {
         nama_prodi: "",
         kode_prodi: "",
         jurusan_id: null,
+        jenjang: "",
     };
 
     const { props } = usePage();
@@ -91,12 +92,14 @@ const prodi = () => {
             prodi.nama_prodi,
             prodi.kode_prodi,
             prodi.jurusan_id,
+            prodi.jenjang
         ];
 
         const requiredFieldsForUpdate = [
             prodi.nama_prodi,
             prodi.kode_prodi,
             prodi.jurusan_id,
+            prodi.jenjang
         ];
 
         const isCreating = !prodi.id_prodi;
@@ -242,16 +245,13 @@ const prodi = () => {
             header: 'Nama Prodi',
             field: (prodi) => `"${prodi.nama_prodi}"`
         },
+        { header: 'Jenjang', field: 'jenjang' },
         { header: 'Nama Jurusan', field: 'r_jurusan.nama_jurusan' },
     ];
-    const handleImport = (importedData) => {
-        setProdis(prevProdis => [...prevProdis, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={prodis} toast={toast} fileName="prodi_data.csv" columns={columns} />
             </React.Fragment>
         );

@@ -273,14 +273,10 @@ const mahasiswa = () => {
             field: (mahasiswa) => mahasiswa.status_mahasiswa === "1" ? "Aktif" : "Tidak Aktif"
         }
     ];
-    const handleImport = (importedData) => {
-        setmahasiswas(prevmahasiswas => [...prevmahasiswas, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={mahasiswas} toast={toast} fileName="mahasiswa_data.csv" columns={columns} />
             </React.Fragment>
         );

@@ -248,14 +248,10 @@ const kelas = () => {
         { header: 'Nama Prodi', field: 'r_prodi.nama_prodi' },
         { header: 'Semester dan Tahun Akademik', field: 'r_smt_thnakd.nama_smt_thnakd' },
     ];
-    const handleImport = (importedData) => {
-        setkelass(prevKelass => [...prevKelass, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={kelass} toast={toast} fileName="kelas_data.csv" columns={columns} />
             </React.Fragment>
         );

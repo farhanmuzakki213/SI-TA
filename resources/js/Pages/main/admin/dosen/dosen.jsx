@@ -267,25 +267,17 @@ const dosen = () => {
 
     const columns = [
         { header: 'ID', field: 'id_dosen' },
-        {
-            header: 'Name',
-            field: (dosen) => `"${dosen.nama_dosen}"`
-        },
-        { header: 'Prodi', field: 'r_prodi.nama_prodi' },
+        { header: 'Name', field: (dosen) => `"${dosen.nama_dosen}"`},
+        { header: 'Prodi', field: 'nama_prodi' },
+        { header: 'NIDN', field: 'nidn_dosen' },
+        { header: 'NIP', field: 'nip_dosen' },
+        { header: 'Golongan', field: 'nama_golongan' },
         { header: 'Gender', field: 'gender' },
-        {
-            header: 'Status',
-            field: (dosen) => dosen.status_dosen === "1" ? "Aktif" : "Tidak Aktif"
-        }
+        { header: 'Status', field: 'status_dosen' }
     ];
-    const handleImport = (importedData) => {
-        setDosens(prevDosens => [...prevDosens, ...importedData]);
-    };
-
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={dosens} toast={toast} fileName="dosen_data.csv" columns={columns} />
             </React.Fragment>
         );

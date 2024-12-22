@@ -238,14 +238,10 @@ const jabatan_pimpinan = () => {
         },
         { header: 'Kode jabatan_pimpinan', field: 'kode_jabatan_pimpinan' },
     ];
-    const handleImport = (importedData) => {
-        setjabatan_pimpinans(prevJabatan_pimpinans => [...prevJabatan_pimpinans, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={jabatan_pimpinans} toast={toast} fileName="jabatan_pimpinan_data.csv" columns={columns} />
             </React.Fragment>
         );

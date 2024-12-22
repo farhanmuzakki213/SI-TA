@@ -22,6 +22,15 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
         );
     };
 
+    const jenjangBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Jenjang Prodi</span>
+                {rowData.jenjang}
+            </>
+        );
+    };
+
     const jurusanBodyTemplate = (rowData) => {
         return (
             <>
@@ -73,6 +82,7 @@ const ProdiDataTable = ({ prodis, selectedprodis, setSelectedprodis, globalFilte
             <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
             <Column field="kode_prodi" header="Kode" body={kodeBodyTemplate} sortable></Column>
             <Column field="nama_prodi" header="Nama" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="jenjang" header="Jenjang" sortable body={jenjangBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="r_jurusan.nama_jurusan" header="Jurusan" sortable body={jurusanBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>

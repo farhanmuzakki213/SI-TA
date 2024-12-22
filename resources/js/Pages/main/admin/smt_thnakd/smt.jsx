@@ -244,14 +244,10 @@ const smt = () => {
             field: (smt_thnakd) => smt_thnakd.status_smt_thnakd === "1" ? "Aktif" : "Tidak Aktif"
         }
     ];
-    const handleImport = (importedData) => {
-        setSmt_thnakds(prevSmt_thnakds => [...prevSmt_thnakds, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={smt_thnakds} toast={toast} fileName="smt_thnakd_data.csv" columns={columns} />
             </React.Fragment>
         );

@@ -113,24 +113,26 @@ const index = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_sempro' },
+        { header: 'ID', field: 'id_sempro_mhs' },
         {
             header: 'Name',
-            field: (sempro) => `"${sempro.nama_sempro}"`
+            field: 'nama_mahasiswa'
         },
-        { header: 'Nim', field: 'nim_sempro' },
-        { header: 'Kelas', field: 'r_kelas.nama_kelas' },
+        { header: 'Nim', field: 'nim_mahasiswa' },
+        { header: 'Kelas', field: 'kelas' },
+        { header: 'Prodi', field: 'prodi' },
+        { header: 'Judul', field: 'judul_sempro' },
         { header: 'Gender', field: 'gender' },
         {
             header: 'Status',
-            field: (sempro) => sempro.status_sempro === "1" ? "Aktif" : "Tidak Aktif"
+            field: (sempro) => sempro.status_ver_pkl === "1" ? "Ditolak" : sempro.status_ver_pkl === "2" ? "Diproses" : sempro.status_ver_pkl === "3" ? "Diterima" : "Revisi"
         }
     ];
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVExportComponent data={sempros} toast={toast} fileName="Jadwal_Ruangan_data.csv" columns={columns} />
+                <CSVExportComponent data={sempros} toast={toast} fileName="Usulan_Sidang_Sempro_data.csv" columns={columns} />
             </React.Fragment>
         );
     };

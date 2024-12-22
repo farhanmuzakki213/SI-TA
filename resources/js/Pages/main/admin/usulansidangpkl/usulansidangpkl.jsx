@@ -119,28 +119,26 @@ const usulansidangpkl = () => {
     };
 
     const columns = [
-        { header: 'ID', field: 'id_pkl_mhssidangpkl' },
+        { header: 'ID', field: 'id_pkl_mhs' },
         {
             header: 'Name',
-            field: (usulansidangpkl) => `"${usulansidangpkl.nama_usulansidangpkl}"`
+            field: 'nama_mahasiswa'
         },
-        { header: 'Nim', field: 'nim_usulansidangpkl' },
-        { header: 'Kelas', field: 'r_kelas.nama_kelas' },
+        { header: 'Nim', field: 'nim_mahasiswa' },
+        { header: 'Kelas', field: 'kelas' },
         { header: 'Gender', field: 'gender' },
+        { header: 'Judul', field: 'judul' },
+        { header: 'Pembimbing Industri', field: 'pembimbing_pkl' },
         {
             header: 'Status',
-            field: (usulansidangpkl) => usulansidangpkl.status_usulansidangpkl === "1" ? "Aktif" : "Tidak Aktif"
+            field: (usulansidangpkl) => usulansidangpkl.status_ver_pkl === "1" ? "Ditolak" : usulansidangpkl.status_ver_pkl === "2" ? "Diproses" : "Diterima"
         }
     ];
-    const handleImport = (importedData) => {
-        setusulansidangpkls(prevusulansidangpkls => [...prevusulansidangpkls, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
-                <CSVExportComponent data={usulansidangpkls} toast={toast} fileName="Jadwal_Ruangan_data.csv" columns={columns} />
+                <CSVExportComponent data={usulansidangpkls} toast={toast} fileName="Usulan_Sidang_PKL_data.csv" columns={columns} />
             </React.Fragment>
         );
     };

@@ -235,14 +235,10 @@ const sesi = () => {
         },
         { header: 'Kode Sesi', field: 'kode_sesi' },
     ];
-    const handleImport = (importedData) => {
-        setSesis(prevSesis => [...prevSesis, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={sesis} toast={toast} fileName="sesi_data.csv" columns={columns} />
             </React.Fragment>
         );

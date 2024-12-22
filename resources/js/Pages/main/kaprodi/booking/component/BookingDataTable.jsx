@@ -61,7 +61,7 @@ const BookingDataTable = ({ bookings, selectedbookings, setSelectedbookings, glo
     const actionBodyTemplate = (rowData) => {
         return (
             <>
-                <Button
+                {/* <Button
                     icon="pi pi-pencil"
                     severity="success"
                     rounded
@@ -73,7 +73,7 @@ const BookingDataTable = ({ bookings, selectedbookings, setSelectedbookings, glo
                     severity="warning"
                     rounded
                     onClick={() => confirmDeletebooking(rowData)}
-                />
+                /> */}
             </>
         );
     };
@@ -97,12 +97,12 @@ const BookingDataTable = ({ bookings, selectedbookings, setSelectedbookings, glo
             responsiveLayout="scroll"
             removableSort
         >
-            <Column selectionMode="multiple" headerStyle={{ width: "4rem" }}></Column>
-            <Column field="r_ruangan.kode_ruangan" header="Ruangan" sortable body={ruanganBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="r_sesi.periode_sesi" header="Sesi" sortable body={sesiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column headerStyle={{ width: "4rem" }}></Column>
             <Column field="r_mahasiswa.nama_mahasiswa" header="Nama Mahasiswa" sortable body={mahasiswaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="tipe" header="Tipe Booking" sortable body={tipeBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="tgl_booking" header="Tanggal Booking" sortable body={tglbookingBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_ruangan.kode_ruangan" header="Ruangan" sortable body={ruanganBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="r_sesi.periode_sesi" header="Sesi" sortable body={sesiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="status_booking" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>

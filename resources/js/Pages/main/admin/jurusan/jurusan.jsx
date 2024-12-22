@@ -238,14 +238,10 @@ const jurusan = () => {
         },
         { header: 'Kode Jurusan', field: 'kode_jurusan' },
     ];
-    const handleImport = (importedData) => {
-        setJurusans(prevJurusans => [...prevJurusans, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={jurusans} toast={toast} fileName="jurusan_data.csv" columns={columns} />
             </React.Fragment>
         );

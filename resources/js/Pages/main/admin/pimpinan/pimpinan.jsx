@@ -255,14 +255,10 @@ const pimpinan = () => {
             field: (pimpinan) => pimpinan.status_pimpinan === "1" ? "Aktif" : "Tidak Aktif"
         }
     ];
-    const handleImport = (importedData) => {
-        setpimpinans(prevpimpinans => [...prevpimpinans, ...importedData]);
-    };
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVImportComponent onImport={handleImport} toast={toast} />
                 <CSVExportComponent data={pimpinans} toast={toast} fileName="pimpinan_data.csv" columns={columns} />
             </React.Fragment>
         );
