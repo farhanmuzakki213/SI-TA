@@ -163,6 +163,7 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
 
         // Surat Tugas
         Route::get('/SuratTugas/Pkl/{id}', [\App\Http\Controllers\SuratTugasController::class, 'pkl']);
+        Route::get('/SuratTugas/Sempro/{id}', [\App\Http\Controllers\SuratTugasController::class, 'sempro']);
     });
 });
 
