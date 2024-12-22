@@ -11,7 +11,7 @@ import SemproDataTable from "./component/semproDataTable";
 
 const index = () => {
     const { props } = usePage();
-    const { data_sempro, data_mahasiswa, nextNumber } = props
+    const { data_sempro, data_mahasiswa, nextNumber, data_pkl } = props
     let emptysempro = {
         id_sempro_mhs: null,
         mahasiswa_id: data_mahasiswa[0].id_mahasiswa,
@@ -78,8 +78,10 @@ const index = () => {
 
         const requiredFieldsForUpdate = [
             sempro.judul_sempro,
-            sempro.file_sempro
         ];
+        if(data_sempros.status_judul_sempro === "3"){
+            requiredFieldsForUpdate.push(sempro.file_sempro);
+        }
 
         const isCreating = !sempro.id_sempro_mhs;
         let isValid = true;
@@ -188,6 +190,7 @@ const index = () => {
             </span>
         </div>
     );
+    console.log("test", data_pkl);
     return (
         <Layout>
             {data_sempros ? (
@@ -199,7 +202,8 @@ const index = () => {
                             <div className="col-12">
                                 <div className="card">
                                     <Toast ref={toast} />
-                                    {data_sempros.status_ver_sempro === "1" && (
+                                    {(data_sempros.status_ver_sempro === "1" || data_sempros.status_judul_sempro === "1") &&
+                                    data_pkl?.status_ver_pkl === "3" && (
                                         <Toolbar
                                             className="mb-4"
                                             left={leftToolbarTemplate}

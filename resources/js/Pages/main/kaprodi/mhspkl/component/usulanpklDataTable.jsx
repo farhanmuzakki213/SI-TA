@@ -4,7 +4,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
 
-const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanpkls, globalFilter, header, editusulanpkl, confirmDeleteusulanpkl, dt }) => {
+const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanpkls, globalFilter, header, editusulanpkl, dt }) => {
 
     // console.log(usulanpkls);
     const namaBodyTemplate = (rowData) => {
@@ -61,6 +61,33 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
         );
     };
 
+    const fileBodyTemplate = (rowData) => {
+            return rowData.file_pendukung ? (
+                <>
+                    <span className="p-column-title">File</span>
+                    <Button
+                        icon="pi pi-file"
+                        severity="info"
+                        rounded
+                        outlined
+                        onClick={() =>
+                            window.open(
+                                `/storage/uploads/pkl/usulantempat/${rowData.file_pendukung}`,
+                                "_blank"
+                            )
+                        }
+                        tooltip="Lihat File Laporan"
+                        tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
+                    />
+                </>
+            ) : (
+                <>
+                    <span className="p-column-title">File</span>
+                    N/A
+                </>
+            );
+        };
+        console.log(usulanpkls);
     const statusBodyTemplate = (rowData) => {
         return (
             <>
@@ -120,8 +147,9 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
             <Column field="nim_mahasiswa" header="Nim Mahasiswa" sortable body={nimBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
             <Column field="nama_tempat_pkl" header="Nama Perusahaan" sortable body={namaPBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="kota_perusahan" header="Domisili Perusahaan" sortable body={domisiliBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="kota_perusahaan" header="Domisili Perusahaan" sortable body={domisiliBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nama_role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
+            <Column header="File" sortable body={fileBodyTemplate}></Column>
             <Column field="status_usulan" header="Status" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>

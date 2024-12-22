@@ -22,6 +22,7 @@ class MhsPklLaporanResource extends JsonResource
             'tgl_akhir_kegiatan' => $this->tgl_akhir_kegiatan,
             'kegiatan' => $this->kegiatan,
             'file' => $this->dokumen_laporan,
+            'dokumen_laporan' => $this->dokumen_laporan,
             'komentar' => $this->komentar,
             'status' => $this->status,
             'nilai' => json_decode($this->nilai, true)

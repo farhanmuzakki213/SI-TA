@@ -7,8 +7,10 @@ import { router, usePage } from "@inertiajs/react";
 
 const detailSidang = ({
     data_mhs,
+    data_laporan,
 }) => {
     const data_mhss = data_mhs[0];
+    // const data_laporans = data_laporan[0];
     // console.log("data_mhs", data_mhss);
     let emptyajukansidang = {
         id_pkl_mhs: null,
@@ -51,7 +53,7 @@ const detailSidang = ({
                 { sticky: true, severity: 'error', summary: 'Error', detail: 'Pengajuan Sidang Gagal. Pastikan data sudah benar', closable: true }
             ]);
         }
-        if (msgs.current && data_mhss.status_ver_pkl === '2' && nilaiAkhir() === null) {
+        if (msgs.current && data_mhss.status_ver_pkl === '2' && nilaiAkhir() === null && data_mhss.id_booking !== null) {
             msgs.current.clear();
             msgs.current.show([
                 { sticky: true, severity: 'info', summary: 'info', detail: 'Pengajuan Sidang Sedang Diproses, Pastikan data sudah benar', closable: true }
@@ -63,7 +65,7 @@ const detailSidang = ({
                 { sticky: true, life: 1000, severity: 'success', summary: 'success', detail: 'Pengajuan Sidang Berhasil', closable: true },
             ]);
         }
-        if (msgs.current && data_mhss.id_booking && nilaiAkhir() === null ) {
+        if (msgs.current && data_mhss.id_booking && nilaiAkhir() === null) {
             msgs.current.clear();
             msgs.current.show([
                 { sticky: true, severity: 'info', summary: 'info', detail: 'Anda Sudah Memiliki Jadwal Sidang', closable: true }
@@ -133,7 +135,7 @@ const detailSidang = ({
         formData.append('file_nilai', ajukansidang.file_nilai);
 
         try {
-            console.log(ajukansidang);
+            // console.log(ajukansidang);
             await router.post(`/MhsPkl/Sidang/${ajukansidang.id_pkl_mhs}/update`, formData, {
                 _method: 'put',
                 forceFormData: true,
@@ -174,6 +176,8 @@ const detailSidang = ({
             <Button label="Save" icon="pi pi-check" text onClick={saveajukansidang} />
         </>
     );
+    // console.log("data_laporans", Array.isArray(data_laporan) ? data_laporan.length : "data_laporans is not an array");
+
     return (
         <div className="card">
             <Toast ref={toast} />
@@ -181,7 +185,7 @@ const detailSidang = ({
                 <div className="tw-flex tw-items-center">
                     <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
                 </div>
-                {(data_mhss.status_ver_pkl === "2" || data_mhss.status_ver_pkl === "1") && (
+                {(data_mhss.status_ver_pkl === "2" || data_mhss.status_ver_pkl === "1") && data_laporan.length > 1 && (
                     <Button
                         label={data_mhss.status_ver_pkl === "1" ? "Perbaiki Sidang" : "Sidang"}
                         icon={data_mhss.status_ver_pkl === "1" ? "pi pi-pencil" : "pi pi-plus"}

@@ -97,9 +97,9 @@ const pklDataTable = ({ pkls, globalFilter, header, editpkl, dt }) => {
             rowsPerPageOptions={[5, 10, 25]}
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Jadwal Ruangan"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Pengajuan Tempat PKL"
             globalFilter={globalFilter}
-            emptyMessage="No Jadwal Ruangan found."
+            emptyMessage="No Pengajuan Tempat PKL found."
             header={header}
             responsiveLayout="scroll"
             removableSort

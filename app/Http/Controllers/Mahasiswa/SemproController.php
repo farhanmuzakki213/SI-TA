@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MhsPklResource;
 use App\Http\Resources\MhsResource;
 use App\Http\Resources\MhsSemproResource;
 use App\Models\Mahasiswa;
+use App\Models\PklMhs;
 use App\Models\SemproMhs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,11 +32,14 @@ class SemproController extends Controller
                 'r_penguji',
             )
             ->get();
-
+        $data_pkl = PklMhs::whereHas('r_usulan', function ($q) use ($id_mahasiswa) {
+            $q->where('mahasiswa_id', $id_mahasiswa);
+        })->get();
         // dd($data_sempro, $id_mahasiswa->toArray());
         return Inertia::render('main/mahasiswa/sempro/index', [
             'data_mahasiswa' => MhsResource::collection($mahasiswa),
             'data_sempro' => MhsSemproResource::collection($data_sempro),
+            'data_pkl' => MhsPklResource::collection($data_pkl),
             'nextNumber' => CariNomor::getCariNomor(SemproMhs::class, 'id_sempro_mhs'),
         ]);
     }
@@ -64,7 +69,7 @@ class SemproController extends Controller
             return to_route('MhsSempro')->with('success', 'Pengajuan Sempro created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsSempro')->with('error', 'Pengajuan Sempro created failed');
+            return to_route('MhsSempro')->with('error', 'Pengajuan Sempro created failed'. $e->getMessage());
         }
     }
 
@@ -73,7 +78,7 @@ class SemproController extends Controller
         // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
             'judul_sempro' => 'required',
-            'file_sempro' => 'required',
+            'file_sempro' => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -82,21 +87,22 @@ class SemproController extends Controller
         DB::beginTransaction();
         try {
             $oldData = SemproMhs::where('id_sempro_mhs', $id)->first();
-            if ($oldData->file_sempro !== null && $request->hasFile('file_sempro')) {
+            $filename = $request->file_sempro ?? null;
+            if ($oldData->file_sempro !== null && $oldData->file_sempro !== $filename) {
                 Storage::delete('public/uploads/sempro/file/' . $oldData->file_sempro);
             }
-            $filename = null;
+            $data = [
+                'judul_sempro' => $request->judul_sempro,
+            ];
             if ($request->hasFile('file_sempro')) {
                 $file = $request->file('file_sempro');
                 $filename = $file->getClientOriginalName();
                 $path = 'public/uploads/sempro/file/';
                 $file->storeAs($path, $filename);
+                $data['file_sempro'] = $filename;
             }
-            $data = [
-                'judul_sempro' => $request->judul_sempro,
-                'file_sempro' => $filename
-            ];
-            // dd($data);
+
+            dd($data);
             $oldData->update($data);
             DB::commit();
             return to_route('MhsSempro')->with('success', 'Pengajuan Sempro updated successfully');

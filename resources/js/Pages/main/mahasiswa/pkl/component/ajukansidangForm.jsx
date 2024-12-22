@@ -13,7 +13,7 @@ const AjukansidangForm = ({
     hideDialog,
     setajukansidang,
 }) => {
-    console.log(ajukansidang);
+    // console.log(ajukansidang);
     const onInputChange = (e, field) => {
         const value = e.target ? e.target.value : e.value;
         setajukansidang((prevState) => ({

@@ -202,6 +202,7 @@ const detailPkl = ({
             <h5>Laporan</h5>
         );
     };
+    console.log("data_laporans1", data_laporan[0]);
     return (
         <div className="card">
             <Toast ref={toast} />

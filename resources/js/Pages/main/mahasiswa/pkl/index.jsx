@@ -16,6 +16,7 @@ const index = () => {
         nama_role: "",
         nama_tempat_pkl: "",
         kota_perusahaan: "",
+        file_pendukung: "",
         alamat_tempat_pkl: "",
         tgl_awal_pkl: "",
         tgl_akhir_pkl: "",
@@ -93,6 +94,7 @@ const index = () => {
             pkl.nama_tempat_pkl,
             pkl.kota_perusahaan,
             pkl.alamat_tempat_pkl,
+            pkl.file_pendukung,
             pkl.tgl_awal_pkl,
             pkl.tgl_akhir_pkl,
         ];
@@ -102,6 +104,7 @@ const index = () => {
             pkl.nama_tempat_pkl,
             pkl.kota_perusahaan,
             pkl.alamat_tempat_pkl,
+            pkl.file_pendukung,
             pkl.tgl_awal_pkl,
             pkl.tgl_akhir_pkl,
         ];
@@ -127,20 +130,34 @@ const index = () => {
 
         try {
 
-            let _pkl = { ...pkl };
+            const formData = new FormData();
+            formData.append("nama_role", pkl.nama_role);
+            formData.append("nama_tempat_pkl", pkl.nama_tempat_pkl);
+            formData.append("kota_perusahaan", pkl.kota_perusahaan);
+            formData.append("alamat_tempat_pkl", pkl.alamat_tempat_pkl);
+            formData.append("tgl_awal_pkl", pkl.tgl_awal_pkl);
+            formData.append("tgl_akhir_pkl", pkl.tgl_akhir_pkl);
+            formData.append("file_pendukung", pkl.file_pendukung);
 
             if (isCreating) {
-                _pkl.id_usulan = nextNumberUsulan;
-                await router.post("/MhsPkl/TempatPkl/store", _pkl);
+                formData.append("id_usulan", nextNumberUsulan);
+                await router.post("/MhsPkl/TempatPkl/store", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
             } else {
-                await router.put(`/MhsPkl/TempatPkl/${pkl.id_usulan}/update`, _pkl);
+                await router.post(`/MhsPkl/TempatPkl/${pkl.id_usulan}/update`, formData, {
+                    _method: 'put',
+                    forceFormData: true,
+                });
             }
 
             if (isCreating) {
-                setpkls(prevpkls => [...prevpkls, _pkl]);
+                setpkls((prev) => [...prev, pkl]);
             } else {
-                setpkls(prevpkls =>
-                    prevpkls.map(d => d.id_usulan === pkl.id_usulan ? _pkl : d)
+                setpkls((prev) =>
+                    prev.map((item) =>
+                        item.id_usulan === pkl.id_usulan ? pkl : item
+                    )
                 );
             }
         } catch (error) {
@@ -216,10 +233,13 @@ const index = () => {
                         <div className="col-12">
                             <div className="card">
                                 <Toast ref={toast} />
-                                <Toolbar
-                                    className="mb-4"
-                                    left={leftToolbarTemplate}
-                                ></Toolbar>
+                                {(!data_usulan[0] || data_usulan[0]?.status_usulan === "2") && (
+                                    <Toolbar
+                                        className="mb-4"
+                                        left={leftToolbarTemplate}
+                                    ></Toolbar>
+                                )}
+
                                 <PklForm
                                     pklDialog={pklDialog}
                                     pkl={pkl}

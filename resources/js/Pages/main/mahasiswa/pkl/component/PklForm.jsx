@@ -4,6 +4,7 @@ import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import EditableDropdown from "@/Components/EditableDropdown";
+import FileUploadC from '@/Components/FileUploadC';
 
 const PklForm = ({
     pklDialog,
@@ -85,6 +86,12 @@ const PklForm = ({
             [field]: value, // Update the pkl state with the new value
         }));
     };
+    const onFileSelect = (files) => {
+        setpkl((prevState) => ({
+            ...prevState,
+            file_pendukung: files,
+        }));
+    };
     return (
         <Dialog
             visible={pklDialog}
@@ -162,6 +169,19 @@ const PklForm = ({
                 />
                 {submitted && !pkl.kota_perusahaan && (
                     <small className="p-invalid">Kota Perusahaan is required.</small>
+                )}
+            </div>
+
+            {/* File Pendukung */}
+            <div className="field">
+                <label htmlFor="file_pendukung">File Pendukung</label>
+                <FileUploadC
+                    multiple={false}
+                    name="file_pendukung"
+                    onFileSelect={onFileSelect}
+                />
+                {submitted && !pkl?.file_pendukung && (
+                    <small className="p-invalid">File Pendukung is required.</small>
                 )}
             </div>
 

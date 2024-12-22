@@ -39,7 +39,7 @@ class PklController extends Controller
         } else {
             $data_laporan = [];
         }
-        // dd($data_usulan->toArray());
+        // dd($data_laporan->toArray());
         return Inertia::render('main/mahasiswa/pkl/index', [
             'nextNumberUsulan' => CariNomor::getCariNomor(UsulanTempatPkl::class, 'id_usulan'),
             'nextNumberLaporan' => CariNomor::getCariNomor(log_book_pkl::class, 'id_log_book_pkl'),
@@ -71,7 +71,8 @@ class PklController extends Controller
             'alamat_tempat_pkl' => 'required',
             'kota_perusahaan' => 'required',
             'tgl_awal_pkl' => 'required',
-            'tgl_akhir_pkl' => 'required'
+            'tgl_akhir_pkl' => 'required',
+            'file_pendukung' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -123,17 +124,24 @@ class PklController extends Controller
                 ]);
             }
             // dd($tempatId, $roleId);
+            if ($request->hasFile('file_pendukung')) {
+                $file = $request->file('file_pendukung');
+                $filename = $file->getClientOriginalName();
+                $path = 'public/uploads/pkl/usulantempat/';
+                $file->storeAs($path, $filename);
+                UsulanTempatPkl::create([
+                    'id_usulan' => $request->id_usulan,
+                    'role_tempat_pkl_id' => $roleId,
+                    'tempat_pkl_id' => $tempatId,
+                    'mahasiswa_id' => $id_mahasiswa,
+                    'alamat_tempat_pkl' => $request->alamat_tempat_pkl,
+                    'kota_perusahaan' => $request->kota_perusahaan,
+                    'file_pendukung' => $filename,
+                    'tgl_awal_pkl' => $request->tgl_awal_pkl,
+                    'tgl_akhir_pkl' => $request->tgl_akhir_pkl,
+                ]);
+            }
 
-            UsulanTempatPkl::create([
-                'id_usulan' => $request->id_usulan,
-                'role_tempat_pkl_id' => $roleId,
-                'tempat_pkl_id' => $tempatId,
-                'mahasiswa_id' => $id_mahasiswa,
-                'alamat_tempat_pkl' => $request->alamat_tempat_pkl,
-                'kota_perusahaan' => $request->kota_perusahaan,
-                'tgl_awal_pkl' => $request->tgl_awal_pkl,
-                'tgl_akhir_pkl' => $request->tgl_akhir_pkl,
-            ]);
             // dd($data);
             DB::commit();
 
@@ -154,7 +162,8 @@ class PklController extends Controller
             'alamat_tempat_pkl' => 'required',
             'kota_perusahaan' => 'required',
             'tgl_awal_pkl' => 'required',
-            'tgl_akhir_pkl' => 'required'
+            'tgl_akhir_pkl' => 'required',
+            'file_pendukung' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -205,16 +214,28 @@ class PklController extends Controller
                     'nama_tempat_pkl' => $request->nama_tempat_pkl,
                 ]);
             }
+            $oldData = UsulanTempatPkl::where('id_usulan', $id)->first();
+            $filename = $request->file_pendukung;
+            // dd($oldData->file_pendukung != $filename);
+            if ($oldData->file_pendukung != $filename) {
+                Storage::delete('public/uploads/pkl/usulantempat/' . $oldData->file_pendukung);
+                $file = $request->file('file_pendukung');
+                $filename = $file->getClientOriginalName();
+                $path = 'public/uploads/pkl/usulantempat/';
+                $file->storeAs($path, $filename);
+            }
+            // dd($filename);
             $data = [
                 'role_tempat_pkl_id' => $roleId,
                 'tempat_pkl_id' => $tempatId,
                 'alamat_tempat_pkl' => $request->alamat_tempat_pkl,
                 'kota_perusahaan' => $request->kota_perusahaan,
+                'file_pendukung' => $filename,
                 'tgl_awal_pkl' => $request->tgl_awal_pkl,
                 'tgl_akhir_pkl' => $request->tgl_akhir_pkl,
             ];
-            $tempatpkl = UsulanTempatPkl::findOrFail($id);
-            $tempatpkl->update($data);
+            // dd($data);
+            $oldData->update($data);
 
             DB::commit();
             return to_route('MhsPkl')->with('success', 'Usulan Tempat Pkl updated successfully');
@@ -226,7 +247,7 @@ class PklController extends Controller
 
     public function storeLaporan(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $id_user = auth()->user()->id;
         $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
         $pkl_mhs_id = PklMhs::whereHas('r_usulan', function ($q) use ($id_mahasiswa) {
@@ -278,7 +299,7 @@ class PklController extends Controller
             'kegiatan' => 'required',
             'tgl_awal_kegiatan' => 'required|date',
             'tgl_akhir_kegiatan' => 'required|date|after_or_equal:tgl_awal_kegiatan',
-            'dokumen_laporan' => 'sometimes|required|mimes:pdf'
+            'dokumen_laporan' => 'sometimes|required'
         ]);
 
         if ($validator->fails()) {
@@ -287,11 +308,9 @@ class PklController extends Controller
         DB::beginTransaction();
         try {
             $oldData = log_book_pkl::where('id_log_book_pkl', $id)->first();
-            if ($oldData->dokumen_laporan !== null && $request->hasFile('dokumen_laporan')) {
+            $filename = $request->dokumen_laporan;
+            if ($oldData->dokumen_laporan !== $filename) {
                 Storage::delete('public/uploads/pkl/laporan/' . $oldData->dokumen_laporan);
-            }
-            $filename = null;
-            if ($request->hasFile('dokumen_laporan')) {
                 $file = $request->file('dokumen_laporan');
                 $filename = $file->getClientOriginalName();
                 $path = 'public/uploads/pkl/laporan/';
@@ -368,7 +387,7 @@ class PklController extends Controller
             return to_route('MhsPkl')->with('success', 'Pengajuan Sidang updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsPkl')->with('error', 'Pengajuan Sidang updated failed'. $e->getMessage());
+            return to_route('MhsPkl')->with('error', 'Pengajuan Sidang updated failed' . $e->getMessage());
         }
     }
 }

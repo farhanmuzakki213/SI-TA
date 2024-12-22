@@ -79,13 +79,13 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
         // console.log(rowData.id_pkl_mhs, status);
         return (
             <>
-                {(rowData.status_ver_sempro === "2" || rowData.status_ver_sempro === "4") && (
+                {rowData.status_judul_sempro !== "1" && rowData.status_ver_sempro !== "1"  && (
                     <Button
                         label="Sempro"
                         icon="pi pi-pencil"
                         severity="success"
                         className="mr-2"
-                        tooltip="Upload Berkas Sempro"
+                        tooltip="Upload Sempro"
                         tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
                         onClick={() => editsempro(rowData)}
                     />

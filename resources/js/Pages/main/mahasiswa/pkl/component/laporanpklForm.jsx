@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Calendar } from 'primereact/calendar';
 import FileUploadC from '@/Components/FileUploadC';
-import { InputText } from 'primereact/inputtext';
-import { classNames } from 'primereact/utils';
-import { Button } from 'primereact/button';
 import TextAreaEditor from '@/Components/TextAreaEditor';
 
 const LaporanpklForm = ({

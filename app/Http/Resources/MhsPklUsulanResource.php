@@ -30,6 +30,7 @@ class MhsPklUsulanResource extends JsonResource
             'nama_role' => $this->r_role_tempat_pkl->nama_role,
             'role_tempat_pkl_id' => $this->r_role_tempat_pkl->id_role_tempat_pkl,
             'tempat_pkl_id' => $this->r_tempat_pkl->id_tempat_pkl,
+            'file_pendukung' => $this->file_pendukung,
             'alamat_perusahaan' => $this->alamat_tempat_pkl,
             'nama_tempat_pkl' => $this->r_tempat_pkl->nama_tempat_pkl,
             'alamat_tempat_pkl' => $this->alamat_tempat_pkl,

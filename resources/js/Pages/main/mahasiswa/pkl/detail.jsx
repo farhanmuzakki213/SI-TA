@@ -49,7 +49,7 @@ const MhspklDetail = ({
                         <DetailPkl data_mhs={data_mhs} data_laporan={data_laporan} nextNumberLaporan={nextNumberLaporan} />
                     </div>
                     <div className="tw-col-12">
-                        <DetailSidang data_mhs={data_mhs} data_nilai={data_nilai} />
+                        <DetailSidang data_mhs={data_mhs} data_nilai={data_nilai} data_laporan={data_laporan}/>
                     </div>
                 </div>
             </div>

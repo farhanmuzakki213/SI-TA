@@ -59,7 +59,7 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         //PKL
         Route::get('/MhsPkl', [\App\Http\Controllers\Mahasiswa\PklController::class, 'index'])->name('MhsPkl');
         Route::post('/MhsPkl/TempatPkl/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeTempatPkl'])->name('MhsPkl.storeTempatPkl');
-        Route::put('/MhsPkl/TempatPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateTempatPkl'])->name('MhsPkl.updateTempatPkl');
+        Route::post('/MhsPkl/TempatPkl/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateTempatPkl'])->name('MhsPkl.updateTempatPkl');
         Route::post('/MhsPkl/Laporan/store', [\App\Http\Controllers\Mahasiswa\PklController::class, 'storeLaporan'])->name('MhsPklLaporan.storeLaporan');
         Route::post('/MhsPkl/Laporan/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateLaporan'])->name('MhsPklLaporan.updateLaporan');
         Route::post('/MhsPkl/Sidang/{id}/update', [\App\Http\Controllers\Mahasiswa\PklController::class, 'updateSidang'])->name('MhsPkl.updateSidang');

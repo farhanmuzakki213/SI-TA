@@ -19,6 +19,7 @@ return new class extends Migration
             $table->longText('komentar')->nullable();
             $table->string('alamat_tempat_pkl');
             $table->string('kota_perusahaan');
+            $table->text('file_pendukung')->nullable();
             $table->date('tgl_awal_pkl');
             $table->date('tgl_akhir_pkl');
             $table->enum('status_usulan', ['1', '2', '3'])->default('1')
