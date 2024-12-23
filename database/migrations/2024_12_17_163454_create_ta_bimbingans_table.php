@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigInteger('ta_mhs_id')->unsigned();
             $table->bigInteger('dosen_id')->unsigned();
             $table->text('pembahasan');
+            $table->text('file_bimbingan')->nullable();
             $table->text('komentar');
             $table->enum('sebagai', ['pembimbing_1', 'pembimbing_2']);
             $table->enum('status_bimbingan_ta', ['1', '2', '3'])

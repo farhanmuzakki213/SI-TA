@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Models\Dosen;
 use App\Models\SemproMhs;
 use App\Models\SemproNilai;
+use App\Models\TaMhs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -115,6 +116,20 @@ class MhsSemproController extends Controller
                 $sempro = SemproMhs::find($request->sempro_mhs_id);
                 if (!$sempro) {
                     return back()->with('error', 'Data Sempro tidak ditemukan.');
+                }
+                if($data_sempro['status_sempro'] === '3') {
+                    TaMhs::create([
+                        'id_ta_mhs' => CariNomor::getCariNomor(TaMhs::class, 'id_ta_mhs'),
+                        'mahasiswa_id' => $sempro->mahasiswa_id,
+                        'pembimbing_1_id' => $sempro->pembimbing_1_id,
+                        'pembimbing_2_id' => $sempro->pembimbing_2_id,
+                        'ketua_id' => $sempro->pembimbing_1_id,
+                        'sekretaris_id' => $sempro->penguji_id,
+                        'judul' => $sempro->judul_sempro,
+                        'file_proposal' => $sempro->file_sempro,
+                        'status_ver_proposal' => '2',
+                        'status_judul' => '2',
+                    ]);
                 }
                 $sempro->update($data_sempro);
             }

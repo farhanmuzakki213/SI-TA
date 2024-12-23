@@ -5,9 +5,11 @@ import Bimbingan from './component/bimbingan';
 
 const MhsTaDetail = () => {
     const { props } = usePage();
-    const { data_ta } = props;
+    const { data_ta, data_bimbingan_1, data_bimbingan_2, data_bimbingan } = props;
     // console.log("data_ta", data_ta);
     const data_tas = data_ta[0];
+    // console.log("data bimbingan 1", data_bimbingan_1.length)
+    // console.log("data bimbingan 2", data_bimbingan_2.length)
     return (
         <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-4">
             <div className="tw-w-full sm:tw-max-w-sm">
@@ -23,6 +25,7 @@ const MhsTaDetail = () => {
                         <h1 className="tw-text-xl tw-font-bold tw-text-gray-900">{data_tas.nama_mahasiswa}</h1>
                         <p className="tw-text-sm tw-text-gray-600">{data_tas.nim_mahasiswa}</p>
                         <p className="tw-mt-2 tw-text-sm tw-text-gray-500">{data_tas.prodi}</p>
+                        <p className="tw-mt-2 tw-text-sm tw-text-gray-500">{data_tas.judul}</p>
 
                         <ul className="tw-mt-3 tw-divide-y tw-rounded tw-bg-gray-100 tw-py-2 tw-px-3 tw-text-gray-600 tw-shadow-sm hover:tw-text-gray-700 hover:tw-shadow">
                             <li className="tw-flex tw-items-center tw-py-3 tw-text-sm">
@@ -38,11 +41,13 @@ const MhsTaDetail = () => {
             <div className="tw-w-full sm:tw-max-w-96">
                 <div className="tw-grid tw-gap-4">
                     <div className="tw-col-12">
-                        <Bimbingan data_ta={data_ta} />
+                        <Bimbingan data_ta={data_ta} data_bimbingan_1={data_bimbingan_1} data_bimbingan_2={data_bimbingan_2} data_bimbingan={data_bimbingan} />
                     </div>
-                    <div className="tw-col-12">
-                        <DetailSidang data_ta={data_ta} />
-                    </div>
+                    {data_bimbingan_1.length > 9 && data_bimbingan_2.length > 9 && (
+                        <div className="tw-col-12">
+                            <DetailSidang data_ta={data_ta} />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

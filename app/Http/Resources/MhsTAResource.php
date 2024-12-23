@@ -36,11 +36,11 @@ class MhsTAResource extends JsonResource
         $ketua = TaNilai::where('dosen_id', $this->ketua_id)->where('ta_mhs_id', $this->id_ta_mhs)->where('sebagai', 'ketua')->first();
         $sekretaris = TaNilai::where('dosen_id', $this->sekretaris_id)->where('ta_mhs_id', $this->id_ta_mhs)->where('sebagai', 'sekretaris')->first();
 
-        if ($this->status_sidang_ta == '1') {
+        if ($this->status_ver_proposal == '0') {
             $status = 'Ditolak';
-        } else if ($this->status_sidang_ta == '2') {
+        } else if ($this->status_ver_proposal == '1') {
             $status = 'Belum diverifikasi';
-        } else if ($this->status_sidang_ta == '3') {
+        } else if ($this->status_ver_proposal == '2') {
             $status = 'Diterima';
         } else {
             $status = 'Butuh Revisi';

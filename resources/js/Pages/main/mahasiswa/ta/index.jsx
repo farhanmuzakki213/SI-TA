@@ -1,13 +1,11 @@
 import Layout from "@/Layouts/layout/layout.jsx";
 import { usePage } from "@inertiajs/react";
-import TaForm from "./component/taForm";
 import DetailTa from "./detail";
-import { Toast } from 'primereact/toast';
 import React from "react";
 
 const index = () => {
     const { props } = usePage();
-    const { data_ta, data_sempro, data_mahasiswa, nextNumber } = props
+    const { data_ta, data_sempro, data_mahasiswa, data_bimbingan_1, data_bimbingan_2, data_bimbingan } = props
     const data_mahasiswas = data_mahasiswa[0];
     const data_sempros = data_sempro[0];
     console.log(data_ta);
@@ -18,7 +16,7 @@ const index = () => {
                 <>
                     {data_sempros && data_sempros.status_sempro === '3' ? (
                         <>
-                            <DetailTa data_ta={data_ta} />
+                            <DetailTa data_ta={data_ta} data_bimbingan_1={data_bimbingan_1} data_bimbingan_2={data_bimbingan_2} data_bimbingan={data_bimbingan}/>
                         </>
                     ) : (
                         <>
