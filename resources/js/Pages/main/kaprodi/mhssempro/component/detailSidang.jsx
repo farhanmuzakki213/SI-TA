@@ -4,6 +4,7 @@ import SemproForm from "./ubahsemproForm";
 import { router, usePage } from "@inertiajs/react";
 import { Toast } from "primereact/toast";
 import BookingForm from "./BookingForm";
+import { Messages } from "primereact/messages";
 
 const detailSidang = ({
     data_mhs,
@@ -19,6 +20,7 @@ const detailSidang = ({
     // console.log(data_mhss);
     const { props } = usePage();
     const toast = useRef(null);
+    const msgs = useRef(null);
     const [submitted, setSubmitted] = useState(false);
 
     const nilaiPenguji = JSON.parse(data_mhss.nilai_penguji?.nilai || null);
@@ -52,6 +54,19 @@ const detailSidang = ({
         setbookings(data_mhss);
         setRuanganOptions(initialRuanganOptions);
         setSesiOptions(initialSesiOptions);
+
+        if (msgs.current && data_mhss.status_sempro === '1' && nilaiAkhir() !== null) {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'error', detail: 'Tidak Lulus Seminar Proposal', closable: true }
+            ]);
+        }
+        if (msgs.current && data_mhss.status_sempro === '3' && nilaiAkhir() !== null) {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, life: 1000, severity: 'success', summary: 'success', detail: ' Lulus Seminar Proposal', closable: true },
+            ]);
+        }
     }, [data_mhss, initialRuanganOptions, initialSesiOptions]);
 
     const bookingopenNew = () => {
@@ -310,35 +325,42 @@ const detailSidang = ({
                     />
                 )}
             </div>
+            <hr className="tw-my-4" />
+            {data_mhss.status_sempro !== '1' && (
+                <>
+                    <div className="card">
+                        <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-sm">
+                            <div>
+                                <p className="tw-text-gray-800 tw-font-semibold">Judul</p>
+                                <p className="tw-text-gray-600">{!data_mhss.judul_sempro ? '-' : data_mhss.judul_sempro}</p>
+                            </div>
+                            <div>
+                                <p className="tw-text-gray-800 tw-font-semibold">Tanggal Sidang</p>
+                                <p className="tw-text-gray-600">{!data_mhss.tgl_sidang ? '-' : data_mhss.tgl_sidang}</p>
+                            </div>
+                            <div>
+                                <p className="tw-text-gray-800 tw-font-semibold">Ruangan</p>
+                                <p className="tw-text-gray-600">{!data_mhss.ruangan_sidang ? '-' : data_mhss.ruangan_sidang}</p>
+                            </div>
+                            <div>
+                                <p className="tw-text-gray-800 tw-font-semibold">Sesi</p>
+                                <p className="tw-text-gray-600">{!data_mhss.sesi_sidang ? '-' : data_mhss.sesi_sidang}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr className="tw-my-4" />
+                </>
+            )}
             <div className="card">
-                <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-sm">
-                    <div>
-                        <p className="tw-text-gray-800 tw-font-semibold">Judul</p>
-                        <p className="tw-text-gray-600">{!data_mhss.judul_sempro ? '-' : data_mhss.judul_sempro}</p>
-                    </div>
-                    <div>
-                        <p className="tw-text-gray-800 tw-font-semibold">Tanggal Sidang</p>
-                        <p className="tw-text-gray-600">{!data_mhss.tgl_sidang ? '-' : data_mhss.tgl_sidang}</p>
-                    </div>
-                    <div>
-                        <p className="tw-text-gray-800 tw-font-semibold">Ruangan</p>
-                        <p className="tw-text-gray-600">{!data_mhss.ruangan_sidang ? '-' : data_mhss.ruangan_sidang}</p>
-                    </div>
-                    <div>
-                        <p className="tw-text-gray-800 tw-font-semibold">Sesi</p>
-                        <p className="tw-text-gray-600">{!data_mhss.sesi_sidang ? '-' : data_mhss.sesi_sidang}</p>
-                    </div>
-                </div>
-            </div>
-            <div className="card">
+                <Messages ref={msgs} className="tw-mb-2" />
                 <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
                     <div className="tw-flex tw-items-center">
                         <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Seminar Proposal</p>
                     </div>
                     {!nilaiAkhir() && (
                         <Button icon="pi pi-pencil" severity="success" label="Ubah Dosen"
-                        tooltip="Ubah Pembimbing dan Penguji" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                        onClick={() => editsempro(data_mhss)} />
+                            tooltip="Ubah Pembimbing dan Penguji" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                            onClick={() => editsempro(data_mhss)} />
                     )}
                 </div>
                 <hr className="tw-my-4" />

@@ -6,6 +6,7 @@ use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MhsSemproNilaiResource;
 use App\Http\Resources\MhsSemproResource;
+use App\Models\Booking;
 use App\Models\Dosen;
 use App\Models\SemproMhs;
 use App\Models\SemproNilai;
@@ -54,7 +55,7 @@ class MhsSemproController extends Controller
             ->where('sebagai', 'pembimbing_1')
             ->OrWhere('sebagai', 'pembimbing_2')
             ->get();
-            // dd($data_nilai->toArray());
+        // dd($data_nilai->toArray());
         return Inertia::render('main/pembimbing/mhssempro/detail', [
             'data_mhs' => MhsSemproResource::collection($data_sempro),
             'dosen_id' => $id_dosen,
@@ -79,6 +80,7 @@ class MhsSemproController extends Controller
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
         }
+
         $total_nilai = ($request->pendahuluan * 0.2) + ($request->tinjauan_pustaka * 0.2) + ($request->metodologi_penelitian * 0.2) + ($request->bahasa_dan_tata_tulis * 0.2) + ($request->presentasi * 0.2);
         $nilai_data = [
             'pendahuluan' => $request->pendahuluan,
@@ -94,12 +96,60 @@ class MhsSemproController extends Controller
             $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
             $pembimbing_1 = SemproMhs::where('id_sempro_mhs', $request->sempro_mhs_id)->where('pembimbing_1_id', $id_dosen)->exists();
             $pembimbing_2 = SemproMhs::where('id_sempro_mhs', $request->sempro_mhs_id)->where('pembimbing_2_id', $id_dosen)->exists();
-            if($pembimbing_1){
+            if ($pembimbing_1) {
                 $sebagai = 'pembimbing_1';
-            }elseif($pembimbing_2){
+                $total_nilai_sempro = SemproNilai::where('sempro_mhs_id', $request->sempro_mhs_id)
+                    ->where('sebagai', 'pembimbing_2')
+                    ->OrWhere('sebagai', 'penguji')
+                    ->select('nilai')
+                    ->get()
+                    ->map(function ($item) {
+                        $nilai = json_decode($item->nilai, true);
+                        return $nilai['total_nilai'] ?? 0;
+                    });
+            } elseif ($pembimbing_2) {
                 $sebagai = 'pembimbing_2';
-            }else{
+                $total_nilai_sempro = SemproNilai::where('sempro_mhs_id', $request->sempro_mhs_id)
+                    ->where('sebagai', 'pembimbing_2')
+                    ->OrWhere('sebagai', 'penguji')
+                    ->select('nilai')
+                    ->get()
+                    ->map(function ($item) {
+                        $nilai = json_decode($item->nilai, true);
+                        return $nilai['total_nilai'] ?? 0;
+                    });
+            } else {
                 $sebagai = null;
+                $total_nilai_sempro = null;
+            }
+            if ($total_nilai_sempro->count() > 1) {
+                $total_nilai_sidang = ($total_nilai_sempro->sum() + $total_nilai) / 3;
+                if ($total_nilai_sidang > 75) {
+                    $data_sempro = [
+                        'status_sempro' => '3',
+                    ];
+                } else {
+                    $data_sempro = [
+                        'status_sempro' => '1',
+                    ];
+                }
+                $data_booking = [
+                    'status_booking' => '2',
+                ];
+                // dd($data_sempro);
+                $sempro = SemproMhs::find($request->sempro_mhs_id);
+                if (!$sempro) {
+                    return back()->with('error', 'Data Sempro tidak ditemukan.');
+                }
+                $jadwal_sidang = Booking::where('mahasiswa_id', $sempro->mahasiswa_id)
+                ->where('tipe', '2')
+                ->where('status_booking', '1')
+                ->with('r_sesi', 'r_ruangan')
+                ->first();
+                if ($jadwal_sidang) {
+                    $jadwal_sidang->update($data_booking);
+                }
+                $sempro->update($data_sempro);
             }
             // dd($sebagai, $pembimbing_1, $pembimbing_2);
             SemproNilai::create([
@@ -143,6 +193,63 @@ class MhsSemproController extends Controller
         ];
         DB::beginTransaction();
         try {
+            $id_user = auth()->user()->id;
+            $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
+            $pembimbing_1 = SemproMhs::where('id_sempro_mhs', $request->sempro_mhs_id)->where('pembimbing_1_id', $id_dosen)->exists();
+            $pembimbing_2 = SemproMhs::where('id_sempro_mhs', $request->sempro_mhs_id)->where('pembimbing_2_id', $id_dosen)->exists();
+            if ($pembimbing_1) {
+                $total_nilai_sempro = SemproNilai::where('sempro_mhs_id', $request->sempro_mhs_id)
+                    ->where('sebagai', 'pembimbing_2')
+                    ->OrWhere('sebagai', 'penguji')
+                    ->select('nilai')
+                    ->get()
+                    ->map(function ($item) {
+                        $nilai = json_decode($item->nilai, true);
+                        return $nilai['total_nilai'] ?? 0;
+                    });
+            } elseif ($pembimbing_2) {
+                $total_nilai_sempro = SemproNilai::where('sempro_mhs_id', $request->sempro_mhs_id)
+                    ->where('sebagai', 'pembimbing_2')
+                    ->OrWhere('sebagai', 'penguji')
+                    ->select('nilai')
+                    ->get()
+                    ->map(function ($item) {
+                        $nilai = json_decode($item->nilai, true);
+                        return $nilai['total_nilai'] ?? 0;
+                    });
+            } else {
+                $total_nilai_sempro = null;
+            }
+            if ($total_nilai_sempro->count() > 1) {
+                $total_nilai_sidang = ($total_nilai_sempro->sum() + $total_nilai) / 3;
+                if ($total_nilai_sidang > 75) {
+                    $data_sempro = [
+                        'status_sempro' => '3',
+                    ];
+                } else {
+                    $data_sempro = [
+                        'status_sempro' => '1',
+                    ];
+                }
+                $data_booking = [
+                    'status_booking' => '2',
+                ];
+                // dd($data_sempro, $request->sempro_mhs_id);
+                $sempro = SemproMhs::find($request->sempro_mhs_id);
+                // dd($sempro);
+                if (!$sempro) {
+                    return back()->with('error', 'Data Sempro tidak ditemukan.');
+                }
+                $jadwal_sidang = Booking::where('mahasiswa_id', $sempro->mahasiswa_id)
+                ->where('tipe', '2')
+                ->where('status_booking', '1')
+                ->with('r_sesi', 'r_ruangan')
+                ->first();
+                if ($jadwal_sidang) {
+                    $jadwal_sidang->update($data_booking);
+                }
+                $sempro->update($data_sempro);
+            }
             $data = [
                 'nilai' => json_encode($nilai_data),
             ];

@@ -2,6 +2,7 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { Link } from '@inertiajs/react';
 
 const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
 
@@ -79,17 +80,28 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
         // console.log(rowData.id_pkl_mhs, status);
         return (
             <>
-                {rowData.status_judul_sempro !== "1" && rowData.status_ver_sempro !== "1"  && (
-                    <Button
-                        label="Sempro"
-                        icon="pi pi-pencil"
-                        severity="success"
-                        className="mr-2"
-                        tooltip="Upload Sempro"
-                        tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                        onClick={() => editsempro(rowData)}
-                    />
+                {rowData.status_ver_sempro === '3' ? (
+                    <Link
+                        href={'/MhsSempro/' + rowData.id_sempro_mhs}
+                        className="text-blue-500 hover:underline"
+                        title="View Details"
+                    >
+                        <Button icon="pi pi-eye" rounded outlined />
+                    </Link>
+                ) : (
+                    rowData.status_judul_sempro !== "1" && rowData.status_ver_sempro !== "1" && (
+                        <Button
+                            label="Sempro"
+                            icon="pi pi-pencil"
+                            severity="success"
+                            className="mr-2"
+                            tooltip="Upload Sempro"
+                            tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                            onClick={() => editsempro(rowData)}
+                        />
+                    )
                 )}
+
             </>
         );
     };
@@ -113,12 +125,12 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
             removableSort
         >
             <Column headerStyle={{ width: "4rem" }}></Column>
-            <Column field="judul_sempro" header="Judul" sortable body={judulBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column header="File" sortable body={fileBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="komentar" header="Komentar" sortable body={komentarBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_judul_sempro" header="Status Judul" body={statusjudulBodyTemplate} headerStyle={{ minWidth: "15rem" }} sortable></Column>
-            <Column field="status_ver_sempro" header="Status Berkas" body={statusberkasBodyTemplate} headerStyle={{ minWidth: "15rem" }} sortable></Column>
-            <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
+            <Column field="judul_sempro" header="Judul" sortable body={judulBodyTemplate} headerStyle={{ minWidth: "25rem" }}></Column>
+            <Column header="File" sortable body={fileBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
+            <Column field="komentar" header="Komentar" sortable body={komentarBodyTemplate} headerStyle={{ minWidth: "25rem" }}></Column>
+            <Column field="status_judul_sempro" header="Status Judul" body={statusjudulBodyTemplate} headerStyle={{ minWidth: "10rem" }} sortable></Column>
+            <Column field="status_ver_sempro" header="Status Berkas" body={statusberkasBodyTemplate} headerStyle={{ minWidth: "10rem" }} sortable></Column>
+            <Column body={actionBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
         </DataTable>
     );
 };

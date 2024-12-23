@@ -4,7 +4,6 @@ import { Button } from "primereact/button";
 import SemproForm from "./component/semproForm";
 import { Toast } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from "react";
-import DetailSempro from "./detail";
 import { Toolbar } from "primereact/toolbar";
 import { InputText } from "primereact/inputtext";
 import SemproDataTable from "./component/semproDataTable";
@@ -154,18 +153,16 @@ const index = () => {
     const leftToolbarTemplate = () => {
         return (
             <>
-                {data_sempros.status_ver_sempro === "3" ? (
-                    (data_sempros.status_ver_sempro === "1" || data_sempros.status_judul_sempro === "1") && (
-                        <Button
-                            label="Sempro"
-                            icon="pi pi-plus"
-                            severity="success"
-                            className="mr-2"
-                            tooltip="Pengajuan Sempro"
-                            tooltipOptions={{ position: 'right', mouseTrack: false, mouseTrackRight: 15 }}
-                            onClick={openNew}
-                        />
-                    )
+                {data_pkl[0].status_ver_pkl === "3" ? (
+                    <Button
+                        label="Sempro"
+                        icon="pi pi-plus"
+                        severity="success"
+                        className="mr-2"
+                        tooltip="Pengajuan Sempro"
+                        tooltipOptions={{ position: 'right', mouseTrack: false, mouseTrackRight: 15 }}
+                        onClick={openNew}
+                    />
                 ) : (
                     <p>Anda Belum Menyelesaikan Sidang PKL</p>
                 )}
@@ -201,72 +198,34 @@ const index = () => {
     console.log("test", data_pkl);
     return (
         <Layout>
-            {data_sempros ? (
-                data_sempros.status_ver_sempro === "3" ? (
-                    <DetailSempro data_sempro={sempros} />
-                ) : (
-                    <>
-                        <div className="grid crud-demo">
-                            <div className="col-12">
-                                <div className="card">
-                                    <Toast ref={toast} />
-                                    <Toolbar
-                                        className="mb-4"
-                                        left={leftToolbarTemplate}
-                                    ></Toolbar>
+            <div className="grid crud-demo">
+                <div className="col-12">
+                    <div className="card">
+                        <Toast ref={toast} />
+                        <Toolbar
+                            className="mb-4"
+                            left={leftToolbarTemplate}
+                        ></Toolbar>
 
-                                    <SemproDataTable
-                                        dt={dt}
-                                        sempros={sempros}
-                                        globalFilter={globalFilter}
-                                        header={header}
-                                        editsempro={editsempro}
-                                    />
+                        <SemproDataTable
+                            dt={dt}
+                            sempros={sempros}
+                            globalFilter={globalFilter}
+                            header={header}
+                            editsempro={editsempro}
+                        />
 
-                                    <SemproForm
-                                        semproDialog={semproDialog}
-                                        sempro={sempro}
-                                        setsempro={setsempro}
-                                        submitted={submitted}
-                                        semproDialogFooter={semproDialogFooter}
-                                        hideDialog={hideDialog}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                )
-            ) : (
-                <>
-                    <div className="grid crud-demo">
-                        <div className="col-12">
-                            <div className="card">
-                                <Toast ref={toast} />
-                                <Toolbar
-                                    className="mb-4"
-                                    left={leftToolbarTemplate}
-                                ></Toolbar>
-                                <SemproDataTable
-                                    dt={dt}
-                                    sempros={sempros}
-                                    globalFilter={globalFilter}
-                                    header={header}
-                                    editsempro={editsempro}
-                                />
-
-                                <SemproForm
-                                    semproDialog={semproDialog}
-                                    sempro={sempro}
-                                    setsempro={setsempro}
-                                    submitted={submitted}
-                                    semproDialogFooter={semproDialogFooter}
-                                    hideDialog={hideDialog}
-                                />
-                            </div>
-                        </div>
+                        <SemproForm
+                            semproDialog={semproDialog}
+                            sempro={sempro}
+                            setsempro={setsempro}
+                            submitted={submitted}
+                            semproDialogFooter={semproDialogFooter}
+                            hideDialog={hideDialog}
+                        />
                     </div>
-                </>
-            )}
+                </div>
+            </div>
         </Layout>
     );
 };

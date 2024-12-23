@@ -67,6 +67,7 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         //Sempro
         Route::middleware(['auth', 'JenjangProdi:D4'])->group(function () {
             Route::get('/MhsSempro', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'index'])->name('MhsSempro');
+            Route::get('/MhsSempro/{id}', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'detail']);
             Route::post('/MhsSempro/store', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'store'])->name('MhsSempro.store');
             Route::post('/MhsSempro/{id}/update', [\App\Http\Controllers\Mahasiswa\SemproController::class, 'update'])->name('MhsSempro.update');
         });

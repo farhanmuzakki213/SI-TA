@@ -74,8 +74,17 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
     const statusBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Status</span>
+                <span className="p-column-title">Status Judul</span>
                 {rowData.status_judul_sempro === "1" ? "Ditolak" : rowData.status_judul_sempro === "2" ? "Belum" : rowData.status_judul_sempro === "3" ? "Diterima" : "Butuh Revisi"}
+            </>
+        );
+    };
+
+    const statusSemproBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Status Sempro</span>
+                {rowData.status_sempro === "1" ? "Ditolak" : rowData.status_sempro === "2" ? "Belum" : "Diterima"}
             </>
         );
     };
@@ -139,8 +148,9 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
             <Column field="nim_mahasiswa" header="Nim Mahasiswa" sortable body={nimBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
             <Column field="judul_sempro" header="Judul" sortable body={judulBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column header="File" sortable body={fileBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_judul_sempro" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column header="File" sortable body={fileBodyTemplate}></Column>
+            <Column field="status_judul_sempro" header="Status Judul" body={statusBodyTemplate} sortable></Column>
+            <Column field="status_sempro" header="Status Sempro" body={statusSemproBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

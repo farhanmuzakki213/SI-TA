@@ -16,7 +16,7 @@ const index = () => {
     useEffect(() => {
         setsempros(data_sempro);
     }, [data_sempro]);
-    console.log(data_sempro);
+    // console.log(data_sempro);
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <h5 className="m-0">Mahasiswa Sempro</h5>

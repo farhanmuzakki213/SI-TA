@@ -26,7 +26,7 @@ const semproForm = ({
             file_sempro: files,
         }));
     };
-    // console.log(sempro);
+    console.log("test123",sempro);
     return (
         <Dialog
             visible={semproDialog}

@@ -44,6 +44,26 @@ class SemproController extends Controller
         ]);
     }
 
+    public function detail($id)
+    {
+        $id_user = auth()->user()->id;
+        $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
+        $data_sempro = SemproMhs::where('mahasiswa_id', $id_mahasiswa)
+            ->with(
+                'r_mahasiswa.r_kelas.r_prodi.r_jurusan',
+                'r_mahasiswa.r_user',
+                'r_pembimbing_1',
+                'r_pembimbing_2',
+                'r_penguji',
+            )
+            ->where('id_sempro_mhs', $id)
+            ->get();
+        // dd($data_sempro, $id_mahasiswa->toArray());
+        return Inertia::render('main/mahasiswa/sempro/detail', [
+            'data_sempro' => MhsSemproResource::collection($data_sempro),
+        ]);
+    }
+
     public function store(Request $request)
     {
         // dd($request->all());
@@ -102,7 +122,7 @@ class SemproController extends Controller
                 $data['file_sempro'] = $filename;
             }
 
-            dd($data);
+            // dd($data);
             $oldData->update($data);
             DB::commit();
             return to_route('MhsSempro')->with('success', 'Pengajuan Sempro updated successfully');

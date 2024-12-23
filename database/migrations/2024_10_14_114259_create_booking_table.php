@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('mahasiswa_id')->unsigned();
             $table->enum('tipe', ['1', '2', '3']);
             $table->date('tgl_booking');
-            $table->enum('status_booking', ['0', '1'])->default('1');
+            $table->enum('status_booking', ['0', '1', '2'])->default('1');
             $table->timestamps();
         });
         Schema::table('booking', function (Blueprint $table) {
