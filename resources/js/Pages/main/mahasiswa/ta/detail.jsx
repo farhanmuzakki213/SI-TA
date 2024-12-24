@@ -5,7 +5,7 @@ import Bimbingan from './component/bimbingan';
 
 const MhsTaDetail = () => {
     const { props } = usePage();
-    const { data_ta, data_bimbingan_1, data_bimbingan_2, data_bimbingan } = props;
+    const { data_ta, data_bimbingan_1, data_bimbingan_2, data_bimbingan, nextNumberBimbingan } = props;
     // console.log("data_ta", data_ta);
     const data_tas = data_ta[0];
     // console.log("data bimbingan 1", data_bimbingan_1.length)
@@ -41,7 +41,11 @@ const MhsTaDetail = () => {
             <div className="tw-w-full sm:tw-max-w-96">
                 <div className="tw-grid tw-gap-4">
                     <div className="tw-col-12">
-                        <Bimbingan data_ta={data_ta} data_bimbingan_1={data_bimbingan_1} data_bimbingan_2={data_bimbingan_2} data_bimbingan={data_bimbingan} />
+                        <Bimbingan data_ta={data_ta}
+                        data_bimbingan_1={data_bimbingan_1}
+                        data_bimbingan_2={data_bimbingan_2}
+                        data_bimbingan={data_bimbingan}
+                        nextNumberBimbingan={nextNumberBimbingan} />
                     </div>
                     {data_bimbingan_1.length > 9 && data_bimbingan_2.length > 9 && (
                         <div className="tw-col-12">

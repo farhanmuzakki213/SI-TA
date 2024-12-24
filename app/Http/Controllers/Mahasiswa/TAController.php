@@ -13,6 +13,9 @@ use App\Models\SemproMhs;
 use App\Models\TaBimbingan;
 use App\Models\TaMhs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class TAController extends Controller
@@ -57,6 +60,88 @@ class TAController extends Controller
             'data_bimbingan_1' => MhsBimbinganTAResource::collection($data_bimbingan_1),
             'data_bimbingan_2' => MhsBimbinganTAResource::collection($data_bimbingan_2),
             'data_sempro' => MhsSemproResource::collection($data_sempro),
+            'nextNumberBimbingan' => CariNomor::getCariNomor(TaBimbingan::class, 'id_bimbingan_mhs'),
         ]);
+    }
+
+    public function storeBimbingan(Request $request)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'id_bimbingan_mhs' => 'required',
+            'ta_mhs_id' => 'required|exists:ta_mhs,id_ta_mhs',
+            'dosen_id' => 'required|exists:dosens,id_dosen',
+            'sebagai' => 'required|in:pembimbing_1,pembimbing_2',
+            'pembahasan' => 'required',
+            'file_bimbingan' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('file_bimbingan')) {
+                $file = $request->file('file_bimbingan');
+                $filename = $file->getClientOriginalName();
+                $path = 'public/uploads/ta/bimbingan/';
+                $file->storeAs($path, $filename);
+                TaBimbingan::create([
+                    'id_bimbingan_mhs' => $request->id_bimbingan_mhs,
+                    'ta_mhs_id' => $request->ta_mhs_id,
+                    'dosen_id' => $request->dosen_id,
+                    'pembahasan' => $request->pembahasan,
+                    'sebagai' => $request->sebagai,
+                    'file_bimbingan' => $filename
+                ]);
+            }
+            DB::commit();
+
+            return to_route('MhsTA')->with('success', 'Bimbingan TA created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('MhsTA')->with('error', 'Bimbingan TA created failed'.$e->getMessage());
+        }
+    }
+
+    public function updateBimbingan(Request $request, string $id)
+    {
+        // dd($request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'dosen_id' => 'required|exists:dosens,id_dosen',
+            'sebagai' => 'required|in:pembimbing_1,pembimbing_2',
+            'pembahasan' => 'required',
+            'file_bimbingan' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $oldData = TaBimbingan::where('id_bimbingan_mhs', $id)->first();
+            $filename = $request->file_bimbingan;
+            if ($oldData->file_bimbingan !== $filename) {
+                Storage::delete('public/uploads/ta/bimbingan/' . $oldData->file_bimbingan);
+                $file = $request->file('file_bimbingan');
+                $filename = $file->getClientOriginalName();
+                $path = 'public/uploads/ta/bimbingan/';
+                $file->storeAs($path, $filename);
+            }
+            $data = [
+                'dosen_id' => $request->dosen_id,
+                'sebagai' => $request->sebagai,
+                'pembahasan' => $request->pembahasan,
+                'file_bimbingan' => $filename
+            ];
+            // dd($data);
+            $oldData->update($data);
+            DB::commit();
+            return to_route('MhsTA')->with('success', 'Bimbingan TA updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('MhsTA')->with('error', 'Bimbingan TA updated failed');
+        }
     }
 }

@@ -74,6 +74,8 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
 
         //Tugas Akhir
         Route::get('/MhsTA', [\App\Http\Controllers\Mahasiswa\TAController::class, 'index'])->name('MhsTA');
+        Route::post('/MhsTA/Bimbingan/store', [\App\Http\Controllers\Mahasiswa\TAController::class, 'storeBimbingan'])->name('MhsTA.storeBimbingan');
+        Route::post('/MhsTA/Bimbingan/{id}/update', [\App\Http\Controllers\Mahasiswa\TAController::class, 'updateBimbingan'])->name('MhsTA.updateBimbingan');
     });
 });
 

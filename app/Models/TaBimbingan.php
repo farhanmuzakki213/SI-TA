@@ -9,7 +9,7 @@ class TaBimbingan extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_bimbingan_mhs','ta_mhs_id', 'dosen_id', 'pembahasan', 'komentar', 'sebagai', 'status_bimbingan_ta'
+        'id_bimbingan_mhs', 'ta_mhs_id', 'dosen_id', 'pembahasan', 'file_bimbingan', 'komentar', 'sebagai', 'status_bimbingan_ta'
     ];
     protected $table = 'ta_bimbingans';
     protected $primaryKey = 'id_bimbingan_mhs';
