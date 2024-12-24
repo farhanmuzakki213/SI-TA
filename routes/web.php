@@ -99,6 +99,9 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
 
             // Tugas Akhir
             Route::get('/Pembimbing/MhsTA', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'index'])->name('MhsTAPembimbing');
+            Route::get('/Pembimbing/MhsTA/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'detail']);
+            Route::post('/Pembimbing/MhsTA/Bimbingan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'updateBimbingan'])->name('MhsTAPembimbing.updateBimbingan');
+            Route::post('/Pembimbing/MhsTA/Bimbingan/{id}/tolak', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'tolakBimbingan'])->name('MhsTAPembimbing.tolakBimbingan');
         });
 
         // Route Dosen Penguji
