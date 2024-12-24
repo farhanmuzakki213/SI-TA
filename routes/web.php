@@ -146,6 +146,7 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
 
             // Tugas Akhir
             Route::get('/Kprodi/MhsTA', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'index'])->name('MhsTAKprodi');
+            Route::get('/Kprodi/MhsTA/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'detail']);
 
             // Sempro
             Route::middleware(['auth', 'JenjangProdiKaprodi:D4'])->group(function () {
