@@ -61,8 +61,8 @@ class MhsTAController extends Controller
         // dd($kaprodi->toArray());
         $id_ta_mhs = $data_ta->first()->id_ta_mhs;
         $data_bimbingan = TaBimbingan::where('ta_mhs_id', $id_ta_mhs)->where('dosen_id', $dosen->id_dosen)->get();
-        $data_bimbingan_1 = TaBimbingan::where('ta_mhs_id', $id_ta_mhs)->where('sebagai', 'pembimbing_1')->get();
-        $data_bimbingan_2 = TaBimbingan::where('ta_mhs_id', $id_ta_mhs)->where('sebagai', 'pembimbing_2')->get();
+        $data_bimbingan_1 = TaBimbingan::where('ta_mhs_id', $id_ta_mhs)->where('sebagai', 'pembimbing_1')->whereNot('status_bimbingan_ta', '1')->get();
+        $data_bimbingan_2 = TaBimbingan::where('ta_mhs_id', $id_ta_mhs)->where('sebagai', 'pembimbing_2')->whereNot('status_bimbingan_ta', '1')->get();
         return Inertia::render('main/pembimbing/mhsta/detail', [
             'data_ta' => MhsTAResource::collection($data_ta),
             'data_bimbingan' => MhsBimbinganTAResource::collection($data_bimbingan),
@@ -136,6 +136,34 @@ class MhsTAController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Bimbingan TA updated failed');
+        }
+    }
+
+    public function accSidangTA(Request $request, string $id)
+    {
+        // dd("data reques",$request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'acc_pembimbing_satu' => 'required|in:0,1',
+            'acc_pembimbing_dua' => 'required|in:0,1',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $data = [
+                'acc_pembimbing_satu' => $request->acc_pembimbing_satu ?? '0',
+                'acc_pembimbing_dua' => $request->acc_pembimbing_dua ?? '0',
+            ];
+            // dd($data);
+            $accbimbingan = TaMhs::findOrFail($id);
+            $accbimbingan->update($data);
+            DB::commit();
+            return back()->with('success', 'Bimbingan TA updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Bimbingan TA updated failed'.$e->getMessage());
         }
     }
 }

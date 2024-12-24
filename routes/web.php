@@ -102,6 +102,7 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             Route::get('/Pembimbing/MhsTA/{id}', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'detail']);
             Route::post('/Pembimbing/MhsTA/Bimbingan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'updateBimbingan'])->name('MhsTAPembimbing.updateBimbingan');
             Route::post('/Pembimbing/MhsTA/Bimbingan/{id}/tolak', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'tolakBimbingan'])->name('MhsTAPembimbing.tolakBimbingan');
+            Route::post('/Pembimbing/MhsTA/AccSidangTA/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'accSidangTA'])->name('MhsTAPembimbing.accSidangTA');
         });
 
         // Route Dosen Penguji

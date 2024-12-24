@@ -26,12 +26,12 @@ return new class extends Migration
             $table->text('komentar_ta')->nullable();
             $table->text('komentar_proposal')->nullable();
             $table->text('komentar_judul')->nullable();
-            $table->enum('acc_pembimbing_satu', ['0', '1', '2'])
-                ->default('2')
-                ->comment('0 = Ditolak, 1 = Diterima, 2 = Proses');
-            $table->enum('acc_pembimbing_dua', ['0', '1', '2'])
-                ->default('2')
-                ->comment('0 = Ditolak, 1 = Diterima, 2 = Proses');
+            $table->enum('acc_pembimbing_satu', ['0', '1'])
+                ->default('0')
+                ->comment('0 = Proses, 1 = Diterima');
+            $table->enum('acc_pembimbing_dua', ['0', '1'])
+                ->default('0')
+                ->comment('0 = Proses, 1 = Diterima');
             $table->enum('status_ver_ta', ['0', '1', '2', '3'])
                 ->default('1')
                 ->comment('0 = Ditolak, 1 = Proses, 2 = Diterima, 3 = Revisi');

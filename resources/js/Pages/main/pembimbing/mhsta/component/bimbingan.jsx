@@ -12,7 +12,7 @@ import { Dialog } from "primereact/dialog";
 
 const bimbingan = () => {
     const { props } = usePage();
-    const { data_ta, data_bimbingan, data_bimbingan_2, data_bimbingan_1 } = props;
+    const { data_ta, data_bimbingan, data_bimbingan_2, data_bimbingan_1, data_dosen } = props;
     const data_mhs_ta = data_ta[0];
     // console.log(data_tas);
     // console.log("data bimbingan 1", data_bimbingan_1)
@@ -28,10 +28,13 @@ const bimbingan = () => {
     const [bimbingans, setbimbingans] = useState(null);
     const [bimbinganDialog, setbimbinganDialog] = useState(false);
     const [tolakbimbinganDialog, setTolakbimbinganDialog] = useState(false);
+    const [accsidangtaDialog, setAccSidangTaDialog] = useState(false);
     const [bimbinganDetailDialog, setbimbinganDetailDialog] = useState(false);
     const [bimbingan, setbimbingan] = useState(emptybimbingan);
     const [submitted, setSubmitted] = useState(false);
     const toast = useRef(null);
+    const status1 = String(data_mhs_ta.acc_pembimbing_satu);
+    const status2 = String(data_mhs_ta.acc_pembimbing_dua);
 
     useEffect(() => {
         setbimbingans(data_bimbingan);
@@ -200,6 +203,110 @@ const bimbingan = () => {
             <Button label="Yes" icon="pi pi-check" text onClick={tolakbimbingan} />
         </>
     );
+
+    const hideAccSidangTaDialog = () => {
+        setAccSidangTaDialog(false);
+    };
+
+    const confirmAccSidangTa = (bimbingan) => {
+        setbimbingan({ ...bimbingan });
+        setAccSidangTaDialog(true);
+    };
+    const accsidangta = async () => {
+        try {
+            const formData = new FormData();
+            console.log('ta', data_mhs_ta);
+            console.log('bimbingan', data_dosen);
+            if (data_dosen.id_dosen === data_mhs_ta.pembimbing_1_id) {
+                if (status1 === '0') {
+                    formData.append("acc_pembimbing_satu", '1');
+                } else {
+                    formData.append("acc_pembimbing_satu", '0');
+                }
+                formData.append("acc_pembimbing_dua", status2);
+            } else {
+                if (status2 === '0') {
+                    formData.append("acc_pembimbing_dua", '1');
+                } else {
+                    formData.append("acc_pembimbing_dua", '0');
+                }
+                formData.append("acc_pembimbing_satu", status1);
+            }
+            await router.post(
+                `/Pembimbing/MhsTA/AccSidangTA/${data_mhs_ta.id_ta_mhs}/update`,
+                formData, {
+                _method: 'put',
+                forceFormData: true,
+            }
+            );
+        } catch (error) {
+            console.error("Error deleting bimbingan:", error);
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: "Failed to tolak bimbingan.",
+                life: 3000,
+            });
+        }
+        finally {
+            setAccSidangTaDialog(false);
+        }
+    };
+
+    const accsidangtaDialogFooter = (
+        <>
+            <Button
+                label="No"
+                icon="pi pi-times"
+                text
+                onClick={hideAccSidangTaDialog}
+            />
+            <Button label="Yes" icon="pi pi-check" text onClick={accsidangta} />
+        </>
+    );
+
+    const rightToolbarTemplate = () => {
+        console.log('r', data_mhs_ta);
+        return (
+            <React.Fragment>
+                {data_bimbingan_1.length > 0 && data_bimbingan_2.length > 0 && (
+                    data_dosen.id_dosen === data_mhs_ta.pembimbing_1_id ? (
+                        <div className="my-2">
+                            <Button
+                                label="Tugas Akhir"
+                                icon={status1 === '0' ? "pi pi-check" : "pi pi-times"}
+                                severity={status1 === '0' ? "success" : "danger"}
+                                className="mr-2"
+                                tooltip={status1 === '0' ? "Accept Tugas Akhir" : "Cancel"}
+                                tooltipOptions={{
+                                    position: 'left',
+                                    mouseTrack: false,
+                                    mouseTrackLeft: 15,
+                                }}
+                                onClick={() => confirmAccSidangTa(data_mhs_ta)}
+                            />
+                        </div>
+                    ) : (
+                        <div className="my-2">
+                            <Button
+                                label="Tugas Akhir"
+                                icon={status2 === '0' ? "pi pi-check" : "pi pi-times"}
+                                severity={status2 === '0' ? "success" : "danger"}
+                                className="mr-2"
+                                tooltip={status2 === '0' ? "Accept Tugas Akhir" : "Cancel"}
+                                tooltipOptions={{
+                                    position: 'left',
+                                    mouseTrack: false,
+                                    mouseTrackLeft: 15,
+                                }}
+                                onClick={() => confirmAccSidangTa(data_mhs_ta)}
+                            />
+                        </div>
+                    )
+                )}
+            </React.Fragment>
+        );
+    };
     // console.log(bimbingans);
     return (
         <div className="card">
@@ -230,6 +337,7 @@ const bimbingan = () => {
                     <Toolbar
                         className="mb-4"
                         left={leftToolbarTemplate}
+                        right={rightToolbarTemplate}
                     />
                     <DataTable value={bimbingans} rows={2} paginator responsiveLayout="scroll">
                         <Column field="tanggal_bimbingan" header="Tanggal Bimbingan" style={{ width: '10%' }} />
@@ -373,6 +481,33 @@ const bimbingan = () => {
                                 <span>
                                     Are you sure you are not guiding{" "}
                                     <b>{data_mhs_ta.nama_mahasiswa}</b>?
+                                </span>
+                            )}
+                        </div>
+                    </Dialog>
+
+                    <Dialog
+                        visible={accsidangtaDialog}
+                        style={{ width: "450px" }}
+                        header="Confirm"
+                        modal
+                        footer={accsidangtaDialogFooter}
+                        onHide={hideAccSidangTaDialog}
+                    >
+                        <div className="flex align-items-center justify-content-center">
+                            <i
+                                className="pi pi-exclamation-triangle mr-3"
+                                style={{ fontSize: "2rem" }}
+                            />
+                            {data_mhs_ta.acc_pembimbing_satu === '0' ? (
+                                <span>
+                                    are you sure about accepting {" "} <b>{data_mhs_ta.nama_mahasiswa}</b> {" "}final project hearing
+                                    ?
+                                </span>
+                            ) : (
+                                <span>
+                                    are you sure about canceling {" "} <b>{data_mhs_ta.nama_mahasiswa}</b> {" "}final project hearing
+                                    ?
                                 </span>
                             )}
                         </div>
