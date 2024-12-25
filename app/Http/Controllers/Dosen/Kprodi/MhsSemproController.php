@@ -9,9 +9,11 @@ use App\Http\Resources\MhsSemproResource;
 use App\Models\Booking;
 use App\Models\Dosen;
 use App\Models\Pimpinan;
+use App\Models\PklMhs;
 use App\Models\Ruangan;
 use App\Models\SemproMhs;
 use App\Models\Sesi;
+use App\Models\TaMhs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -68,7 +70,7 @@ class MhsSemproController extends Controller
             ->get();
         // dd($data_mhs->toArray());
         $RSTterpakai = Booking::select('ruangan_id', 'sesi_id', 'tgl_booking')->where('status_booking', '1')->get()->toArray();
-        $id_dosens = SemproMhs::where('id_sempro_mhs', $id)
+        $id_dosens_sempro = SemproMhs::where('id_sempro_mhs', $id)
             ->select('pembimbing_1_id', 'pembimbing_2_id', 'penguji_id')
             ->get()
             ->flatMap(fn($item) => [$item->pembimbing_1_id, $item->pembimbing_2_id, $item->penguji_id])
@@ -76,11 +78,36 @@ class MhsSemproController extends Controller
             ->values()
             ->toArray();
         // dd($id_dosens);
-        $mahasiswa_id = SemproMhs::where('status_ver_sempro', '3')
-            ->where(function ($query) use ($id_dosens) {
-                $query->whereIn('pembimbing_1_id', $id_dosens)
-                    ->orWhereIn('pembimbing_2_id', $id_dosens)
-                    ->orWhereIn('penguji_id', $id_dosens);
+        $mahasiswa_ta_id = TaMhs::where('status_ver_ta', '3')
+            ->where(function ($query) use ($id_dosens_sempro) {
+                $query->whereIn('pembimbing_1_id', $id_dosens_sempro)
+                    ->orWhereIn('pembimbing_2_id', $id_dosens_sempro)
+                    ->orWhereIn('ketua_id', $id_dosens_sempro)
+                    ->orWhereIn('sekretaris_id', $id_dosens_sempro)
+                    ->orWhereIn('penguji_1_id', $id_dosens_sempro)
+                    ->orWhereIn('penguji_2_id', $id_dosens_sempro);
+            })
+            ->get()
+            ->map(function ($ta) {
+                return $ta->mahasiswa_id;
+            })
+            ->toArray();
+        $mahasiswa_pkl_id = PklMhs::where('status_ver_pkl', '3')
+            ->where(function ($query) use ($id_dosens_sempro) {
+                $query->whereIn('pembimbing_id', $id_dosens_sempro)
+                    ->orWhereIn('penguji_id', $id_dosens_sempro);
+            })
+            ->with('r_usulan')
+            ->get()
+            ->map(function ($pklMhs) {
+                return $pklMhs->r_usulan->mahasiswa_id;
+            })
+            ->toArray();
+        $mahasiswa_sempro_id = SemproMhs::where('status_ver_sempro', '3')
+            ->where(function ($query) use ($id_dosens_sempro) {
+                $query->whereIn('pembimbing_1_id', $id_dosens_sempro)
+                    ->orWhereIn('pembimbing_2_id', $id_dosens_sempro)
+                    ->orWhereIn('penguji_id', $id_dosens_sempro);
             })
             ->get()
             ->map(function ($sempro) {
@@ -88,10 +115,12 @@ class MhsSemproController extends Controller
             })
             ->toArray();
         // dd($mahasiswa_id);
+        $mahasiswa_id = array_unique(array_merge($mahasiswa_sempro_id, $mahasiswa_ta_id, $mahasiswa_pkl_id));
         $STDosen = Booking::select('sesi_id', 'tgl_booking')->where('status_booking', '1')
             ->whereIn('mahasiswa_id', $mahasiswa_id)
             ->get()
             ->toArray();
+        // dd($STDosen, $RSTterpakai);
         $id_user = auth()->user()->id;
         $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
         $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
@@ -181,10 +210,10 @@ class MhsSemproController extends Controller
             $sempro = SemproMhs::findOrFail($id);
             $sempro->update($data_penugasan);
             DB::commit();
-            return back()->with('success', 'Verifikasi Sempro updated successfully');
+            return back()->with('success', 'Dosen Pembimbing / Penguji updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Verifikasi Sempro updated failed');
+            return back()->with('error', 'Dosen Pembimbing / Penguji updated failed');
         }
     }
 
@@ -204,6 +233,7 @@ class MhsSemproController extends Controller
                 ->where('tgl_booking', $request->tgl_booking)
                 ->where('sesi_id', $request->sesi_id)
                 ->where('tgl_booking', $request->tgl_booking)
+                ->where('status_booking', '1')
                 ->exists();
             if ($exists) {
                 $validator->errors()->add('ruangan_id', 'Kombinasi ruangan dan sesi sudah ada');

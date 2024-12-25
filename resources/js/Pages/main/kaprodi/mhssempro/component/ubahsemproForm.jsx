@@ -74,7 +74,7 @@ const SemproForm = ({
         <Dialog
             visible={semproDialog}
             style={{ width: "450px" }}
-            header="Verifikasi Usulan Tempat PKL"
+            header="Ubah Pembimbing dan Penguji"
             modal
             className="p-fluid"
             footer={semproDialogFooter}

@@ -12,7 +12,9 @@ use App\Models\Dosen;
 use App\Models\Pimpinan;
 use App\Models\PklMhs;
 use App\Models\Ruangan;
+use App\Models\SemproMhs;
 use App\Models\Sesi;
+use App\Models\TaMhs;
 use App\Models\UsulanTempatPkl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -68,7 +70,7 @@ class MhspklController extends Controller
         $mahasiswa_id = PklMhs::where('id_pkl_mhs', $id)->with('r_usulan')->first();
         // dd($data_mhs->toArray());
         $RSTterpakai = Booking::select('ruangan_id', 'sesi_id', 'tgl_booking')->where('status_booking', '1')->get()->toArray();
-        $id_dosens = PklMhs::whereHas('r_usulan', function ($query) use ($mahasiswa_id) {
+        $id_dosens_pkl = PklMhs::whereHas('r_usulan', function ($query) use ($mahasiswa_id) {
             $query->where('mahasiswa_id', $mahasiswa_id->r_usulan->mahasiswa_id);
         })
             ->select('pembimbing_id', 'penguji_id')
@@ -77,10 +79,35 @@ class MhspklController extends Controller
             ->unique()
             ->values()
             ->toArray();
-        $mahasiswa_id = PklMhs::where('status_ver_pkl', '3')
-            ->where(function ($query) use ($id_dosens) {
-                $query->whereIn('pembimbing_id', $id_dosens)
-                    ->orWhereIn('penguji_id', $id_dosens);
+        $mahasiswa_sempro_id = SemproMhs::where('status_sempro', '3')
+            ->where(function ($query) use ($id_dosens_pkl) {
+                $query->whereIn('pembimbing_1_id', $id_dosens_pkl)
+                    ->orWhereIn('pembimbing_2_id', $id_dosens_pkl)
+                    ->orWhereIn('penguji_id', $id_dosens_pkl);
+            })
+            ->get()
+            ->map(function ($sempro) {
+                return $sempro->mahasiswa_id;
+            })
+            ->toArray();
+        $mahasiswa_ta_id = TaMhs::where('status_ver_ta', '3')
+            ->where(function ($query) use ($id_dosens_pkl) {
+                $query->whereIn('pembimbing_1_id', $id_dosens_pkl)
+                    ->orWhereIn('pembimbing_2_id', $id_dosens_pkl)
+                    ->orWhereIn('ketua_id', $id_dosens_pkl)
+                    ->orWhereIn('sekretaris_id', $id_dosens_pkl)
+                    ->orWhereIn('penguji_1_id', $id_dosens_pkl)
+                    ->orWhereIn('penguji_2_id', $id_dosens_pkl);
+            })
+            ->get()
+            ->map(function ($ta) {
+                return $ta->mahasiswa_id;
+            })
+            ->toArray();
+        $mahasiswa_pkl_id = PklMhs::where('status_ver_pkl', '3')
+            ->where(function ($query) use ($id_dosens_pkl) {
+                $query->whereIn('pembimbing_id', $id_dosens_pkl)
+                    ->orWhereIn('penguji_id', $id_dosens_pkl);
             })
             ->with('r_usulan')
             ->get()
@@ -88,10 +115,12 @@ class MhspklController extends Controller
                 return $pklMhs->r_usulan->mahasiswa_id;
             })
             ->toArray();
+        $mahasiswa_id = array_unique(array_merge($mahasiswa_sempro_id, $mahasiswa_ta_id, $mahasiswa_pkl_id));
         $STDosen = Booking::select('sesi_id', 'tgl_booking')->where('status_booking', '1')
             ->whereIn('mahasiswa_id', $mahasiswa_id)
             ->get()
             ->toArray();
+        // dd($STDosen, $RSTterpakai);
         $id_user = auth()->user()->id;
         $id_dosen = Dosen::where('user_id', $id_user)->first()->id_dosen;
         $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
@@ -246,6 +275,7 @@ class MhspklController extends Controller
                 ->where('tgl_booking', $request->tgl_booking)
                 ->where('sesi_id', $request->sesi_id)
                 ->where('tgl_booking', $request->tgl_booking)
+                ->where('status_booking', '1')
                 ->exists();
             if ($exists) {
                 $validator->errors()->add('ruangan_id', 'Kombinasi ruangan dan sesi sudah ada');

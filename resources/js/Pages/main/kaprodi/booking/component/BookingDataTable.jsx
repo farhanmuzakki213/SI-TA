@@ -53,7 +53,7 @@ const BookingDataTable = ({ bookings, selectedbookings, setSelectedbookings, glo
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status_booking === "1" ? "Booking" : "Cancel"}
+                {rowData.status_booking === "0" ? "Cancel" : rowData.status_booking === "1" ? "Booking" : "Selesai"}
             </>
         );
     };

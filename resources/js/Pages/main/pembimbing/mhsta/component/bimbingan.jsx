@@ -215,8 +215,8 @@ const bimbingan = () => {
     const accsidangta = async () => {
         try {
             const formData = new FormData();
-            console.log('ta', data_mhs_ta);
-            console.log('bimbingan', data_dosen);
+            // console.log('ta', data_mhs_ta);
+            // console.log('bimbingan', data_dosen);
             if (data_dosen.id_dosen === data_mhs_ta.pembimbing_1_id) {
                 if (status1 === '0') {
                     formData.append("acc_pembimbing_satu", '1');

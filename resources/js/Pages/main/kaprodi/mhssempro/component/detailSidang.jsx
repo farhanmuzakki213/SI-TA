@@ -355,7 +355,7 @@ const detailSidang = ({
                 <Messages ref={msgs} className="tw-mb-2" />
                 <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
                     <div className="tw-flex tw-items-center">
-                        <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Seminar Proposal</p>
+                        <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Seminar Proposal</p>
                     </div>
                     {!nilaiAkhir() && (
                         <Button icon="pi pi-pencil" severity="success" label="Ubah Dosen"

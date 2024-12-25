@@ -72,7 +72,7 @@ class MhsTAResource extends JsonResource
             'nama_ketua' => $this->r_ketua->nama_dosen ?? null,
             'ketua_id' => $this->ketua_id ?? null,
             'nama_sekretaris' => $this->r_sekretaris->nama_dosen ?? null,
-            'sektretaris_id' => $this->sektretaris_id ?? null,
+            'sekretaris_id' => $this->sekretaris_id ?? null,
 
             'nilai_pembimbing_1' => $pembimbing_1 ? $pembimbing_1->nilai : null,
             'komentar_pembimbing_1' => $pembimbing_1 ? $pembimbing_1->komentar : null,

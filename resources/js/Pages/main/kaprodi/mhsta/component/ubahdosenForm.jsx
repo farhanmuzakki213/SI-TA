@@ -1,6 +1,7 @@
 import React from "react";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
+import { Tooltip } from "primereact/tooltip";
 
 const DosenSidangForm = ({
     dosensidangDialog,
@@ -9,9 +10,12 @@ const DosenSidangForm = ({
     dosensidangDialogFooter,
     dosensidanghideDialog,
     setdosensidang,
-    dosenOptions,
+    dosenPengujiOptions,
     dosenPembimbingOptions
 }) => {
+    // console.log("dosensidang", dosensidang);
+    // console.log("dosenpenguji", dosenPengujiOptions);
+    // console.log("dosenpembimbing", dosenPembimbingOptions);
     const onInputChange = (e, field) => {
         const value = e.target ? e.target.value : e.value;
 
@@ -24,9 +28,12 @@ const DosenSidangForm = ({
 
     // Data yang dipilih
     const selectedOptions = {
-        penguji: dosensidang.penguji_id,
         pembimbing1: dosensidang.pembimbing_1_id,
         pembimbing2: dosensidang.pembimbing_2_id,
+        ketua: dosensidang.ketua_id,
+        sekretaris: dosensidang.sekretaris_id,
+        penguji1: dosensidang.penguji_1_id,
+        penguji2: dosensidang.penguji_2_id,
     };
 
     // Helper untuk mendapatkan golongan
@@ -34,39 +41,95 @@ const DosenSidangForm = ({
         return options.find((d) => d.value === value)?.golongan ?? 0;
     };
 
-    // Filter Penguji
-    const filteredPengujiOptions = dosenOptions.filter((dosen) => {
-        const pembimbing1Golongan = getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing1);
-        const pembimbing2Golongan = getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing2);
-
-        return (
-            dosen.value !== selectedOptions.pembimbing1 &&
-            dosen.value !== selectedOptions.pembimbing2 &&
-            dosen.golongan >= Math.max(pembimbing1Golongan, pembimbing2Golongan)
-        );
-    });
-
     // Filter Pembimbing 1
     const filteredPembimbing1Options = dosenPembimbingOptions.filter((dosen) => {
-        const pengujiGolongan = getGolongan(dosenOptions, selectedOptions.penguji);
         const pembimbing2Golongan = getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing2);
+        const maxGolongan = Math.max(
+            getGolongan(dosenPengujiOptions, selectedOptions.ketua),
+            pembimbing2Golongan
+        );
 
         return (
-            dosen.value !== selectedOptions.penguji &&
             dosen.value !== selectedOptions.pembimbing2 &&
-            dosen.golongan >= Math.max(pengujiGolongan, pembimbing2Golongan)
+            dosen.golongan >= maxGolongan
         );
     });
 
     // Filter Pembimbing 2
     const filteredPembimbing2Options = dosenPembimbingOptions.filter((dosen) => {
-        const pengujiGolongan = getGolongan(dosenOptions, selectedOptions.penguji);
         const pembimbing1Golongan = getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing1);
+        const maxGolongan = Math.max(
+            getGolongan(dosenPengujiOptions, selectedOptions.ketua),
+            pembimbing1Golongan
+        );
 
         return (
-            dosen.value !== selectedOptions.penguji &&
             dosen.value !== selectedOptions.pembimbing1 &&
-            dosen.golongan >= Math.max(pengujiGolongan, pembimbing1Golongan)
+            dosen.golongan >= maxGolongan
+        );
+    });
+
+    // Filter Ketua
+    const filteredKetuaOptions = dosenPengujiOptions.filter((dosen) => {
+        const maxGolongan = Math.max(
+            getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing1),
+            getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing2)
+        );
+
+        return (
+            dosen.value !== selectedOptions.sekretaris &&
+            dosen.value !== selectedOptions.penguji1 &&
+            dosen.value !== selectedOptions.penguji2 &&
+            dosen.golongan >= maxGolongan
+        );
+    });
+
+    // Filter Sekretaris
+    const filteredSekretarisOptions = dosenPengujiOptions.filter((dosen) => {
+        const maxGolongan = Math.max(
+            getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing1),
+            getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing2)
+        );
+
+        return (
+            dosen.value !== selectedOptions.ketua &&
+            dosen.value !== selectedOptions.penguji1 &&
+            dosen.value !== selectedOptions.penguji2 &&
+            dosen.golongan >= maxGolongan
+        );
+    });
+
+    // Filter Penguji 1
+    const filteredPenguji1Options = dosenPengujiOptions.filter((dosen) => {
+        const maxGolongan = Math.max(
+            getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing1),
+            getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing2)
+        );
+
+        return (
+            dosen.value !== selectedOptions.ketua &&
+            dosen.value !== selectedOptions.sekretaris &&
+            dosen.value !== selectedOptions.penguji2 &&
+            dosen.value !== selectedOptions.pembimbing1 &&
+            dosen.value !== selectedOptions.pembimbing2 &&
+            dosen.golongan >= maxGolongan
+        );
+    });
+
+    // Filter Penguji 2
+    const filteredPenguji2Options = dosenPengujiOptions.filter((dosen) => {
+        const maxGolongan = Math.max(
+            getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing1),
+            getGolongan(dosenPembimbingOptions, selectedOptions.pembimbing2)
+        );
+
+        return (
+            dosen.value !== selectedOptions.ketua &&
+            dosen.value !== selectedOptions.sekretaris &&
+            dosen.value !== selectedOptions.penguji1 &&
+            dosen.value !== selectedOptions.pembimbing1 &&
+            dosen.value !== selectedOptions.pembimbing2 &&
+            dosen.golongan >= maxGolongan
         );
     });
 
@@ -74,13 +137,12 @@ const DosenSidangForm = ({
         <Dialog
             visible={dosensidangDialog}
             style={{ width: "450px" }}
-            header="Verifikasi Usulan Tempat PKL"
+            header={dosensidang.status_ver_ta === '2' ? "Ubah Pembimbing dan Penguji" : "Ubah Pembimbing"}
             modal
             className="p-fluid"
             footer={dosensidangDialogFooter}
             onHide={dosensidanghideDialog}
         >
-
             {/* Pembimbing 1*/}
             <div className="field">
                 <label htmlFor="pembimbing_1_id">Pembimbing 1*</label>
@@ -96,12 +158,6 @@ const DosenSidangForm = ({
                 />
                 {submitted && !dosensidang.pembimbing_1_id && (
                     <small className="p-invalid"> Pembimbing 1 is required.</small>
-                )}
-                {submitted && dosensidang.pembimbing_1_id === dosensidang.penguji_id && (
-                    <small className="p-invalid"> Pembimbing 1 and Penguji cannot be the same.</small>
-                )}
-                {submitted && dosensidang.pembimbing_1_id === dosensidang.pembimbing_2_id && (
-                    <small className="p-invalid"> Pembimbing 1 and Pembimbing 2 cannot be the same.</small>
                 )}
             </div>
 
@@ -121,38 +177,82 @@ const DosenSidangForm = ({
                 {submitted && !dosensidang.pembimbing_2_id && (
                     <small className="p-invalid"> Pembimbing 2 is required.</small>
                 )}
-                {submitted && dosensidang.pembimbing_2_id === dosensidang.penguji_id && (
-                    <small className="p-invalid"> Pembimbing 2 and Penguji cannot be the same.</small>
-                )}
-                {submitted && dosensidang.pembimbing_1_id === dosensidang.pembimbing_2_id && (
-                    <small className="p-invalid"> Pembimbing 1 and Pembimbing 2 cannot be the same.</small>
-                )}
             </div>
+            {dosensidang.status_ver_ta === '2' && (
+                <>
+                    {/* Ketua */}
+                    <div className="field">
+                        <label htmlFor="ketua_id">Ketua *</label>
+                        <Dropdown
+                            id="ketua_id"
+                            value={dosensidang.ketua_id || ""}
+                            onChange={(e) => onInputChange(e, "ketua_id")}
+                            options={filteredKetuaOptions}
+                            placeholder="Select a Ketua"
+                            optionLabel="label"
+                            optionValue="value"
+                            required
+                        />
+                        {submitted && !dosensidang.ketua_id && (
+                            <small className="p-invalid"> Ketua is required.</small>
+                        )}
+                    </div>
 
-            {/* Penguji */}
-            <div className="field">
-                <label htmlFor="penguji_id">Penguji *</label>
-                <Dropdown
-                    id="penguji_id"
-                    value={dosensidang.penguji_id || ""}
-                    onChange={(e) => onInputChange(e, "penguji_id")}
-                    options={filteredPengujiOptions}
-                    placeholder="Select a Penguji"
-                    optionLabel="label"
-                    optionValue="value"
-                    required
-                />
-                {submitted && !dosensidang.penguji_id && (
-                    <small className="p-invalid"> Penguji is required.</small>
-                )}
-                {submitted && dosensidang.pembimbing_1_id === dosensidang.penguji_id && (
-                    <small className="p-invalid"> Pembimbing and Penguji cannot be the same.</small>
-                )}
-                {submitted && dosensidang.pembimbing_2_id === dosensidang.penguji_id && (
-                    <small className="p-invalid"> Pembimbing and Penguji cannot be the same.</small>
-                )}
-            </div>
+                    {/* Sekretaris */}
+                    <div className="field">
+                        <label htmlFor="sekretaris_id">Sekretaris *</label>
+                        <Dropdown
+                            id="sekretaris_id"
+                            value={dosensidang.sekretaris_id || ""}
+                            onChange={(e) => onInputChange(e, "sekretaris_id")}
+                            options={filteredSekretarisOptions}
+                            placeholder="Select a Sekretaris"
+                            optionLabel="label"
+                            optionValue="value"
+                            required
+                        />
+                        {submitted && !dosensidang.sekretaris_id && (
+                            <small className="p-invalid"> Sekretaris is required.</small>
+                        )}
+                    </div>
 
+                    {/* Penguji 1 */}
+                    <div className="field">
+                        <label htmlFor="penguji_1_id">Penguji 1 *</label>
+                        <Dropdown
+                            id="penguji_1_id"
+                            value={dosensidang.penguji_1_id || ""}
+                            onChange={(e) => onInputChange(e, "penguji_1_id")}
+                            options={filteredPenguji1Options}
+                            placeholder="Select a Penguji 1"
+                            optionLabel="label"
+                            optionValue="value"
+                            required
+                        />
+                        {submitted && !dosensidang.penguji_1_id && (
+                            <small className="p-invalid"> Penguji 1 is required.</small>
+                        )}
+                    </div>
+
+                    {/* Penguji 2 */}
+                    <div className="field">
+                        <label htmlFor="penguji_2_id">Penguji 2 *</label>
+                        <Dropdown
+                            id="penguji_2_id"
+                            value={dosensidang.penguji_2_id || ""}
+                            onChange={(e) => onInputChange(e, "penguji_2_id")}
+                            options={filteredPenguji2Options}
+                            placeholder="Select a Penguji 2"
+                            optionLabel="label"
+                            optionValue="value"
+                            required
+                        />
+                        {submitted && !dosensidang.penguji_2_id && (
+                            <small className="p-invalid"> Penguji 2 is required.</small>
+                        )}
+                    </div>
+                </>
+            )}
         </Dialog>
     );
 };

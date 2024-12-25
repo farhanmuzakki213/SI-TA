@@ -43,6 +43,8 @@ const BookingForm = ({
         setbooking((prevBooking) => ({
             ...prevBooking,
             tgl_booking: formatDate(selectedDate),
+            ruangan_id: null,
+            sesi_id: null,
         }));
     };
 
@@ -136,7 +138,10 @@ const BookingForm = ({
                         used.sesi_id === booking.sesi_id
                 )
             ) {
-                return "Dosen sudah memiliki jadwal pada sesi ini";
+                const sesi = sesiOptions.find(
+                    (option) => option.value === booking.sesi_id
+                );
+                return sesi ? sesi.label : "sesi tidak ditemukan";
             }
             return "Tidak ada sesi tersedia";
         }
@@ -152,7 +157,10 @@ const BookingForm = ({
                         used.sesi_id === booking.sesi_id
                 )
             ) {
-                return "Dosen sudah memiliki jadwal pada sesi ini";
+                const ruangan = ruanganOptions.find(
+                    (option) => option.value === booking.ruangan_id
+                );
+                return ruangan ? ruangan.label : "Ruangan tidak ditemukan";
             }
             if (
                 bookingused.some(

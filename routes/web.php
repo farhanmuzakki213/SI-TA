@@ -147,6 +147,9 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             // Tugas Akhir
             Route::get('/Kprodi/MhsTA', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'index'])->name('MhsTAKprodi');
             Route::get('/Kprodi/MhsTA/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'detail']);
+            Route::put('/Kprodi/MhsTA/Dosen/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'updateDosen'])->name('MhsTAKprodi.updateDosen');
+            Route::post('/Kprodi/MhsTA/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'storeJadwal'])->name('MhsTAKprodi.storeJadwal');
+            Route::put('/Kprodi/MhsTA/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'updateJadwal'])->name('MhsTAKprodi.updateJadwal');
 
             // Sempro
             Route::middleware(['auth', 'JenjangProdiKaprodi:D4'])->group(function () {
