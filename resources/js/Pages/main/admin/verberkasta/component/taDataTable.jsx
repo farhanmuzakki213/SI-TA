@@ -6,7 +6,7 @@ import { Link } from '@inertiajs/react';
 import { Avatar } from 'primereact/avatar';
 import { Tag } from 'primereact/tag';
 
-const TaDataTable = ({ tas, selectedtas, setSelectedtas, globalFilter, header, editta, confirmDeleteta, dt }) => {
+const TaDataTable = ({ tas, selectedtas, setSelectedtas, globalFilter, header, editta, dt }) => {
 
     // console.log(tas);
     const namaBodyTemplate = (rowData) => {
@@ -45,6 +45,15 @@ const TaDataTable = ({ tas, selectedtas, setSelectedtas, globalFilter, header, e
         );
     };
 
+    const ipkBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">IPK</span>
+                {rowData.ipk || 'N/A'}
+            </>
+        );
+    };
+
     const fileBodyTemplate = (rowData) => {
         return rowData.file_ta ? (
             <>
@@ -67,6 +76,87 @@ const TaDataTable = ({ tas, selectedtas, setSelectedtas, globalFilter, header, e
         ) : (
             <>
                 <span className="p-column-title">File</span>
+                N/A
+            </>
+        );
+    };
+
+    const filelaporanBodyTemplate = (rowData) => {
+        return rowData.file_laporan ? (
+            <>
+                <span className="p-column-title">File Laporan</span>
+                <Button
+                    icon="pi pi-file"
+                    severity="info"
+                    rounded
+                    outlined
+                    onClick={() =>
+                        window.open(
+                            `/storage/uploads/ta/file_laporan/${rowData.file_laporan}`,
+                            "_blank"
+                        )
+                    }
+                    tooltip="Lihat File Laporan"
+                    tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
+                />
+            </>
+        ) : (
+            <>
+                <span className="p-column-title">File Laporan</span>
+                N/A
+            </>
+        );
+    };
+
+    const fileproposalBodyTemplate = (rowData) => {
+        return rowData.file_proposal ? (
+            <>
+                <span className="p-column-title">File Proposal</span>
+                <Button
+                    icon="pi pi-file"
+                    severity="info"
+                    rounded
+                    outlined
+                    onClick={() =>
+                        window.open(
+                            `/storage/uploads/sempro/file/${rowData.file_proposal}`,
+                            "_blank"
+                        )
+                    }
+                    tooltip="Lihat File Proposal"
+                    tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
+                />
+            </>
+        ) : (
+            <>
+                <span className="p-column-title">File Proposal</span>
+                N/A
+            </>
+        );
+    };
+
+    const filerevisiBodyTemplate = (rowData) => {
+        return rowData.file_revisi_sidang ? (
+            <>
+                <span className="p-column-title">File Revisi Sidang</span>
+                <Button
+                    icon="pi pi-file"
+                    severity="info"
+                    rounded
+                    outlined
+                    onClick={() =>
+                        window.open(
+                            `/storage/uploads/ta/file/${rowData.file_revisi_sidang}`,
+                            "_blank"
+                        )
+                    }
+                    tooltip="Lihat File Revisi Sidang"
+                    tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
+                />
+            </>
+        ) : (
+            <>
+                <span className="p-column-title">File Revisi Sidang</span>
                 N/A
             </>
         );
@@ -151,7 +241,15 @@ const TaDataTable = ({ tas, selectedtas, setSelectedtas, globalFilter, header, e
             <Column field="nim_mahasiswa" header="Nim Mahasiswa" sortable body={nimBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
             <Column field="judul" header="Judul" sortable body={judulBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column header="File TA" sortable body={fileBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column header="File TA" sortable body={fileBodyTemplate} ></Column>
+            <Column header="File Laporan" sortable body={filelaporanBodyTemplate} ></Column>
+            <Column header="File Proposal" sortable body={fileproposalBodyTemplate} ></Column>
+            {tas && tas.length > 0 && tas.some((data) => data.file_revisi_sidang) && (
+                <>
+                    <Column header="File Revisi Sidang" sortable body={filerevisiBodyTemplate} ></Column>
+                    <Column field="ipk" header="IPK" sortable body={ipkBodyTemplate} ></Column>
+                </>
+            )}
             <Column field="status_ver_ta" header="Status Berkas" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>

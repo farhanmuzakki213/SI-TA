@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('judul')->nullable();
             $table->text('file_proposal')->nullable();
             $table->text('file_ta')->nullable();
+            $table->text('file_laporan')->nullable();
+            $table->text('filee_revisi_sidang')->nullable();
+            $table->double('ipk')->nullable();
             $table->text('komentar_ta')->nullable();
             $table->text('komentar_proposal')->nullable();
             $table->text('komentar_judul')->nullable();

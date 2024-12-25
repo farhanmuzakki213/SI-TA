@@ -9,7 +9,10 @@ class TaMhs extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_ta_mhs', 'mahasiswa_id', 'pembimbing_1_id', 'pembimbing_2_id', 'penguji_1_id', 'penguji_2_id', 'ketua_id', 'sekretaris_id', 'judul', 'file_proposal', 'file_ta', 'komentar_ta', 'komentar_proposal', 'acc_pembimbing_satu', 'acc_pembimbing_dua', 'status_ver_ta', 'status_ver_proposal', 'status_judul', 'status_sidang_ta',  'komentar_judul'
+        'id_ta_mhs', 'mahasiswa_id', 'pembimbing_1_id', 'pembimbing_2_id', 'penguji_1_id',
+        'penguji_2_id', 'ketua_id', 'sekretaris_id', 'judul', 'file_proposal', 'file_ta', 'file_laporan', 'file_revisi_sidang', 'ipk',
+        'komentar_ta', 'komentar_proposal', 'acc_pembimbing_satu', 'acc_pembimbing_dua', 'status_ver_ta',
+        'status_ver_proposal', 'status_judul', 'status_sidang_ta',  'komentar_judul'
     ];
     protected $table = 'ta_mhs';
     protected $primaryKey = 'id_ta_mhs';

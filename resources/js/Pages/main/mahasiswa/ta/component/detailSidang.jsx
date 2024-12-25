@@ -36,6 +36,9 @@ const detailTa = ({
         judul: '',
         file_ta: '',
         file_proposal: '',
+        file_laporan: '',
+        file_revisi_sidang: '',
+        ipk: '',
     };
     // console.log(data_ta);
     const [tas, settas] = useState(null);
@@ -105,7 +108,12 @@ const detailTa = ({
             ta.judul,
             ta.file_ta,
             ta.file_proposal,
+            ta.file_laporan,
         ];
+        if(data_tas.status_sidang_ta === '3'){
+            requiredFieldsForUpdate.push(ta.file_revisi_sidang);
+            requiredFieldsForUpdate.push(ta.ipk);
+        }
         let isValid = true;
         isValid = requiredFieldsForUpdate.every(field => field);
 
@@ -124,7 +132,10 @@ const detailTa = ({
             const formData = new FormData();
             formData.append("judul", ta.judul);
             formData.append("file_ta", ta.file_ta);
+            formData.append("file_laporan", ta.file_laporan);
             formData.append("file_proposal", ta.file_proposal);
+            formData.append("file_revisi_sidang", ta.file_revisi_sidang);
+            formData.append("ipk", ta.ipk);
             await router.post(`/MhsTA/Berkas/${ta.id_ta_mhs}/update`, formData, {
                 _method: 'put',
                 forceFormData: true,
@@ -312,20 +323,22 @@ const detailTa = ({
                 <div className="card">
                     <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Files</p>
                     <div className="tw-mt-4 tw-space-y-4">
-                        <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                            <div className="tw-flex tw-items-center">
-                                <span className="tw-text-gray-800">Proposal</span>
+                        {data_tas.file_proposal && (
+                            <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                                <div className="tw-flex tw-items-center">
+                                    <span className="tw-text-gray-800">Proposal</span>
+                                </div>
+                                <Button
+                                    icon="pi pi-file"
+                                    severity="primary"
+                                    outlined
+                                    label="File"
+                                    tooltip="Lihat File"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={() => window.open(`/storage/uploads/ta/file/${data_tas?.file_proposal}`, '_blank')}
+                                />
                             </div>
-                            <Button
-                                icon="pi pi-file"
-                                severity="primary"
-                                outlined
-                                label="File"
-                                tooltip="Lihat File"
-                                tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                onClick={() => window.open(`/storage/uploads/ta/file/${data_tas?.file_proposal}`, '_blank')}
-                            />
-                        </div>
+                        )}
                         {data_tas.file_ta && (
                             <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
                                 <div className="tw-flex tw-items-center">
@@ -339,6 +352,38 @@ const detailTa = ({
                                     tooltip="Lihat File"
                                     tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
                                     onClick={() => window.open(`/storage/uploads/ta/file_ta/${data_tas?.file_ta}`, '_blank')}
+                                />
+                            </div>
+                        )}
+                        {data_tas.file_laporan && (
+                            <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                                <div className="tw-flex tw-items-center">
+                                    <span className="tw-text-gray-800">Laporan</span>
+                                </div>
+                                <Button
+                                    icon="pi pi-file"
+                                    severity="primary"
+                                    outlined
+                                    label="File"
+                                    tooltip="Lihat File"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={() => window.open(`/storage/uploads/ta/file_laporan/${data_tas?.file_laporan}`, '_blank')}
+                                />
+                            </div>
+                        )}
+                        {data_tas.file_revisi_sidang && (
+                            <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                                <div className="tw-flex tw-items-center">
+                                    <span className="tw-text-gray-800">Laporan</span>
+                                </div>
+                                <Button
+                                    icon="pi pi-file"
+                                    severity="primary"
+                                    outlined
+                                    label="File"
+                                    tooltip="Lihat File"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={() => window.open(`/storage/uploads/ta/file_revisi_sidang/${data_tas?.file_revisi_sidang}`, '_blank')}
                                 />
                             </div>
                         )}

@@ -18,6 +18,8 @@ class VerBerkasTAController extends Controller
             ->where('acc_pembimbing_satu', '1')
             ->where('acc_pembimbing_dua', '1')
             ->whereNotNull('file_ta')
+            ->whereNotNull('file_laporan')
+            ->whereNotNull('file_proposal')
             ->get();
         return Inertia::render('main/admin/verberkasta/index', [
             'data_ta' => MhsTaResource::collection($ta_mhs),

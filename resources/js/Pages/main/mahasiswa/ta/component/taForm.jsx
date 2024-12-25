@@ -4,6 +4,7 @@ import FileUploadC from '@/Components/FileUploadC';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { Tooltip } from 'primereact/tooltip';
+import { InputNumber } from 'primereact/inputnumber';
 
 const taForm = ({
     taDialog,
@@ -25,6 +26,20 @@ const taForm = ({
         setta((prevState) => ({
             ...prevState,
             file_ta: files,
+        }));
+    };
+
+    const onFileLaporanSelect = (files) => {
+        setta((prevState) => ({
+            ...prevState,
+            file_laporan: files,
+        }));
+    };
+
+    const onFileRevisiSelect = (files) => {
+        setta((prevState) => ({
+            ...prevState,
+            file_revisi_sidang: files,
         }));
     };
 
@@ -104,6 +119,58 @@ const taForm = ({
                     <small className="p-invalid">File TA is required.</small>
                 )}
             </div>
+
+            {/* File Laporan */}
+            <div className="field">
+                <label htmlFor="file_laporan">File Laporan *</label>
+                <FileUploadC
+                    multiple={false}
+                    name="file_laporan"
+                    onFileSelect={onFileLaporanSelect}
+                />
+                {submitted && !ta?.file_laporan && (
+                    <small className="p-invalid">File Laporan is required.</small>
+                )}
+            </div>
+
+            {ta.status_sidang_ta === '3' && (
+                <>
+                    {/* File Revisi Sidang */}
+                    <div className="field">
+                        <label htmlFor="file_revisi_sidang">File Revisi Sidang *</label>
+                        <FileUploadC
+                            multiple={false}
+                            name="file_revisi_sidang"
+                            onFileSelect={onFileRevisiSelect}
+                        />
+                        {submitted && !ta?.file_revisi_sidang && (
+                            <small className="p-invalid">File Revisi Sidang is required.</small>
+                        )}
+                    </div>
+                    {/* IPK */}
+                    <div className="field">
+                        <label htmlFor="ipk">IPK *</label>
+                        <InputNumber
+                            inputId="ipk"
+                            value={ta.ipk || ''}
+                            onValueChange={(e) => onInputChange(e, "ipk")}
+                            required
+                            mode="decimal"
+                            showButtons
+                            min={0}
+                            max={100}
+                            minFractionDigits={2}
+                            className={classNames({
+                                "p-invalid": submitted && !ta.ipk,
+                            })}
+                        />
+                        {submitted && !ta.ipk && (
+                            <small className="p-invalid">IPK is required.</small>
+                        )}
+                    </div>
+                </>
+            )}
+
 
         </Dialog>
     );

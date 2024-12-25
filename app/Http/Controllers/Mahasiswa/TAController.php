@@ -101,7 +101,7 @@ class TAController extends Controller
             return to_route('MhsTA')->with('success', 'Bimbingan TA created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsTA')->with('error', 'Bimbingan TA created failed'.$e->getMessage());
+            return to_route('MhsTA')->with('error', 'Bimbingan TA created failed' . $e->getMessage());
         }
     }
 
@@ -148,11 +148,20 @@ class TAController extends Controller
     public function updateBerkas(Request $request, string $id)
     {
         // dd($request->all(), $id);
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'judul' => 'required',
             'file_proposal' => 'required',
             'file_ta' => 'required',
-        ]);
+            'file_laporan' => 'required',
+        ];
+        $data_ta = TaMhs::findOrFail($id);
+        if ($data_ta->status_sidang_ta === '3') {
+            $rules = array_merge($rules, [
+                'file_revisi_sidang' => 'required',
+                'ipk' => 'required',
+            ]);
+        }
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
@@ -164,9 +173,15 @@ class TAController extends Controller
             if ($oldData->file_ta !== null && $oldData->file_ta !== $filenameTA) {
                 Storage::delete('public/uploads/ta/file_ta/' . $oldData->file_ta);
             }
-            $filenameProposal = $request->file_proposal ?? null;
-            if ($oldData->file_proposal !== null && $oldData->file_proposal !== $filenameProposal) {
-                Storage::delete('public/uploads/sempro/file/' . $oldData->file_proposal);
+            $filenameLaporan = $request->file_laporan ?? null;
+            if ($oldData->file_laporan !== null && $oldData->file_laporan !== $filenameLaporan) {
+                Storage::delete('public/uploads/ta/file_laporan/' . $oldData->file_laporan);
+            }
+            if ($request->hasFile('file_laporan')) {
+                $file = $request->file('file_laporan');
+                $filenameLaporan = $file->getClientOriginalName();
+                $path = 'public/uploads/ta/file_laporan/';
+                $file->storeAs($path, $filenameLaporan);
             }
             if ($request->hasFile('file_ta')) {
                 $file = $request->file('file_ta');
@@ -177,13 +192,30 @@ class TAController extends Controller
             $data = [
                 'judul' => $request->judul,
                 'file_ta' => $filenameTA,
+                'file_laporan' => $filenameLaporan,
             ];
+            $filenameProposal = $request->file_proposal ?? null;
+            if ($oldData->file_proposal !== null && $oldData->file_proposal !== $filenameProposal) {
+                Storage::delete('public/uploads/sempro/file/' . $oldData->file_proposal);
+            }
             if ($request->hasFile('file_proposal')) {
                 $file = $request->file('file_proposal');
                 $filenameSempro = $file->getClientOriginalName();
                 $path = 'public/uploads/sempro/file/';
                 $file->storeAs($path, $filenameSempro);
                 $data['file_proposal'] = $filenameSempro;
+            }
+            $filenameRevisi = $request->file_revisi_sidang ?? null;
+            if ($oldData->file_revisi_sidang !== null && $oldData->file_revisi_sidang !== $filenameRevisi) {
+                Storage::delete('public/uploads/ta/file_revisi_sidang/' . $oldData->file_revisi_sidang);
+            }
+            if ($request->hasFile('file_revisi_sidang')) {
+                $file = $request->file('file_revisi_sidang');
+                $filenameRevisi = $file->getClientOriginalName();
+                $path = 'public/uploads/ta/file_revisi_sidang/';
+                $file->storeAs($path, $filenameRevisi);
+                $data['file_revisi_sidang'] = $filenameRevisi;
+                $data['ipk'] = $request->ipk;
             }
             // dd($data);
             $oldData->update($data);
