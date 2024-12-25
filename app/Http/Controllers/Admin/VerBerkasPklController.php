@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
-class UsulanSidangPklController extends Controller
+class VerBerkasPklController extends Controller
 {
     public function index()
     {
         $pkl_mhs = PklMhs::with('r_usulan.r_mahasiswa')->whereNotNull('judul_laporan')->get();
-        return Inertia::render('main/admin/usulansidangpkl/usulansidangpkl', [
+        return Inertia::render('main/admin/verberkaspkl/index', [
             'data_pkl_mhs' => MhsPklResource::collection($pkl_mhs),
         ]);
     }
@@ -35,27 +35,18 @@ class UsulanSidangPklController extends Controller
         }
         DB::beginTransaction();
         try {
-            $pkl_mhs = PklMhs::with('r_usulan.r_mahasiswa', 'r_pembimbing', 'r_penguji')->findOrFail($id);
+            $pkl_mhs = PklMhs::findOrFail($id);
             // dd($pkl_mhs->toArray());
             $data = [
                 'status_ver_pkl' => $request->status_ver_pkl,
             ];
-            // if ($request->status_ver_pkl == 3) {
-            //     $data_pembimbing = User::where('id', $pkl_mhs->r_pembimbing->user_id)->first();
-            //     $data_penguji = User::where('id', $pkl_mhs->r_penguji->user_id)->first();
-
-            //     if($data_pembimbing && $data_penguji){
-            //         Notification::send($data_pembimbing, new PenugasanDosen($pkl_mhs));
-            //         Notification::send($data_penguji, new PenugasanDosen($pkl_mhs));
-            //     }
-            // }
 
             $pkl_mhs->update($data);
             DB::commit();
-            return to_route('usulansidangpkl')->with('success', 'Ver Sidang Pkl updated successfully');
+            return to_route('verberkaspkl')->with('success', 'Ver Sidang Pkl updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('usulansidangpkl')->with('error', 'Ver Sidang Pkl updated failed');
+            return to_route('verberkaspkl')->with('error', 'Ver Sidang Pkl updated failed');
         }
     }
 }

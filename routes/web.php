@@ -175,6 +175,7 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
         // Surat Tugas
         Route::get('/SuratTugas/Pkl/{id}', [\App\Http\Controllers\SuratTugasController::class, 'pkl']);
         Route::get('/SuratTugas/Sempro/{id}', [\App\Http\Controllers\SuratTugasController::class, 'sempro']);
+        Route::get('/SuratTugas/TA/{id}', [\App\Http\Controllers\SuratTugasController::class, 'ta']);
     });
 });
 
@@ -185,12 +186,16 @@ Route::group(['middleware' => ['role:admin']], function () {
     // Data Master : Dosen, Mahasiswa, Jurusan, Prodi, Kelas, Semester dan Tahun Akademik, Jabatan Pimpinan, Ruangan dan Sesi
     Route::middleware('auth')->group(function () {
         // Persetujuan Sidang PKL
-        Route::get('/usulansidangpkl', [\App\Http\Controllers\Admin\UsulanSidangPklController::class, 'index'])->name('usulansidangpkl');
-        Route::put('/usulansidangpkl/{id}/update', [\App\Http\Controllers\Admin\UsulanSidangPklController::class, 'update'])->name('usulansidangpkl.update');
+        Route::get('/VerifikasiBerkas/Pkl', [\App\Http\Controllers\Admin\VerBerkasPklController::class, 'index'])->name('verberkaspkl');
+        Route::put('/VerifikasiBerkas/Pkl/{id}/update', [\App\Http\Controllers\Admin\VerBerkasPklController::class, 'update'])->name('verberkaspkl.update');
 
         // Persetujuan Sidang SEMPRO
-        Route::get('/usulansidangsempro', [\App\Http\Controllers\Admin\UsulanSidangSemproController::class, 'index'])->name('usulansidangsempro');
-        Route::put('/usulansidangsempro/{id}/update', [\App\Http\Controllers\Admin\UsulanSidangSemproController::class, 'update'])->name('usulansidangsempro.update');
+        Route::get('/VerifikasiBerkas/Sempro', [\App\Http\Controllers\Admin\VerBerkasSemproController::class, 'index'])->name('verberkassempro');
+        Route::put('/VerifikasiBerkas/Sempro/{id}/update', [\App\Http\Controllers\Admin\VerBerkasSemproController::class, 'update'])->name('verberkassempro.update');
+
+        // Persetujuan Sidang TA
+        Route::get('/VerifikasiBerkas/TA', [\App\Http\Controllers\Admin\VerBerkasTAController::class, 'index'])->name('verberkasta');
+        Route::put('/VerifikasiBerkas/TA/{id}/update', [\App\Http\Controllers\Admin\VerBerkasTAController::class, 'update'])->name('verberkasta.update');
 
         // Data Dosen
         Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');

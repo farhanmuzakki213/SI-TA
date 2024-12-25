@@ -3,6 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
+import { Tag } from 'primereact/tag';
 
 const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanpkls, globalFilter, header, editusulanpkl, dt }) => {
 
@@ -62,37 +63,55 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
     };
 
     const fileBodyTemplate = (rowData) => {
-            return rowData.file_pendukung ? (
-                <>
-                    <span className="p-column-title">File</span>
-                    <Button
-                        icon="pi pi-file"
-                        severity="info"
-                        rounded
-                        outlined
-                        onClick={() =>
-                            window.open(
-                                `/storage/uploads/pkl/usulantempat/${rowData.file_pendukung}`,
-                                "_blank"
-                            )
-                        }
-                        tooltip="Lihat File Laporan"
-                        tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
-                    />
-                </>
-            ) : (
-                <>
-                    <span className="p-column-title">File</span>
-                    N/A
-                </>
-            );
-        };
-        console.log(usulanpkls);
+        return rowData.file_pendukung ? (
+            <>
+                <span className="p-column-title">File</span>
+                <Button
+                    icon="pi pi-file"
+                    severity="info"
+                    rounded
+                    outlined
+                    onClick={() =>
+                        window.open(
+                            `/storage/uploads/pkl/usulantempat/${rowData.file_pendukung}`,
+                            "_blank"
+                        )
+                    }
+                    tooltip="Lihat File Laporan"
+                    tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
+                />
+            </>
+        ) : (
+            <>
+                <span className="p-column-title">File</span>
+                N/A
+            </>
+        );
+    };
+    // console.log(usulanpkls);
     const statusBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_usulan) {
+            case "1":
+                statusLabel = "Belum Diverifikasi";
+                severity = "warning";
+                break;
+            case "2":
+                statusLabel = "Ditolak";
+                severity = "danger";
+                break;
+            default:
+                statusLabel = "Diverifikasi";
+                severity = "success";
+                break;
+        }
+
         return (
             <>
-                <span className="p-column-title">Status</span>
-                {rowData.status_usulan === "1" ? "Diproses" : rowData.status_usulan === "2" ? "Ditolak" : "Diterima"}
+                <span className="p-column-title">Status Berkas</span>
+                <Tag value={statusLabel} severity={severity} />
             </>
         );
     };
@@ -103,12 +122,12 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
             <>
                 {!rowData.id_pkl_mhs && (
                     <Button
-                    icon="pi pi-pencil"
-                    severity="success"
-                    rounded
-                    className="mr-2"
-                    onClick={() => editusulanpkl(rowData)}
-                />
+                        icon="pi pi-pencil"
+                        severity="success"
+                        rounded
+                        className="mr-2"
+                        onClick={() => editusulanpkl(rowData)}
+                    />
                 )}
                 {rowData.id_pkl_mhs && (
                     <Link
@@ -150,7 +169,7 @@ const UsulanpklDataTable = ({ usulanpkls, selectedusulanpkls, setSelectedusulanp
             <Column field="kota_perusahaan" header="Domisili Perusahaan" sortable body={domisiliBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nama_role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
             <Column header="File" sortable body={fileBodyTemplate}></Column>
-            <Column field="status_usulan" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column field="status_usulan" header="Status Berkas" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );

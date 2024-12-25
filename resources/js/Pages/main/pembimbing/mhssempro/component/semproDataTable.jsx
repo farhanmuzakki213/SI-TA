@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
 import { Avatar } from 'primereact/avatar';
+import { Tag } from 'primereact/tag';
 
 const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalFilter, header, editsempro, dt }) => {
 
@@ -36,10 +37,28 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
     };
 
     const statusSemproBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_sempro) {
+            case "1":
+                statusLabel = "Ditolak";
+                severity = "danger";
+                break;
+            case "2":
+                statusLabel = "Belum";
+                severity = "warning";
+                break;
+            default:
+                statusLabel = "Diterima";
+                severity = "success";
+                break;
+        }
+
         return (
             <>
                 <span className="p-column-title">Status Sempro</span>
-                {rowData.status_sempro === "1" ? "Ditolak" : rowData.status_sempro === "2" ? "Belum" : "Diterima"}
+                <Tag value={statusLabel} severity={severity} />
             </>
         );
     };

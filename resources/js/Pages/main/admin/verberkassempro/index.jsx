@@ -1,0 +1,203 @@
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
+import { Toolbar } from "primereact/toolbar";
+import React, { useEffect, useRef, useState } from "react";
+import { router, usePage } from "@inertiajs/react";
+import Layout from "@/Layouts/layout/layout.jsx";
+import SemproDataTable from './component/semproDataTable';
+import SemproForm from './component/semproForm';
+import CSVExportComponent from '@/Components/CSVExportComponent';
+
+const index = () => {
+    let emptysempro = {
+        id_sempro_mhs: null,
+        komentar: "",
+        status_ver_sempro: "",
+    };
+
+
+    const { props } = usePage();
+    const { data_sempro} = props;
+    const [sempros, setsempros] = useState(null);
+    const [semproDialog, setsemproDialog] = useState(false);
+    const [sempro, setsempro] = useState(emptysempro);
+    const [selectedsempros, setSelectedsempros] = useState(null);
+    const [submitted, setSubmitted] = useState(false);
+    const [globalFilter, setGlobalFilter] = useState('');
+    const toast = useRef(null);
+    const dt = useRef(null);
+
+    useEffect(() => {
+        setsempros(data_sempro);
+        displaySuccessMessage(props.flash?.success);
+        displayErrorMessage(props.flash?.error);
+    }, [data_sempro, props.flash]);
+
+    const hideDialog = () => {
+        setSubmitted(false);
+        setsemproDialog(false);
+    };
+    console.log(data_sempro);
+
+    const displaySuccessMessage = (successMessage) => {
+        if (successMessage !== null) {
+            const message = successMessage || "Operation successful";
+            toast.current?.show({
+                severity: "success",
+                summary: "Successful",
+                detail: message,
+                life: 3000,
+            });
+        }
+    };
+
+    const displayErrorMessage = (errorMessage) => {
+        if (errorMessage !== null) {
+            const message = errorMessage || "Operation failed";
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: message,
+                life: 3000,
+            });
+        }
+    };
+
+    const savesempro = async () => {
+        setSubmitted(true);
+
+        const requiredFieldsForUpdate = [
+            sempro.id_sempro_mhs,
+            sempro.komentar,
+            sempro.status_ver_sempro,
+        ];
+        const isValid = requiredFieldsForUpdate.every(field => field);
+
+
+        if (!isValid) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: "Please fill in all required fields.",
+                life: 3000,
+            });
+            return;
+        }
+
+        let _sempro = { ...sempro };
+
+        try {
+            await router.put(`/VerifikasiBerkas/Sempro/${sempro.id_sempro_mhs}/update`, _sempro);
+
+            setsempros(prevsempros =>
+                prevsempros.map(d => d.id_sempro_mhs === sempro.id_sempro_mhs ? _sempro : d)
+            );
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || "Failed to update data.";
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: errorMessage,
+                life: 3000,
+            });
+        } finally {
+            setsempro(emptysempro);
+            setsemproDialog(false);
+        }
+    };
+
+    const editsempro = (sempro) => {
+        setsempro({ ...sempro });
+        setsemproDialog(true);
+    };
+
+    const columns = [
+        { header: 'ID', field: 'id_sempro_mhs' },
+        {
+            header: 'Name',
+            field: 'nama_mahasiswa'
+        },
+        { header: 'Nim', field: 'nim_mahasiswa' },
+        { header: 'Kelas', field: 'kelas' },
+        { header: 'Prodi', field: 'prodi' },
+        { header: 'Judul', field: 'judul_sempro' },
+        { header: 'Gender', field: 'gender' },
+        {
+            header: 'Status',
+            field: (sempro) => sempro.status_ver_pkl === "1" ? "Ditolak" : sempro.status_ver_pkl === "2" ? "Diproses" : sempro.status_ver_pkl === "3" ? "Diterima" : "Revisi"
+        }
+    ];
+
+    const rightToolbarTemplate = () => {
+        return (
+            <React.Fragment>
+                <CSVExportComponent data={sempros} toast={toast} fileName="Usulan_Sidang_Sempro_data.csv" columns={columns} />
+            </React.Fragment>
+        );
+    };
+
+    const header = (
+        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 className="m-0">Mahasiswa Sempro</h5>
+            <span className="block mt-2 md:mt-0 p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText
+                    type="search"
+                    value={globalFilter || ''}
+                    onInput={(e) => setGlobalFilter(e.target.value || '')}
+                    placeholder="Search..."
+                />
+            </span>
+        </div>
+    );
+
+    const semproDialogFooter = (
+        <>
+            <Button
+                label="Cancel"
+                icon="pi pi-times"
+                text
+                onClick={hideDialog}
+            />
+            <Button label="Save" icon="pi pi-check" text onClick={savesempro} />
+        </>
+    );
+
+    return (
+        <Layout>
+            <div className="grid crud-demo">
+                <div className="col-12">
+                    <div className="card">
+                        <Toast ref={toast} />
+                        <Toolbar
+                            className="mb-4"
+                            right={rightToolbarTemplate}
+                        ></Toolbar>
+
+                        <SemproDataTable
+                            dt={dt}
+                            sempros={sempros}
+                            selectedsempros={selectedsempros}
+                            setSelectedsempros={setSelectedsempros}
+                            globalFilter={globalFilter}
+                            header={header}
+                            editsempro={editsempro}
+                        />
+
+                        <SemproForm
+                            semproDialog={semproDialog}
+                            sempro={sempro}
+                            setsempro={setsempro}
+                            submitted={submitted}
+                            semproDialogFooter={semproDialogFooter}
+                            hideDialog={hideDialog}
+                        />
+                    </div>
+                </div>
+            </div>
+        </Layout>
+    );
+};
+
+export default index;

@@ -3,6 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
+import { Tag } from 'primereact/tag';
 
 const pklDataTable = ({ pkls, globalFilter, header, editpkl, dt }) => {
 
@@ -62,10 +63,28 @@ const pklDataTable = ({ pkls, globalFilter, header, editpkl, dt }) => {
     };
 
     const statusBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_usulan) {
+            case "1":
+                statusLabel = "Belum Diverifikasi";
+                severity = "warning";
+                break;
+            case "2":
+                statusLabel = "Ditolak";
+                severity = "danger";
+                break;
+            default:
+                statusLabel = "Diverifikasi";
+                severity = "success";
+                break;
+        }
+
         return (
             <>
-                <span className="p-column-title">Status</span>
-                {rowData.status_usulan === "1" ? "Diproses" : rowData.status_usulan === "2" ? "Ditolak" : "Diterima"}
+                <span className="p-column-title">Status Berkas</span>
+                <Tag value={statusLabel} severity={severity} />
             </>
         );
     };
@@ -76,12 +95,12 @@ const pklDataTable = ({ pkls, globalFilter, header, editpkl, dt }) => {
             <>
                 {!rowData.id_pkl_mhs && rowData.status_usulan === "1" && (
                     <Button
-                    icon="pi pi-pencil"
-                    severity="success"
-                    rounded
-                    className="mr-2"
-                    onClick={() => editpkl(rowData)}
-                />
+                        icon="pi pi-pencil"
+                        severity="success"
+                        rounded
+                        className="mr-2"
+                        onClick={() => editpkl(rowData)}
+                    />
                 )}
             </>
         );
@@ -110,7 +129,7 @@ const pklDataTable = ({ pkls, globalFilter, header, editpkl, dt }) => {
             <Column field="kota_perusahan" header="Domisili Perusahaan" sortable body={domisiliBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nama_role" header="Role / Divisi" body={roleBodyTemplate} sortable></Column>
             <Column header="Tanggal PKL" sortable body={tanggalBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_usulan" header="Status" body={statusBodyTemplate} sortable></Column>
+            <Column field="status_usulan" header="Status Berkas" body={statusBodyTemplate} sortable></Column>
             <Column field="komentar" header="Komentar" sortable body={komentarBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>

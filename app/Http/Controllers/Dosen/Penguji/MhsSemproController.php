@@ -117,7 +117,8 @@ class MhsSemproController extends Controller
                 if (!$sempro) {
                     return back()->with('error', 'Data Sempro tidak ditemukan.');
                 }
-                if($data_sempro['status_sempro'] === '3') {
+                $data_ta = TaMhs::where('mahasiswa_id', $sempro->mahasiswa_id)->whereIn('status_sidang_ta', ['1', '3'])->first();
+                if($data_sempro['status_sempro'] === '3' && !$data_ta) {
                     TaMhs::create([
                         'id_ta_mhs' => CariNomor::getCariNomor(TaMhs::class, 'id_ta_mhs'),
                         'mahasiswa_id' => $sempro->mahasiswa_id,
@@ -130,6 +131,9 @@ class MhsSemproController extends Controller
                         'status_ver_proposal' => '2',
                         'status_judul' => '2',
                     ]);
+                }
+                if($data_sempro['status_sempro'] === '1' && $data_ta){
+                    $data_ta->delete();
                 }
                 $sempro->update($data_sempro);
             }
@@ -211,6 +215,24 @@ class MhsSemproController extends Controller
                 ->first();
                 if ($jadwal_sidang) {
                     $jadwal_sidang->update($data_booking);
+                }
+                $data_ta = TaMhs::where('mahasiswa_id', $sempro->mahasiswa_id)->whereIn('status_sidang_ta', ['1', '3'])->first();
+                if($data_sempro['status_sempro'] === '3' && !$data_ta) {
+                    TaMhs::create([
+                        'id_ta_mhs' => CariNomor::getCariNomor(TaMhs::class, 'id_ta_mhs'),
+                        'mahasiswa_id' => $sempro->mahasiswa_id,
+                        'pembimbing_1_id' => $sempro->pembimbing_1_id,
+                        'pembimbing_2_id' => $sempro->pembimbing_2_id,
+                        'ketua_id' => $sempro->pembimbing_1_id,
+                        'sekretaris_id' => $sempro->penguji_id,
+                        'judul' => $sempro->judul_sempro,
+                        'file_proposal' => $sempro->file_sempro,
+                        'status_ver_proposal' => '2',
+                        'status_judul' => '2',
+                    ]);
+                }
+                if($data_sempro['status_sempro'] === '1' && $data_ta){
+                    $data_ta->delete();
                 }
                 $sempro->update($data_sempro);
             }

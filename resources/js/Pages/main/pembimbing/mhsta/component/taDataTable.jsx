@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
 import { Avatar } from 'primereact/avatar';
+import { Tag } from 'primereact/tag';
 
 const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtugasakhirs, globalFilter, header, edittugasakhir, dt }) => {
 
@@ -36,10 +37,32 @@ const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtuga
     };
 
     const statusTugasAkhirBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_sidang_ta) {
+            case "0":
+                statusLabel = "Tidak Lulus";
+                severity = "danger";
+                break;
+            case "1":
+                statusLabel = "Belum";
+                severity = "warning";
+                break;
+            case "2":
+                statusLabel = "Lulus";
+                severity = "success";
+                break;
+            default:
+                statusLabel = "Butuh Revisi";
+                severity = "info";
+                break;
+        }
+
         return (
             <>
-                <span className="p-column-title">Status TugasAkhir</span>
-                {rowData.status_sidang_ta === "0" ? "Ditolak" : rowData.status_sidang_ta === "1" ? "Belum" : rowData.status_sidang_ta === "2" ? "Belum" : "Revisi"}
+                <span className="p-column-title">Status Kelulusan</span>
+                <Tag value={statusLabel} severity={severity} />
             </>
         );
     };

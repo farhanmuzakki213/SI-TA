@@ -6,9 +6,9 @@ import { Link } from '@inertiajs/react';
 import { Avatar } from 'primereact/avatar';
 import { Tag } from 'primereact/tag';
 
-const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtugasakhirs, globalFilter, header, edittugasakhir, dt }) => {
+const TaDataTable = ({ tas, selectedtas, setSelectedtas, globalFilter, header, editta, confirmDeleteta, dt }) => {
 
-    // console.log(tugasakhirs);
+    // console.log(tas);
     const namaBodyTemplate = (rowData) => {
         return (
             <>
@@ -27,7 +27,52 @@ const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtuga
         );
     };
 
-    const statusVerTaBodyTemplate = (rowData) => {
+    const prodiBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Prodi Mahasiswa</span>
+                {rowData.prodi || 'N/A'}
+            </>
+        );
+    };
+
+    const judulBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Judul Ta</span>
+                {rowData.judul || 'N/A'}
+            </>
+        );
+    };
+
+    const fileBodyTemplate = (rowData) => {
+        return rowData.file_ta ? (
+            <>
+                <span className="p-column-title">File</span>
+                <Button
+                    icon="pi pi-file"
+                    severity="info"
+                    rounded
+                    outlined
+                    onClick={() =>
+                        window.open(
+                            `/storage/uploads/ta/file_ta/${rowData.file_ta}`,
+                            "_blank"
+                        )
+                    }
+                    tooltip="Lihat File TA"
+                    tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
+                />
+            </>
+        ) : (
+            <>
+                <span className="p-column-title">File</span>
+                N/A
+            </>
+        );
+    };
+
+    const statusBodyTemplate = (rowData) => {
         let statusLabel;
         let severity;
 
@@ -57,38 +102,6 @@ const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtuga
             </>
         );
     };
-
-    const statusTugasAkhirBodyTemplate = (rowData) => {
-        let statusLabel;
-        let severity;
-
-        switch (rowData.status_sidang_ta) {
-            case "0":
-                statusLabel = "Tidak Lulus";
-                severity = "danger";
-                break;
-            case "1":
-                statusLabel = "Belum";
-                severity = "warning";
-                break;
-            case "2":
-                statusLabel = "Lulus";
-                severity = "success";
-                break;
-            default:
-                statusLabel = "Butuh Revisi";
-                severity = "info";
-                break;
-        }
-
-        return (
-            <>
-                <span className="p-column-title">Status Kelulusan</span>
-                <Tag value={statusLabel} severity={severity} />
-            </>
-        );
-    };
-
     const gambarBodyTemplate = (rowData) => {
         return (
             <>
@@ -102,15 +115,13 @@ const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtuga
         // console.log(rowData.id_pkl_mhs, status);
         return (
             <>
-                {rowData.status_ver_proposal === '2' && (
-                    <Link
-                        href={'/Kprodi/MhsTA/' + rowData.id_ta_mhs}
-                        className="text-blue-500 hover:underline"
-                        title="View Details"
-                    >
-                        <Button icon="pi pi-eye" rounded outlined />
-                    </Link>
-                )}
+                <Button
+                    icon="pi pi-pencil"
+                    severity="success"
+                    rounded
+                    className="mr-2"
+                    onClick={() => editta(rowData)}
+                />
             </>
         );
     };
@@ -118,18 +129,18 @@ const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtuga
     return (
         <DataTable
             ref={dt}
-            value={tugasakhirs}
-            selection={selectedtugasakhirs}
-            onSelectionChange={(e) => setSelectedtugasakhirs(e.value)}
+            value={tas}
+            selection={selectedtas}
+            onSelectionChange={(e) => setSelectedtas(e.value)}
             dataKey="id_ta_mhs"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Mahasiswa Tugas Akhir"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Mahasiswa TA"
             globalFilter={globalFilter}
-            emptyMessage="No Mahasiswa Tugas Akhir found."
+            emptyMessage="No Mahasiswa TA found."
             header={header}
             responsiveLayout="scroll"
             removableSort
@@ -138,11 +149,13 @@ const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtuga
             <Column field="foto_mahasiswa" header="Gambar" sortable body={gambarBodyTemplate}></Column>
             <Column field="nama_mahasiswa" header="Nama Mahasiswa" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nim_mahasiswa" header="Nim Mahasiswa" sortable body={nimBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_ver_ta" header="Status Berkas" sortable body={statusVerTaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_sidang_ta" header="Status Kelulusan" body={statusTugasAkhirBodyTemplate} sortable></Column>
+            {/* <Column field="prodi" header="Prodi" sortable body={prodiBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column> */}
+            <Column field="judul" header="Judul" sortable body={judulBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column header="File TA" sortable body={fileBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
+            <Column field="status_ver_ta" header="Status Berkas" body={statusBodyTemplate} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );
 };
 
-export default TugasAkhirDataTable;
+export default TaDataTable;

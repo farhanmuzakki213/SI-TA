@@ -2,6 +2,7 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { Tag } from 'primereact/tag';
 
 const BookingDataTable = ({ bookings, selectedbookings, setSelectedbookings, globalFilter, header, editbooking, confirmDeletebooking, dt }) => {
     const sesiBodyTemplate = (rowData) => {
@@ -50,10 +51,28 @@ const BookingDataTable = ({ bookings, selectedbookings, setSelectedbookings, glo
     };
 
     const statusBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_booking) {
+            case "0":
+                statusLabel = "Cancel";
+                severity = "danger";
+                break;
+            case "1":
+                statusLabel = "Booking";
+                severity = "warning";
+                break;
+            default:
+                statusLabel = "Selesai";
+                severity = "success";
+                break;
+        }
+
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status_booking === "0" ? "Cancel" : rowData.status_booking === "1" ? "Booking" : "Selesai"}
+                <Tag value={statusLabel} severity={severity} />
             </>
         );
     };

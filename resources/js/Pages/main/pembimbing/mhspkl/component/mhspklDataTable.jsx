@@ -37,7 +37,7 @@ const MhspklDataTable = ({ mhspkls, selectedmhspkls, setSelectedmhspkls, globalF
     const jurusanBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Status</span>
+                <span className="p-column-title">Jurusan</span>
                 {rowData.jurusan || 'N/A'}
             </>
         );

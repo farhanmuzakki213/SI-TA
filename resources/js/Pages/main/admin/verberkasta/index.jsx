@@ -5,40 +5,40 @@ import { Toolbar } from "primereact/toolbar";
 import React, { useEffect, useRef, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Layout from "@/Layouts/layout/layout.jsx";
-import SemproDataTable from './component/semproDataTable';
-import SemproForm from './component/semproForm';
+import TaDataTable from './component/taDataTable';
+import TaForm from './component/taForm';
 import CSVExportComponent from '@/Components/CSVExportComponent';
 
 const index = () => {
-    let emptysempro = {
-        id_sempro_mhs: null,
-        komentar: "",
-        status_ver_sempro: "",
+    let emptyta = {
+        id_ta_mhs: null,
+        komentar_ta: "",
+        status_ver_ta: "",
     };
 
 
     const { props } = usePage();
-    const { data_sempro} = props;
-    const [sempros, setsempros] = useState(null);
-    const [semproDialog, setsemproDialog] = useState(false);
-    const [sempro, setsempro] = useState(emptysempro);
-    const [selectedsempros, setSelectedsempros] = useState(null);
+    const { data_ta} = props;
+    const [tas, settas] = useState(null);
+    const [taDialog, settaDialog] = useState(false);
+    const [ta, setta] = useState(emptyta);
+    const [selectedtas, setSelectedtas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
 
     useEffect(() => {
-        setsempros(data_sempro);
+        settas(data_ta);
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
-    }, [data_sempro, props.flash]);
+    }, [data_ta, props.flash]);
 
     const hideDialog = () => {
         setSubmitted(false);
-        setsemproDialog(false);
+        settaDialog(false);
     };
-    console.log(data_sempro);
+    console.log(data_ta);
 
     const displaySuccessMessage = (successMessage) => {
         if (successMessage !== null) {
@@ -64,13 +64,13 @@ const index = () => {
         }
     };
 
-    const savesempro = async () => {
+    const saveta = async () => {
         setSubmitted(true);
 
         const requiredFieldsForUpdate = [
-            sempro.id_sempro_mhs,
-            sempro.komentar,
-            sempro.status_ver_sempro,
+            ta.id_ta_mhs,
+            ta.komentar_ta,
+            ta.status_ver_ta,
         ];
         const isValid = requiredFieldsForUpdate.every(field => field);
 
@@ -85,13 +85,13 @@ const index = () => {
             return;
         }
 
-        let _sempro = { ...sempro };
+        let _ta = { ...ta };
 
         try {
-            await router.put(`/usulansidangsempro/${sempro.id_sempro_mhs}/update`, _sempro);
+            await router.put(`/VerifikasiBerkas/TA/${ta.id_ta_mhs}/update`, _ta);
 
-            setsempros(prevsempros =>
-                prevsempros.map(d => d.id_sempro_mhs === sempro.id_sempro_mhs ? _sempro : d)
+            settas(prevtas =>
+                prevtas.map(d => d.id_ta_mhs === ta.id_ta_mhs ? _ta : d)
             );
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Failed to update data.";
@@ -102,18 +102,18 @@ const index = () => {
                 life: 3000,
             });
         } finally {
-            setsempro(emptysempro);
-            setsemproDialog(false);
+            setta(emptyta);
+            settaDialog(false);
         }
     };
 
-    const editsempro = (sempro) => {
-        setsempro({ ...sempro });
-        setsemproDialog(true);
+    const editta = (ta) => {
+        setta({ ...ta });
+        settaDialog(true);
     };
 
     const columns = [
-        { header: 'ID', field: 'id_sempro_mhs' },
+        { header: 'ID', field: 'id_ta_mhs' },
         {
             header: 'Name',
             field: 'nama_mahasiswa'
@@ -121,25 +121,25 @@ const index = () => {
         { header: 'Nim', field: 'nim_mahasiswa' },
         { header: 'Kelas', field: 'kelas' },
         { header: 'Prodi', field: 'prodi' },
-        { header: 'Judul', field: 'judul_sempro' },
+        { header: 'Judul', field: 'judul_ta' },
         { header: 'Gender', field: 'gender' },
         {
             header: 'Status',
-            field: (sempro) => sempro.status_ver_pkl === "1" ? "Ditolak" : sempro.status_ver_pkl === "2" ? "Diproses" : sempro.status_ver_pkl === "3" ? "Diterima" : "Revisi"
+            field: (ta) => ta.status_ver_pkl === "1" ? "Ditolak" : ta.status_ver_pkl === "2" ? "Diproses" : ta.status_ver_pkl === "3" ? "Diterima" : "Revisi"
         }
     ];
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <CSVExportComponent data={sempros} toast={toast} fileName="Usulan_Sidang_Sempro_data.csv" columns={columns} />
+                <CSVExportComponent data={tas} toast={toast} fileName="Usulan_Sidang_Ta_data.csv" columns={columns} />
             </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Mahasiswa Sempro</h5>
+            <h5 className="m-0">Mahasiswa Ta</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
@@ -152,7 +152,7 @@ const index = () => {
         </div>
     );
 
-    const semproDialogFooter = (
+    const taDialogFooter = (
         <>
             <Button
                 label="Cancel"
@@ -160,7 +160,7 @@ const index = () => {
                 text
                 onClick={hideDialog}
             />
-            <Button label="Save" icon="pi pi-check" text onClick={savesempro} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveta} />
         </>
     );
 
@@ -175,22 +175,22 @@ const index = () => {
                             right={rightToolbarTemplate}
                         ></Toolbar>
 
-                        <SemproDataTable
+                        <TaDataTable
                             dt={dt}
-                            sempros={sempros}
-                            selectedsempros={selectedsempros}
-                            setSelectedsempros={setSelectedsempros}
+                            tas={tas}
+                            selectedtas={selectedtas}
+                            setSelectedtas={setSelectedtas}
                             globalFilter={globalFilter}
                             header={header}
-                            editsempro={editsempro}
+                            editta={editta}
                         />
 
-                        <SemproForm
-                            semproDialog={semproDialog}
-                            sempro={sempro}
-                            setsempro={setsempro}
+                        <TaForm
+                            taDialog={taDialog}
+                            ta={ta}
+                            setta={setta}
                             submitted={submitted}
-                            semproDialogFooter={semproDialogFooter}
+                            taDialogFooter={taDialogFooter}
                             hideDialog={hideDialog}
                         />
                     </div>

@@ -88,10 +88,28 @@ const UsulansidangpklDataTable = ({ usulansidangpkls, selectedusulansidangpkls, 
     };
 
     const statusBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_ver_pkl) {
+            case "1":
+                statusLabel = "Ditolak";
+                severity = "danger";
+                break;
+            case "2":
+                statusLabel = "Diproses";
+                severity = "warning";
+                break;
+            default:
+                statusLabel = "Diterima";
+                severity = "success";
+                break;
+        }
+
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status_ver_pkl === "1" ? "Ditolak" : rowData.status_ver_pkl === "2" ? "Diproses" : "Diterima"}
+                <Tag value={statusLabel} severity={severity} />
             </>
         );
     };

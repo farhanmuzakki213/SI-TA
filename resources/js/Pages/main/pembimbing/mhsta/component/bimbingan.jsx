@@ -266,7 +266,7 @@ const bimbingan = () => {
     );
 
     const rightToolbarTemplate = () => {
-        console.log('r', data_mhs_ta);
+        // console.log('r', data_mhs_ta);
         return (
             <React.Fragment>
                 {data_bimbingan_1.length > 0 && data_bimbingan_2.length > 0 && (

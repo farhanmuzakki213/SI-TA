@@ -3,6 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
+import { Tag } from 'primereact/tag';
 
 const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
 
@@ -53,23 +54,67 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
     };
 
     const statusjudulBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_judul_sempro) {
+            case "1":
+                statusLabel = "Ditolak";
+                severity = "danger";
+                break;
+            case "2":
+                statusLabel = "Belum";
+                severity = "warning";
+                break;
+            case "3":
+                statusLabel = "Diterima";
+                severity = "success";
+                break;
+            default:
+                statusLabel = "Butuh Revisi";
+                severity = "info";
+                break;
+        }
+
         return (
             <>
                 <span className="p-column-title">Status Judul</span>
-                {rowData.status_judul_sempro === "1" ? "Ditolak" : rowData.status_judul_sempro === "2" ? "Sedang Diproses" : rowData.status_judul_sempro === "3" ? "Diterima" : "Butuh Revisi"}
+                <Tag value={statusLabel} severity={severity} />
             </>
         );
     };
     const statusberkasBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_ver_sempro) {
+            case "1":
+                statusLabel = "Ditolak";
+                severity = "danger";
+                break;
+            case "2":
+                statusLabel = "Belum Diverifikasi";
+                severity = "warning";
+                break;
+            case "3":
+                statusLabel = "Diverifikasi";
+                severity = "success";
+                break;
+            default:
+                statusLabel = "Butuh Revisi";
+                severity = "info";
+                break;
+        }
+
         return (
             <>
-                <span className="p-column-title">Status Berkas</span>
+                <span className="p-column-title">Status Judul</span>
                 {rowData.status_judul_sempro === '3' ? (
-                    rowData.status_ver_sempro === "1" ? "Ditolak" : rowData.status_ver_sempro === "2" ? "Sedang Diproses" : rowData.status_ver_sempro === "3" ? "Diterima" : "Butuh Revisi"
+                    <Tag value={statusLabel} severity={severity} />
                 ) : (
                     <>
                         <span className="p-column-title">Status Berkas</span>
-                        Berkas Belum Diupload
+                        <Tag value="Belum Diverifikasi" severity="warning" />
                     </>
                 )}
             </>

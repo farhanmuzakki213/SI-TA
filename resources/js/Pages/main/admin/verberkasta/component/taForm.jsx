@@ -4,39 +4,39 @@ import { RadioButton } from "primereact/radiobutton";
 import { InputTextarea } from "primereact/inputtextarea";
 import { classNames } from "primereact/utils";
 
-const SemproForm = ({
-    semproDialog,
-    sempro,
+const TaForm = ({
+    taDialog,
+    ta,
     submitted,
-    semproDialogFooter,
+    taDialogFooter,
     hideDialog,
-    setsempro,
+    setta,
 }) => {
     const onInputChange = (e, field) => {
         const value = e.target ? e.target.value : e.value;
-        setsempro((prevState) => ({
+        setta((prevState) => ({
             ...prevState,
             [field]: value,
         }));
     };
     // console.log(dosenOptions);
     const onStatusChange = (e) => {
-        let _sempro = { ...sempro };
-        _sempro["status_ver_sempro"] = e.value;
+        let _ta = { ...ta };
+        _ta["status_ver_ta"] = e.value;
 
-        setsempro(_sempro);
+        setta(_ta);
 
         setShowAdditionalForm(e.value === "3");
     };
 
     return (
         <Dialog
-            visible={semproDialog}
+            visible={taDialog}
             style={{ width: "450px" }}
-            header="Verifikasi Usulan Tempat PKL"
+            header="Verifikasi Berkas TA"
             modal
             className="p-fluid"
-            footer={semproDialogFooter}
+            footer={taDialogFooter}
             onHide={hideDialog}
         >
             {/* Status */}
@@ -45,50 +45,50 @@ const SemproForm = ({
                 <div className="formgrid grid">
                     <div className="field-radiobutton col-4">
                         <RadioButton
-                            inputId="status_ver_sempro1"
-                            name="status_ver_sempro"
-                            value="1"
+                            inputId="status_ver_ta0"
+                            name="status_ver_ta"
+                            value="0"
                             onChange={onStatusChange}
-                            checked={sempro.status_ver_sempro === "1"}
+                            checked={ta.status_ver_ta === "0"}
                         />
-                        <label htmlFor="status_ver_sempro1">Ditolak</label>
+                        <label htmlFor="status_ver_ta0">Ditolak</label>
                     </div>
                     <div className="field-radiobutton col-4">
                         <RadioButton
-                            inputId="status_ver_sempro4"
-                            name="status_ver_sempro"
-                            value="4"
-                            onChange={onStatusChange}
-                            checked={sempro.status_ver_sempro === "4"}
-                        />
-                        <label htmlFor="status_ver_sempro4">Butuh Revisi</label>
-                    </div>
-                    <div className="field-radiobutton col-4">
-                        <RadioButton
-                            inputId="status_ver_sempro3"
-                            name="status_ver_sempro"
+                            inputId="status_ver_ta3"
+                            name="status_ver_ta"
                             value="3"
                             onChange={onStatusChange}
-                            checked={sempro.status_ver_sempro === "3"}
+                            checked={ta.status_ver_ta === "3"}
                         />
-                        <label htmlFor="status_ver_sempro3">Diterima</label>
+                        <label htmlFor="status_ver_ta3">Butuh Revisi</label>
+                    </div>
+                    <div className="field-radiobutton col-4">
+                        <RadioButton
+                            inputId="status_ver_ta2"
+                            name="status_ver_ta"
+                            value="2"
+                            onChange={onStatusChange}
+                            checked={ta.status_ver_ta === "2"}
+                        />
+                        <label htmlFor="status_ver_ta2">Diterima</label>
                     </div>
                 </div>
             </div>
             {/* Komentar */}
             <div className="field">
-                <label htmlFor="komentar">Komentar *</label>
+                <label htmlFor="komentar_ta">Komentar *</label>
                 <InputTextarea
-                    id="komentar"
-                    value={sempro.komentar || ''}
-                    onChange={(e) => onInputChange(e, "komentar")}
+                    id="komentar_ta"
+                    value={ta.komentar_ta || ''}
+                    onChange={(e) => onInputChange(e, "komentar_ta")}
                     required
                     autoFocus
                     className={classNames({
-                        "p-invalid": submitted && !sempro.komentar,
+                        "p-invalid": submitted && !ta.komentar_ta,
                     })}
                 />
-                {submitted && !sempro.komentar && (
+                {submitted && !ta.komentar_ta && (
                     <small className="p-invalid">Komentar is required.</small>
                 )}
             </div>
@@ -97,4 +97,4 @@ const SemproForm = ({
     );
 };
 
-export default SemproForm;
+export default TaForm;

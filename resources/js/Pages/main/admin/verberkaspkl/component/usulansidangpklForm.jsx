@@ -8,18 +8,10 @@ import { classNames } from "primereact/utils";
 const UsulansidangpklForm = ({
     usulansidangpklDialog,
     usulansidangpkl,
-    submitted,
     usulansidangpklDialogFooter,
     hideDialog,
     setusulansidangpkl,
 }) => {
-    const onInputChange = (e, field) => {
-        const value = e.target ? e.target.value : e.value;
-        setusulansidangpkl((prevState) => ({
-            ...prevState,
-            [field]: value,
-        }));
-    };
     const onStatusChange = (e) => {
         let _usulansidangpkl = { ...usulansidangpkl };
         _usulansidangpkl["status_ver_pkl"] = e.value;
@@ -31,7 +23,7 @@ const UsulansidangpklForm = ({
         <Dialog
             visible={usulansidangpklDialog}
             style={{ width: "450px" }}
-            header="Usulan Tempat PKL Details"
+            header="Verifikasi Berkas PKL"
             modal
             className="p-fluid"
             footer={usulansidangpklDialogFooter}

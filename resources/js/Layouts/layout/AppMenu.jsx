@@ -46,8 +46,9 @@ const AppMenu = () => {
                             { label: 'Semester', icon: 'pi pi-fw pi-file', to: route('semester') },
                             { label: 'Jabatan Pimpinan', icon: 'pi pi-fw pi-file', to: route('jabatanpimpinan') },
                             { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
-                            { label: 'Usulan Sidang PKL', icon: 'pi pi-fw pi-file', to: route('usulansidangpkl') },
-                            { label: 'Usulan Sidang Sempro', icon: 'pi pi-fw pi-file', to: route('usulansidangsempro') },
+                            { label: 'Ver Berkas PKL', icon: 'pi pi-fw pi-file', to: route('verberkaspkl') },
+                            { label: 'Ver Berkas Sempro', icon: 'pi pi-fw pi-file', to: route('verberkassempro') },
+                            { label: 'Ver Berkas TA', icon: 'pi pi-fw pi-file', to: route('verberkasta') },
                         ]
                     }}
                     root={true}

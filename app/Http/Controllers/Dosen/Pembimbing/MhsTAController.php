@@ -30,6 +30,7 @@ class MhsTAController extends Controller
                 'r_sekretaris',
                 'r_ketua',
             )
+            ->where('status_ver_proposal', '2')
             ->where('pembimbing_1_id', $dosen->id_dosen)
             ->OrWhere('pembimbing_2_id', $dosen->id_dosen)
             ->get();

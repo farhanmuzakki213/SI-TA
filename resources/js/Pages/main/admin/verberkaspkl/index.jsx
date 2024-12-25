@@ -87,7 +87,7 @@ const usulansidangpkl = () => {
         let _usulansidangpkl = { ...usulansidangpkl };
 
         try {
-            await router.put(`/usulansidangpkl/${usulansidangpkl.id_pkl_mhs}/update`, _usulansidangpkl);
+            await router.put(`/VerifikasiBerkas/Pkl/${usulansidangpkl.id_pkl_mhs}/update`, _usulansidangpkl);
 
             setusulansidangpkls(prevusulansidangpkls =>
                 prevusulansidangpkls.map(d => d.id_pkl_mhs === usulansidangpkl.id_pkl_mhs ? _usulansidangpkl : d)

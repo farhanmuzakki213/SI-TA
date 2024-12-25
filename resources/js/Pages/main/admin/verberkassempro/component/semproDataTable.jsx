@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Link } from '@inertiajs/react';
 import { Avatar } from 'primereact/avatar';
+import { Tag } from 'primereact/tag';
 
 const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalFilter, header, editsempro, confirmDeletesempro, dt }) => {
 
@@ -59,7 +60,7 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
                             "_blank"
                         )
                     }
-                    tooltip="Lihat File Laporan"
+                    tooltip="Lihat File Proposal"
                     tooltipOptions={{ position: "right", mouseTrack: false, mouseTrackRight: 15 }}
                 />
             </>
@@ -72,10 +73,32 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
     };
 
     const statusBodyTemplate = (rowData) => {
+        let statusLabel;
+        let severity;
+
+        switch (rowData.status_ver_sempro) {
+            case "1":
+                statusLabel = "Ditolak";
+                severity = "danger";
+                break;
+            case "2":
+                statusLabel = "Belum Diverifikasi";
+                severity = "warning";
+                break;
+            case "3":
+                statusLabel = "Diverifikasi";
+                severity = "success";
+                break;
+            default:
+                statusLabel = "Butuh Revisi";
+                severity = "info";
+                break;
+        }
+
         return (
             <>
-                <span className="p-column-title">Status</span>
-                {rowData.status_ver_sempro === "1" ? "Ditolak" : rowData.status_ver_sempro === "2" ? "Belum" : rowData.status_ver_sempro === "3" ? "Diterima" : "Butuh Revisi"}
+                <span className="p-column-title">Status Judul</span>
+                <Tag value={statusLabel} severity={severity} />
             </>
         );
     };
