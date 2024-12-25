@@ -121,6 +121,33 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
         );
     };
 
+    const statusSemproBodyTemplate = (rowData) => {
+            let statusLabel;
+            let severity;
+
+            switch (rowData.status_sempro) {
+                case "1":
+                    statusLabel = "Tidak Lulus";
+                    severity = "danger";
+                    break;
+                case "2":
+                    statusLabel = "Belum Sidang";
+                    severity = "warning";
+                    break;
+                default:
+                    statusLabel = "Lulus";
+                    severity = "success";
+                    break;
+            }
+
+            return (
+                <>
+                    <span className="p-column-title">Status Sempro</span>
+                    <Tag value={statusLabel} severity={severity} />
+                </>
+            );
+        };
+
     const actionBodyTemplate = (rowData) => {
         // console.log(rowData.id_pkl_mhs, status);
         return (
@@ -175,6 +202,7 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
             <Column field="komentar" header="Komentar" sortable body={komentarBodyTemplate} headerStyle={{ minWidth: "25rem" }}></Column>
             <Column field="status_judul_sempro" header="Status Judul" body={statusjudulBodyTemplate} headerStyle={{ minWidth: "10rem" }} sortable></Column>
             <Column field="status_ver_sempro" header="Status Berkas" body={statusberkasBodyTemplate} headerStyle={{ minWidth: "10rem" }} sortable></Column>
+            <Column field="status_sempro" header="Status Kelulusan" body={statusSemproBodyTemplate} headerStyle={{ minWidth: "10rem" }} sortable></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
         </DataTable>
     );

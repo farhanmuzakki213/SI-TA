@@ -144,4 +144,54 @@ class TAController extends Controller
             return to_route('MhsTA')->with('error', 'Bimbingan TA updated failed');
         }
     }
+
+    public function updateBerkas(Request $request, string $id)
+    {
+        // dd($request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'judul' => 'required',
+            'file_proposal' => 'required',
+            'file_ta' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $oldData = TaMhs::where('id_ta_mhs', $id)->first();
+            $filenameTA = $request->file_ta ?? null;
+            if ($oldData->file_ta !== null && $oldData->file_ta !== $filenameTA) {
+                Storage::delete('public/uploads/ta/file_ta/' . $oldData->file_ta);
+            }
+            $filenameProposal = $request->file_proposal ?? null;
+            if ($oldData->file_proposal !== null && $oldData->file_proposal !== $filenameProposal) {
+                Storage::delete('public/uploads/sempro/file/' . $oldData->file_proposal);
+            }
+            if ($request->hasFile('file_ta')) {
+                $file = $request->file('file_ta');
+                $filenameTA = $file->getClientOriginalName();
+                $path = 'public/uploads/ta/file_ta/';
+                $file->storeAs($path, $filenameTA);
+            }
+            $data = [
+                'judul' => $request->judul,
+                'file_ta' => $filenameTA,
+            ];
+            if ($request->hasFile('file_proposal')) {
+                $file = $request->file('file_proposal');
+                $filenameSempro = $file->getClientOriginalName();
+                $path = 'public/uploads/sempro/file/';
+                $file->storeAs($path, $filenameSempro);
+                $data['file_proposal'] = $filenameSempro;
+            }
+            // dd($data);
+            $oldData->update($data);
+            DB::commit();
+            return to_route('MhsTA')->with('success', 'Pengajuan TA updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('MhsTA')->with('error', 'Pengajuan TA updated failed');
+        }
+    }
 }

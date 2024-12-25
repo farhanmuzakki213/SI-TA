@@ -245,7 +245,7 @@ const detailTa = ({
             dosensidang.pembimbing_1_id,
             dosensidang.pembimbing_2_id,
         ];
-        if(data_tas.status_ver_ta === '2'){
+        if (data_tas.status_ver_ta === '2') {
             requiredFieldsForUpdate.push(dosensidang.ketua_id);
             requiredFieldsForUpdate.push(dosensidang.sekretaris_id);
             requiredFieldsForUpdate.push(dosensidang.penguji_1_id);
@@ -500,9 +500,25 @@ const detailTa = ({
                                 label="File"
                                 tooltip="Lihat File"
                                 tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                onClick={() => window.open(`/storage/uploads/ta/file/${data_tas?.file_ta}`, '_blank')}
+                                onClick={() => window.open(`/storage/uploads/ta/file/${data_tas?.file_proposal}`, '_blank')}
                             />
                         </div>
+                        {data_tas.status_ver_ta === '2' && (
+                            <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                                <div className="tw-flex tw-items-center">
+                                    <span className="tw-text-gray-800">Tugas Akhir</span>
+                                </div>
+                                <Button
+                                    icon="pi pi-file"
+                                    severity="primary"
+                                    outlined
+                                    label="File"
+                                    tooltip="Lihat File"
+                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                    onClick={() => window.open(`/storage/uploads/ta/file_ta/${data_tas?.file_ta}`, '_blank')}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -49,9 +49,10 @@ const MhsTaDetail = () => {
                                 data_bimbingan={data_bimbingan}
                                 data_dosen={data_dosen} />
                         </div>
-                        {data_bimbingan_1.length > 9 && data_bimbingan_2.length > 9 && (
+                        {data_bimbingan_1.length > 0 && data_bimbingan_2.length > 0 && (
                             <div className="tw-col-12">
-                                <DetailSidang data_ta={data_ta} />
+                                <DetailSidang data_ta={data_ta}
+                                data_dosen={data_dosen} />
                             </div>
                         )}
                     </div>

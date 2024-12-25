@@ -109,15 +109,15 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
 
         switch (rowData.status_sempro) {
             case "1":
-                statusLabel = "Ditolak";
+                statusLabel = "Tidak Lulus";
                 severity = "danger";
                 break;
             case "2":
-                statusLabel = "Belum";
+                statusLabel = "Belum Sidang";
                 severity = "warning";
                 break;
             default:
-                statusLabel = "Diterima";
+                statusLabel = "Lulus";
                 severity = "success";
                 break;
         }
