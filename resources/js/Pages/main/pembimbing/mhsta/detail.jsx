@@ -6,7 +6,7 @@ import Layout from '@/Layouts/layout/layout';
 
 const MhsTaDetail = () => {
     const { props } = usePage();
-    const { data_ta, data_bimbingan_1, data_bimbingan_2, data_bimbingan, data_dosen } = props;
+    const { data_ta, data_bimbingan_1, data_bimbingan_2, data_bimbingan, data_dosen, data_nilai, nextNumber_nilai } = props;
     // console.log("data_ta", data_ta);
     const data_tas = data_ta[0];
     // console.log("data bimbingan 1", data_bimbingan_1.length)
@@ -52,7 +52,9 @@ const MhsTaDetail = () => {
                         {data_bimbingan_1.length > 0 && data_bimbingan_2.length > 0 && (
                             <div className="tw-col-12">
                                 <DetailSidang data_ta={data_ta}
-                                data_dosen={data_dosen} />
+                                data_dosen={data_dosen}
+                                data_nilai={data_nilai}
+                                nextNumber_nilai={nextNumber_nilai} />
                             </div>
                         )}
                     </div>

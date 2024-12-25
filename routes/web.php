@@ -104,6 +104,8 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             Route::post('/Pembimbing/MhsTA/Bimbingan/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'updateBimbingan'])->name('MhsTAPembimbing.updateBimbingan');
             Route::post('/Pembimbing/MhsTA/Bimbingan/{id}/tolak', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'tolakBimbingan'])->name('MhsTAPembimbing.tolakBimbingan');
             Route::post('/Pembimbing/MhsTA/AccSidangTA/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'accSidangTA'])->name('MhsTAPembimbing.accSidangTA');
+            Route::post('/Pembimbing/MhsTA/Nilai/store', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'storeNilai'])->name('MhsTAPembimbing.storeNilai');
+            Route::put('/Pembimbing/MhsTA/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Pembimbing\MhsTAController::class, 'updateNilai'])->name('MhsTAPembimbing.updateNilai');
         });
 
         // Route Dosen Penguji

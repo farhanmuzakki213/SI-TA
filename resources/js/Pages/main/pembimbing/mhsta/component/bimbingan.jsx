@@ -307,28 +307,59 @@ const bimbingan = () => {
             </React.Fragment>
         );
     };
+    const statusTA = (data) => {
+        let statusLabel;
+        let severity;
+
+        switch (data) {
+            case "0":
+                statusLabel = "Belum Disetujui";
+                severity = "warning";
+                break;
+            default:
+                statusLabel = "Disetujui";
+                severity = "success";
+                break;
+        }
+
+        return (
+            <>
+                <Tag value={statusLabel} severity={severity} />
+            </>
+        );
+    };
     // console.log(bimbingans);
     return (
         <div className="card">
             <Toast ref={toast} />
             <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Bimbingan TA Details</h1>
             <hr className="tw-my-4" />
-            <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                <div>
-                    <p className="tw-text-gray-800 tw-font-semibold">Pembimbing 1</p>
-                    <p className="tw-text-gray-600">{data_mhs_ta.nama_pembimbing_1}</p>
+            <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-p-6">
+                <div className="tw-bg-white tw-rounded-xl tw-shadow-md tw-p-6 tw-border tw-border-gray-200">
+                    <p className="tw-text-lg tw-font-medium tw-text-gray-700">{data_mhs_ta.nama_pembimbing_1}</p>
+                    <div className="tw-flex tw-items-center tw-justify-between tw-mt-5">
+                        <div className="tw-text-base tw-text-gray-600">
+                            <span className="tw-font-semibold tw-text-gray-500">Status</span>
+                            <p className="tw-text-gray-800">{statusTA(data_mhs_ta.acc_pembimbing_satu)}</p>
+                        </div>
+                        <div className="tw-text-base tw-text-gray-600">
+                            <span className="tw-font-semibold tw-text-gray-500">Jumlah Bimbingan</span>
+                            <p className="tw-text-gray-800">{data_bimbingan_1.length}</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <p className="tw-text-gray-800 tw-font-semibold">Pembimbing 2</p>
-                    <p className="tw-text-gray-600">{data_mhs_ta.nama_pembimbing_2}</p>
-                </div>
-                <div>
-                    <p className="tw-text-gray-800 tw-font-semibold">Jumlah Bimbingan</p>
-                    <p className="tw-text-gray-600">{data_bimbingan_1.length}</p>
-                </div>
-                <div>
-                    <p className="tw-text-gray-800 tw-font-semibold">Jumlah Bimbingan</p>
-                    <p className="tw-text-gray-600">{data_bimbingan_2.length}</p>
+                <div className="tw-bg-white tw-rounded-xl tw-shadow-md tw-p-6 tw-border tw-border-gray-200">
+                    <p className="tw-text-lg tw-font-medium tw-text-gray-700">{data_mhs_ta.nama_pembimbing_2}</p>
+                    <div className="tw-flex tw-items-center tw-justify-between tw-mt-5">
+                        <div className="tw-text-base tw-text-gray-600">
+                            <span className="tw-font-semibold tw-text-gray-500">Status</span>
+                            <p className="tw-text-gray-800">{statusTA(data_mhs_ta.acc_pembimbing_dua)}</p>
+                        </div>
+                        <div className="tw-text-base tw-text-gray-600">
+                            <span className="tw-font-semibold tw-text-gray-500">Jumlah Bimbingan</span>
+                            <p className="tw-text-gray-800">{data_bimbingan_2.length}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <hr className="tw-my-2" />
