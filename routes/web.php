@@ -114,6 +114,13 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
         // Route Dosen Penguji
         Route::group(['middleware' => ['role:dosenPenguji']], function () {
 
+            // Tugas Akhir
+            Route::get('/Penguji/MhsTA', [\App\Http\Controllers\Dosen\Penguji\MhsTAController::class, 'index'])->name('MhsTAPenguji');
+            Route::get('/Penguji/MhsTA/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsTAController::class, 'detail']);
+            Route::post('/Penguji/MhsTA/Nilai/store', [\App\Http\Controllers\Dosen\Penguji\MhsTAController::class, 'storeNilai'])->name('MhsTAPenguji.storeNilai');
+            Route::put('/Penguji/MhsTA/Nilai/{id}/update', [\App\Http\Controllers\Dosen\Penguji\MhsTAController::class, 'updateNilai'])->name('MhsTAPenguji.updateNilai');
+            Route::post('/Penguji/MhsTA/HasilSidang/{id}/update', [\App\Http\Controllers\Dosen\Penguji\MhsTAController::class, 'updateHasilSidang'])->name('MhsTAPenguji.updateHasilSidang');
+
             // Sempro
             Route::get('/Penguji/Mhssempro', [\App\Http\Controllers\Dosen\Penguji\MhsSemproController::class, 'index'])->name('MhsSemproPenguji');
             Route::get('/Penguji/Mhssempro/{id}', [\App\Http\Controllers\Dosen\Penguji\MhsSemproController::class, 'detail']);

@@ -109,6 +109,7 @@ const AppMenu = () => {
                         items: [
                             { label: 'Mahasiswa PKL', icon: 'pi pi-fw pi-file', to: route('MhsPklPenguji') },
                             { label: 'Mahasiswa Sempro', icon: 'pi pi-fw pi-file', to: route('MhsSemproPenguji') },
+                            { label: 'Mahasiswa TA', icon: 'pi pi-fw pi-file', to: route('MhsTAPenguji') },
                         ],
                     }}
                     root={true}
