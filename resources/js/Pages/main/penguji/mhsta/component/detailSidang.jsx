@@ -434,14 +434,16 @@ const detailTa = ({
                     <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
                 </div>
                 <div className="tw-relative tw-inline-block">
-                    <Button
-                        label={selectedStatus}
-                        severity={getButtonSeverity(data_tas.status_sidang_ta)}
-                        className="tw-mr-2"
-                        tooltip="Hasil Akhir Sidang"
-                        tooltipOptions={{ position: "left", mouseTrack: false, mouseTrackLeft: 15 }}
-                        onClick={() => setDropdownVisible((prev) => !prev)}
-                    />
+                    {nilaiAkhir && nilaita.sebagai === 'ketua' && (
+                        <Button
+                            label={selectedStatus}
+                            severity={getButtonSeverity(data_tas.status_sidang_ta)}
+                            className="tw-mr-2"
+                            tooltip="Hasil Akhir Sidang"
+                            tooltipOptions={{ position: "left", mouseTrack: false, mouseTrackLeft: 15 }}
+                            onClick={() => setDropdownVisible((prev) => !prev)}
+                        />
+                    )}
 
                     {dropdownVisible && (
                         <div className="tw-absolute tw-top-full tw-left-0 tw-bg-white tw-border tw-rounded-lg tw-shadow-lg tw-w-48 tw-mt-2 tw-z-10 tw-overflow-hidden tw-border-gray-200">
