@@ -281,7 +281,7 @@ const bimbingan = () => {
                             header="Komentar"
                             style={{ width: '30%' }}
                             body={(data) => {
-                                if (data.komentar !== null) {
+                                if (data.komentar) {
                                     const maxLength = 100;
                                     const truncatedText = data.komentar.length > maxLength
                                         ? data.komentar.substring(0, maxLength) + "..."

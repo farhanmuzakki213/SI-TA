@@ -48,6 +48,7 @@ const AppMenu = () => {
                             { label: 'Pimpinan', icon: 'pi pi-fw pi-file', to: route('pimpinan') },
                             { label: 'Ver Berkas PKL', icon: 'pi pi-fw pi-file', to: route('verberkaspkl') },
                             { label: 'Ver Berkas Sempro', icon: 'pi pi-fw pi-file', to: route('verberkassempro') },
+                            { label: 'Ver Berkas Proposal TA', icon: 'pi pi-fw pi-file', to: route('verproposalta') },
                             { label: 'Ver Berkas TA', icon: 'pi pi-fw pi-file', to: route('verberkasta') },
                         ]
                     }}

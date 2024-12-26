@@ -53,8 +53,6 @@ class MhsSemproController extends Controller
             ->get();
         $data_nilai = SemproNilai::where('sempro_mhs_id', $id)
             ->where('dosen_id', $id_dosen)
-            ->where('sebagai', 'pembimbing_1')
-            ->OrWhere('sebagai', 'pembimbing_2')
             ->get();
         // dd($data_nilai->toArray());
         return Inertia::render('main/pembimbing/mhssempro/detail', [

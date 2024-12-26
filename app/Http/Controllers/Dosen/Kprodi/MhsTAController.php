@@ -46,7 +46,13 @@ class MhsTAController extends Controller
         // dd($kaprodi->toArray());
         return Inertia::render('main/kaprodi/mhsta/index', [
             'data_ta' => MhsTAResource::collection($data_ta),
-            'data_dosen' => $kaprodi,
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi->prodi_id)->get()->map(function ($dosen) {
+                return [
+                    'value' => $dosen->id_dosen,
+                    'label' => $dosen->nama_dosen,
+                    'golongan' => $dosen->golongan_id,
+                ];
+            }),
         ]);
     }
 
@@ -148,6 +154,39 @@ class MhsTAController extends Controller
                 ];
             }),
         ]);
+    }
+
+    public function updatePenugasan(Request $request, string $id)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'status_judul' => 'required',
+            'komentar_judul' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+
+            $data = [
+                'status_judul' => $request->status_judul,
+                'komentar_judul' => $request->komentar_judul,
+            ];
+            if ($request->status_judul == '2') {
+                $data['pembimbing_1_id'] = $request->pembimbing_1_id;
+                $data['pembimbing_2_id'] = $request->pembimbing_2_id;
+            }
+            // dd($data);
+            $ta = TaMhs::findOrFail($id);
+            $ta->update($data);
+            DB::commit();
+            return to_route('MhsTAKprodi')->with('success', 'Verifikasi Judul updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('MhsTAKprodi')->with('error', 'Verifikasi Judul updated failed');
+        }
     }
 
     public function updateDosen(Request $request, string $id)
@@ -277,4 +316,6 @@ class MhsTAController extends Controller
             return back()->with('error', 'Jadwal updated failed');
         }
     }
+
+
 }

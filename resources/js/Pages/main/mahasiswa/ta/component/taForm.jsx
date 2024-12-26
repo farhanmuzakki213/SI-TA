@@ -49,7 +49,7 @@ const taForm = ({
             file_proposal: files,
         }));
     };
-    console.log("test123", ta);
+    // console.log("test123", ta);
     return (
         <Dialog
             visible={taDialog}
@@ -65,7 +65,7 @@ const taForm = ({
                 <Tooltip target=".judul" />
                 <label htmlFor="judul">Judul
                     <i className="judul pi pi-info-circle tw-ml-1"
-                        data-pr-tooltip="Optional Jika Ada Perubahan Proposal"
+                        data-pr-tooltip="Pastikan Judul Tidak Plagiat"
                         data-pr-position="right"
                         data-pr-at="right+5 top"
                         data-pr-my="left center-2"
@@ -87,53 +87,59 @@ const taForm = ({
             </div>
 
             {/* File Proposal */}
-            <div className="field">
-                <Tooltip target=".file_proposal" />
-                <label htmlFor="file_proposal">File Proposal
-                    <i className="file_proposal pi pi-info-circle tw-ml-1"
-                        data-pr-tooltip="Optional Jika Ada Perubahan Proposal"
-                        data-pr-position="right"
-                        data-pr-at="right+5 top"
-                        data-pr-my="left center-2"
-                        style={{ fontSize: '1rem' }}></i>
-                </label>
-                <FileUploadC
-                    multiple={false}
-                    name="file_proposal"
-                    onFileSelect={onFileProposalSelect}
-                />
-                {submitted && !ta?.file_proposal && (
-                    <small className="p-invalid">File Proposal is required.</small>
-                )}
-            </div>
+            {ta.status_ver_proposal !== '0' && ta.status_judul === '2' && (
+                <div className="field">
+                    <Tooltip target=".file_proposal" />
+                    <label htmlFor="file_proposal">File Proposal
+                        <i className="file_proposal pi pi-info-circle tw-ml-1"
+                            data-pr-tooltip="Optional Jika Ada Perubahan Proposal"
+                            data-pr-position="right"
+                            data-pr-at="right+5 top"
+                            data-pr-my="left center-2"
+                            style={{ fontSize: '1rem' }}></i>
+                    </label>
+                    <FileUploadC
+                        multiple={false}
+                        name="file_proposal"
+                        onFileSelect={onFileProposalSelect}
+                    />
+                    {submitted && !ta?.file_proposal && (
+                        <small className="p-invalid">File Proposal is required.</small>
+                    )}
+                </div>
+            )}
 
             {/* File TA */}
-            <div className="field">
-                <label htmlFor="file_ta">File TA *</label>
-                <FileUploadC
-                    multiple={false}
-                    name="file_ta"
-                    onFileSelect={onFileTASelect}
-                />
-                {submitted && !ta?.file_ta && (
-                    <small className="p-invalid">File TA is required.</small>
-                )}
-            </div>
+            {ta.status_ver_ta !== '0' && ta.status_ver_proposal === '2' && ta.acc_pembimbing_satu === '1' && ta.acc_pembimbing_dua === '1' && (
+                <>
+                    <div className="field">
+                        <label htmlFor="file_ta">File TA *</label>
+                        <FileUploadC
+                            multiple={false}
+                            name="file_ta"
+                            onFileSelect={onFileTASelect}
+                        />
+                        {submitted && !ta?.file_ta && (
+                            <small className="p-invalid">File TA is required.</small>
+                        )}
+                    </div>
 
-            {/* File Laporan */}
-            <div className="field">
-                <label htmlFor="file_laporan">File Laporan *</label>
-                <FileUploadC
-                    multiple={false}
-                    name="file_laporan"
-                    onFileSelect={onFileLaporanSelect}
-                />
-                {submitted && !ta?.file_laporan && (
-                    <small className="p-invalid">File Laporan is required.</small>
-                )}
-            </div>
+                    {/* File Laporan */}
+                    <div className="field">
+                        <label htmlFor="file_laporan">File Laporan *</label>
+                        <FileUploadC
+                            multiple={false}
+                            name="file_laporan"
+                            onFileSelect={onFileLaporanSelect}
+                        />
+                        {submitted && !ta?.file_laporan && (
+                            <small className="p-invalid">File Laporan is required.</small>
+                        )}
+                    </div>
+                </>
+            )}
 
-            {ta.status_sidang_ta === '3' && (
+            {ta.status_sidang_ta === '3' && ta.acc_pembimbing_satu === '1' && ta.acc_pembimbing_dua === '1' && (
                 <>
                     {/* File Revisi Sidang */}
                     <div className="field">

@@ -33,12 +33,13 @@ class MhsTAController extends Controller
             'r_sekretaris',
             'r_ketua',
         )
-            ->where('status_ver_proposal', '2')
+            ->where('status_judul', '2')
             ->where('pembimbing_1_id', $dosen->id_dosen)
             ->OrWhere('pembimbing_2_id', $dosen->id_dosen)
             ->get();
         // dd($data_ta, $id_mahasiswa->toArray());
         // dd($kaprodi->toArray());
+        // dd($data_ta->toArray());
         return Inertia::render('main/pembimbing/mhsta/index', [
             'data_ta' => MhsTAResource::collection($data_ta),
             'data_dosen' => $dosen,
@@ -64,15 +65,13 @@ class MhsTAController extends Controller
             ->get();
         // dd($data_ta, $id_mahasiswa->toArray());
         // dd($kaprodi->toArray());
-        $id_ta_mhs = $data_ta->first()->id_ta_mhs;
-        $data_bimbingan = TaBimbingan::where('ta_mhs_id', $id_ta_mhs)->where('dosen_id', $dosen->id_dosen)->get();
-        $data_bimbingan_1 = TaBimbingan::where('ta_mhs_id', $id_ta_mhs)->where('sebagai', 'pembimbing_1')->whereNot('status_bimbingan_ta', '1')->get();
-        $data_bimbingan_2 = TaBimbingan::where('ta_mhs_id', $id_ta_mhs)->where('sebagai', 'pembimbing_2')->whereNot('status_bimbingan_ta', '1')->get();
+        $data_bimbingan = TaBimbingan::where('ta_mhs_id', $id)->where('dosen_id', $dosen->id_dosen)->get();
+        $data_bimbingan_1 = TaBimbingan::where('ta_mhs_id', $id)->where('sebagai', 'pembimbing_1')->whereNot('status_bimbingan_ta', '1')->get();
+        $data_bimbingan_2 = TaBimbingan::where('ta_mhs_id', $id)->where('sebagai', 'pembimbing_2')->whereNot('status_bimbingan_ta', '1')->get();
         $data_nilai = TaNilai::where('ta_mhs_id', $id)
             ->where('dosen_id', $dosen->id_dosen)
-            ->where('sebagai', 'pembimbing_1')
-            ->OrWhere('sebagai', 'pembimbing_2')
             ->get();
+            // dd($data_nilai->toArray());
         return Inertia::render('main/pembimbing/mhsta/detail', [
             'data_ta' => MhsTAResource::collection($data_ta),
             'data_bimbingan' => MhsBimbinganTAResource::collection($data_bimbingan),

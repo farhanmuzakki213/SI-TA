@@ -323,7 +323,7 @@ const detailTa = ({
                 <div className="tw-flex tw-items-center">
                     <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
                 </div>
-                {data_tas.status_ver_ta === "2" && data_tas.tgl_sidang === null && !nilaiAkhir() && (
+                {data_tas.status_ver_ta === "2" && data_tas.tgl_sidang === null && !nilaiAkhir() && data_tas.penguji_2_id && (
                     <Button
                         label="Jadwal"
                         icon="pi pi-plus"
@@ -334,7 +334,7 @@ const detailTa = ({
                         onClick={bookingopenNew}
                     />
                 )}
-                {data_tas.status_ver_ta === "2" && data_tas.tgl_sidang != null && !nilaiAkhir() && (
+                {data_tas.status_ver_ta === "2" && data_tas.tgl_sidang != null && !nilaiAkhir() && data_tas.penguji_2_id && (
                     <Button
                         label="Jadwal"
                         icon="pi pi-pencil"

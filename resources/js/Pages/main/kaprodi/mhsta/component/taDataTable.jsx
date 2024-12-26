@@ -6,121 +6,91 @@ import { Link } from '@inertiajs/react';
 import { Avatar } from 'primereact/avatar';
 import { Tag } from 'primereact/tag';
 
-const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtugasakhirs, globalFilter, header, edittugasakhir, dt }) => {
-
-    // console.log(tugasakhirs);
-    const namaBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Nama Mahasiswa</span>
-                {rowData.nama_mahasiswa || 'N/A'}
-            </>
-        );
-    };
-
-    const nimBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Nim Mahasiswa</span>
-                {rowData.nim_mahasiswa || 'N/A'}
-            </>
-        );
-    };
-
-    const statusVerTaBodyTemplate = (rowData) => {
-        let statusLabel;
-        let severity;
-
-        switch (rowData.status_ver_ta) {
+const UsulanDataTable = ({ usulans, selectedusulans, setSelectedusulans, globalFilter, header, editusulan, dt }) => {
+    const getStatusLabel = (status, additionalCondition) => {
+        switch (status) {
             case "0":
-                statusLabel = "Ditolak";
-                severity = "danger";
-                break;
+                return {
+                    label: additionalCondition ? "Ditolak" : "Tidak Lulus",
+                    severity: "danger",
+                };
             case "1":
-                statusLabel = "Belum Diverifikasi";
-                severity = "warning";
-                break;
+                return {
+                    label: additionalCondition ? "Belum Diverifikasi" : "Sedang Diproses",
+                    severity: "warning",
+                };
             case "2":
-                statusLabel = "Diverifikasi";
-                severity = "success";
-                break;
+                return {
+                    label: additionalCondition ? "Diverifikasi" : "Lulus",
+                    severity: "success",
+                };
             default:
-                statusLabel = "Butuh Revisi";
-                severity = "info";
-                break;
+                return {
+                    label: "Butuh Revisi",
+                    severity: "info",
+                };
         }
+    };
 
+    const getStatusTemplate = (status, additionalCondition) => {
+        const { label, severity } = getStatusLabel(status, additionalCondition);
         return (
             <>
-                <span className="p-column-title">Status Verifikasi TA</span>
-                <Tag value={statusLabel} severity={severity} />
+                <span className="p-column-title">Status</span>
+                <Tag value={label} severity={severity} />
             </>
         );
     };
 
-    const statusTugasAkhirBodyTemplate = (rowData) => {
-        let statusLabel;
-        let severity;
+    const namaBodyTemplate = (rowData) => (
+        <>
+            <span className="p-column-title">Nama Mahasiswa</span>
+            {rowData.nama_mahasiswa || 'N/A'}
+        </>
+    );
 
-        switch (rowData.status_sidang_ta) {
-            case "0":
-                statusLabel = "Tidak Lulus";
-                severity = "danger";
-                break;
-            case "1":
-                statusLabel = "Belum";
-                severity = "warning";
-                break;
-            case "2":
-                statusLabel = "Lulus";
-                severity = "success";
-                break;
-            default:
-                statusLabel = "Butuh Revisi";
-                severity = "info";
-                break;
-        }
+    const nimBodyTemplate = (rowData) => (
+        <>
+            <span className="p-column-title">Nim Mahasiswa</span>
+            {rowData.nim_mahasiswa || 'N/A'}
+        </>
+    );
 
-        return (
-            <>
-                <span className="p-column-title">Status Kelulusan</span>
-                <Tag value={statusLabel} severity={severity} />
-            </>
-        );
-    };
+    const gambarBodyTemplate = (rowData) => (
+        <>
+            <span className="p-column-title">Foto Profil</span>
+            <Avatar image={rowData.foto_mahasiswa} size="xlarge" />
+        </>
+    );
 
-    const gambarBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Foto Profil</span>
-                <Avatar image={rowData.foto_mahasiswa} size="xlarge" />
-            </>
-        );
-    };
-
-    const actionBodyTemplate = (rowData) => {
-        // console.log(rowData.id_pkl_mhs, status);
-        return (
-            <>
-                {rowData.status_ver_proposal === '2' && (
-                    <Link
-                        href={'/Kprodi/MhsTA/' + rowData.id_ta_mhs}
-                        className="text-blue-500 hover:underline"
-                        title="View Details"
-                    >
-                        <Button icon="pi pi-eye" rounded outlined />
-                    </Link>
-                )}
-            </>
-        );
-    };
+    const actionBodyTemplate = (rowData) => (
+        <>
+            {rowData.status_judul === '2' ? (
+                <Link
+                    href={'/Kprodi/MhsTA/' + rowData.id_ta_mhs}
+                    className="text-blue-500 hover:underline"
+                    title="View Details"
+                >
+                    <Button icon="pi pi-eye" rounded outlined />
+                </Link>
+            ) : (
+                <Button
+                    icon="pi pi-pencil"
+                    severity="success"
+                    rounded
+                    className="mr-2"
+                    onClick={() => editusulan(rowData)}
+                />
+            )}
+        </>
+    );
 
     return (
         <DataTable
             ref={dt}
-            value={tugasakhirs}
-            selection={selectedtugasakhirs}
-            onSelectionChange={(e) => setSelectedtugasakhirs(e.value)}
+            value={usulans}
+            selection={selectedusulans}
+            onSelectionChange={(e) => setSelectedusulans(e.value)}
             dataKey="id_ta_mhs"
             paginator
             rows={10}
@@ -138,11 +108,37 @@ const TugasAkhirDataTable = ({ tugasakhirs, selectedtugasakhirs, setSelectedtuga
             <Column field="foto_mahasiswa" header="Gambar" sortable body={gambarBodyTemplate}></Column>
             <Column field="nama_mahasiswa" header="Nama Mahasiswa" sortable body={namaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
             <Column field="nim_mahasiswa" header="Nim Mahasiswa" sortable body={nimBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_ver_ta" header="Status Berkas" sortable body={statusVerTaBodyTemplate} headerStyle={{ minWidth: "15rem" }}></Column>
-            <Column field="status_sidang_ta" header="Status Kelulusan" body={statusTugasAkhirBodyTemplate} sortable></Column>
+            <Column
+                field="status_judul"
+                header="Status Judul"
+                sortable
+                body={(rowData) => getStatusTemplate(rowData.status_judul, rowData.status_sidang_ta)}
+                headerStyle={{ minWidth: "15rem" }}
+            ></Column>
+            <Column
+                field="status_ver_proposal"
+                header="Status Proposal"
+                sortable
+                body={(rowData) => getStatusTemplate(rowData.status_ver_proposal, rowData.status_sidang_ta)}
+                headerStyle={{ minWidth: "15rem" }}
+            ></Column>
+            <Column
+                field="status_ver_ta"
+                header="Status Berkas TA"
+                sortable
+                body={(rowData) => getStatusTemplate(rowData.status_ver_ta, rowData.status_sidang_ta)}
+                headerStyle={{ minWidth: "15rem" }}
+            ></Column>
+            <Column
+                field="status_sidang_ta"
+                header="Status Kelulusan"
+                sortable
+                body={(rowData) => getStatusTemplate(rowData.status_sidang_ta)}
+                headerStyle={{ minWidth: "15rem" }}
+            ></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: "10rem" }}></Column>
         </DataTable>
     );
 };
 
-export default TugasAkhirDataTable;
+export default UsulanDataTable;

@@ -5,6 +5,41 @@ import { Toast } from "primereact/toast";
 import { router, usePage } from "@inertiajs/react";
 import NilaitaForm from "./nilaiForm";
 
+const FileButton = ({ label, tooltip, onClick }) => (
+    <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+        <div className="tw-flex tw-items-center">
+            <span className="tw-text-gray-800">{label}</span>
+        </div>
+        <Button
+            icon="pi pi-file"
+            severity="primary"
+            outlined
+            label="File"
+            tooltip={tooltip}
+            tooltipOptions={{ position: "left", mouseTrack: false, mouseTrackLeft: 15 }}
+            onClick={onClick}
+        />
+    </div>
+);
+
+const PenilaianRow = ({ nama, jabatan, nilai, isCurrentDosen, nilaiDosen }) => (
+    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+        <div className="tw-w-1/3">
+            <p className="tw-text-gray-600">{nama || "-"}</p>
+        </div>
+        <div className="tw-w-1/3">
+            <p className="tw-text-gray-600">{jabatan}</p>
+        </div>
+        <div className="tw-w-1/3 tw-text-right">
+            {isCurrentDosen && nilaiDosen ? (
+                <p className="tw-text-gray-600">{nilaiDosen.total_nilai || "-"}</p>
+            ) : (
+                <p className="tw-text-gray-600">{nilai ? nilai.total_nilai : "Belum Dinilai"}</p>
+            )}
+        </div>
+    </div>
+);
+
 const detailTa = ({
     data_ta,
     data_dosen,
@@ -60,32 +95,30 @@ const detailTa = ({
         }
     }, [data_nilai, props.flash]);
 
-    // console.log(data_nilai);
+    console.log(data_nilai);
     const nilaiPembimbing = () => {
         console.log("Nilais", nilaitas);
         if (!Array.isArray(nilaitas) || nilaitas.length === 0) {
-            // console.warn("nilaitas is empty or not an array");
+            console.warn("nilaitas is empty or not an array");
             return null;
         }
         const nilaita = nilaitas[0];
 
         return nilaita;
     };
-
-    // console.log("Hasil Nilai Pembimbing:", nilaiPembimbing());
-
-    const nilaiPembimbing_1 = JSON.parse(data_tas.nilai_pembimbing_1?.nilai || null);
-    const nilaiPembimbing_2 = JSON.parse(data_tas.nilai_pembimbing_2?.nilai || null);
-    const nilaiKetua = JSON.parse(data_tas.nilai_ketua?.nilai || null);
-    const nilaiSekretaris = JSON.parse(data_tas.nilai_sekretaris?.nilai || null);
-    const nilaiPenguji_1 = JSON.parse(data_tas.nilai_penguji_1?.nilai || null);
-    const nilaiPenguji_2 = JSON.parse(data_tas.nilai_penguji_2?.nilai || null);
+    const nilai = nilaiPembimbing();
+    const nilaiPembimbing_1 = JSON.parse(data_tas.nilai_pembimbing_1 || null);
+    const nilaiPembimbing_2 = JSON.parse(data_tas.nilai_pembimbing_2 || null);
+    const nilaiKetua = JSON.parse(data_tas.nilai_ketua || null);
+    const nilaiSekretaris = JSON.parse(data_tas.nilai_sekretaris || null);
+    const nilaiPenguji_1 = JSON.parse(data_tas.nilai_penguji_1 || null);
+    const nilaiPenguji_2 = JSON.parse(data_tas.nilai_penguji_2 || null);
     const nilaiAkhir = () => {
         if (nilaiPembimbing_1 != null && nilaiPembimbing_2 != null && nilaiKetua != null && nilaiSekretaris != null && nilaiPenguji_1 != null && nilaiPenguji_2 != null) {
-            if (nilaiPembimbing() != null) {
+            if (nilai != null) {
                 if (data_tas.pembimbing_1_id === data_dosen.id_dosen) {
                     const totalNilai =
-                        (nilaiPembimbing().total_nilai +
+                        (nilai.total_nilai +
                             nilaiPembimbing_2.total_nilai +
                             nilaiKetua.total_nilai +
                             nilaiSekretaris.total_nilai +
@@ -96,7 +129,7 @@ const detailTa = ({
 
                 if (data_tas.pembimbing_2_id === data_dosen.id_dosen) {
                     const totalNilai =
-                        (nilaiPembimbing().total_nilai +
+                        (nilai.total_nilai +
                             nilaiPembimbing_1.total_nilai +
                             nilaiKetua.total_nilai +
                             nilaiSekretaris.total_nilai +
@@ -249,301 +282,225 @@ const detailTa = ({
             console.error(error);
         }
     };
+    if (!data_tas || !data_dosen) return null;
+
+    const gridData = [
+        { label: "Judul", value: data_tas?.judul || "-" },
+        { label: "Tanggal Sidang", value: data_tas?.tgl_sidang || "-" },
+        { label: "Ruangan", value: data_tas?.ruangan_sidang || "-" },
+        { label: "Sesi", value: data_tas?.sesi_sidang || "-" },
+    ];
+
+    const fileButtons = [
+        {
+            show: data_tas?.id_booking,
+            label: "Surat Tugas",
+            tooltip: "Lihat File",
+            onClick: openFile,
+        },
+        {
+            show: data_tas?.status_ver_ta === "2",
+            label: "Tugas Akhir",
+            tooltip: "Lihat File",
+            onClick: () => window.open(`/storage/uploads/ta/file_ta/${data_tas?.file_ta}`, "_blank"),
+        },
+        {
+            show: data_tas?.status_ver_ta === "2",
+            label: "Laporan",
+            tooltip: "Lihat File",
+            onClick: () =>
+                window.open(`/storage/uploads/ta/file_laporan/${data_tas?.file_laporan}`, "_blank"),
+        },
+        {
+            show: data_tas?.file_proposal,
+            label: "Proposal",
+            tooltip: "Lihat File",
+            onClick: () =>
+                window.open(`/storage/uploads/sempro/file/${data_tas?.file_proposal}`, "_blank"),
+        },
+        {
+            show: data_tas?.file_revisi_sidang,
+            label: "Laporan Revisi",
+            tooltip: "Lihat File",
+            onClick: () =>
+                window.open(`/storage/uploads/ta/file_revisi_sidang/${data_tas?.file_revisi_sidang}`, "_blank"),
+        },
+    ];
+
     return (
         <div className="card">
-            <Toast ref={toast} />
-            <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
-            <hr className="tw-my-4" />
-            {data_tas.status_sidang_ta !== '0' && (
-                <div className="card">
-                    <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-sm">
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Judul</p>
-                            <p className="tw-text-gray-600">{data_tas?.judul || '-'}</p>
+            {data_tas.acc_pembimbing_satu === '1' && data_tas.acc_pembimbing_dua === '1' && (
+                <>
+                    <Toast ref={toast} />
+                    <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
+                    <hr className="tw-my-4" />
+
+                    {data_tas?.status_sidang_ta !== "0" && (
+                        <div className="card tw-mb-4">
+                            <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-sm">
+                                {gridData.map((item, index) => (
+                                    <div key={index}>
+                                        <p className="tw-text-gray-800 tw-font-semibold">{item.label}</p>
+                                        <p className="tw-text-gray-600">{item.value}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Tanggal Sidang</p>
-                            <p className="tw-text-gray-600">{data_tas?.tgl_sidang || '-'}</p>
+                    )}
+
+                    <div className="card tw-mb-4">
+                        <Messages ref={msgs} className="tw-mb-2" />
+                        <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
+                            <div className="tw-flex tw-items-center">
+                                <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
+                            </div>
+                            {data_tas.pembimbing_1_id === data_dosen.id_dosen && data_tas.id_booking && data_tas.status_sidang_ta === '1' && (
+                                <>
+                                    {data_tas.nilai_pembimbing_1 === null ? (
+                                        <Button
+                                            label="Nilai"
+                                            icon="pi pi-plus"
+                                            severity="success"
+                                            className="mr-2"
+                                            tooltip="Beri Nilai"
+                                            tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                            onClick={openNew}
+                                        />
+                                    ) : (
+                                        <Button
+                                            label="Nilai"
+                                            icon="pi pi-pencil"
+                                            severity="success"
+                                            className="mr-2"
+                                            tooltip="Edit Nilai"
+                                            tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                            onClick={() => editnilaita(nilai)}
+                                        />
+                                    )}
+                                </>
+                            )}
+                            {data_tas.pembimbing_2_id === data_dosen.id_dosen && data_tas.id_booking && data_tas.status_sidang_ta === '1' && (
+                                <>
+                                    {data_tas.nilai_pembimbing_2 === null ? (
+                                        <Button
+                                            label="Nilai"
+                                            icon="pi pi-plus"
+                                            severity="success"
+                                            className="mr-2"
+                                            tooltip="Beri Nilai"
+                                            tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                            onClick={openNew}
+                                        />
+                                    ) : (
+                                        <Button
+                                            label="Nilai"
+                                            icon="pi pi-pencil"
+                                            severity="success"
+                                            className="mr-2"
+                                            tooltip="Edit Nilai"
+                                            tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
+                                            onClick={() => editnilaita(nilai)}
+                                        />
+                                    )}
+                                </>
+                            )}
                         </div>
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Ruangan</p>
-                            <p className="tw-text-gray-600">{data_tas?.ruangan_sidang || '-'}</p>
+                        <hr className="tw-my-4" />
+                        <div className="tw-mt-4 tw-space-y-4">
+                            <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                <div className="tw-w-1/3">
+                                    <p className="tw-text-gray-800 tw-font-medium">Nama Dosen</p>
+                                </div>
+                                <div className="tw-w-1/3">
+                                    <p className="tw-text-gray-800 tw-font-medium">Jabatan</p>
+                                </div>
+                                <div className="tw-w-1/3 tw-text-right">
+                                    <p className="tw-text-gray-800 tw-font-medium">Nilai</p>
+                                </div>
+                            </div>
+                            <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                <div className="tw-w-1/3">
+                                    <p className="tw-text-gray-600">{!data_tas.nama_pembimbing_1 ? '-' : data_tas.nama_pembimbing_1}</p>
+                                </div>
+                                <div className="tw-w-1/3">
+                                    <p className="tw-text-gray-600">Pembimbing 1</p>
+                                </div>
+                                <div className="tw-w-1/3 tw-text-right">
+                                    {data_dosen.id_dosen === data_tas.pembimbing_1_id && nilaiPembimbing_1 ? (
+                                        <>
+                                            {!nilai ? (
+                                                <p className="tw-text-gray-600">-</p>
+                                            ) : (
+                                                <p className="tw-text-gray-600">{nilai.total_nilai}</p>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <p className="tw-text-gray-600">
+                                            {!nilaiPembimbing_1 ? 'Belum Dinilai' : nilaiPembimbing_1.total_nilai}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                                <div className="tw-w-1/3">
+                                    <p className="tw-text-gray-600">{!data_tas.nama_pembimbing_2 ? '-' : data_tas.nama_pembimbing_2}</p>
+                                </div>
+                                <div className="tw-w-1/3">
+                                    <p className="tw-text-gray-600">Pembimbing 2</p>
+                                </div>
+                                <div className="tw-w-1/3 tw-text-right">
+                                    {data_dosen.id_dosen === data_tas.pembimbing_2_id && nilaiPembimbing_2 ? (
+                                        <>
+                                            {!nilai ? (
+                                                <p className="tw-text-gray-600">-</p>
+                                            ) : (
+                                                <p className="tw-text-gray-600">{nilai.total_nilai}</p>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <p className="tw-text-gray-600">
+                                            {!nilaiPembimbing_2 ? 'Belum Dinilai' : nilaiPembimbing_2.total_nilai}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                            <PenilaianRow nama={data_tas?.nama_ketua} jabatan="Ketua" nilai={nilaiKetua} />
+                            <PenilaianRow nama={data_tas?.nama_sekretaris} jabatan="Sekretaris" nilai={nilaiSekretaris} />
+                            <PenilaianRow nama={data_tas?.nama_penguji_1} jabatan="Penguji 1" nilai={nilaiPenguji_1} />
+                            <PenilaianRow nama={data_tas?.nama_penguji_2} jabatan="Penguji 2" nilai={nilaiPenguji_2} />
                         </div>
-                        <div>
-                            <p className="tw-text-gray-800 tw-font-semibold">Sesi</p>
-                            <p className="tw-text-gray-600">{data_tas?.sesi_sidang || '-'}</p>
+
+
+                        <hr className="tw-my-4" />
+                        <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
+                            <div className="tw-w-1/2">
+                                <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
+                            </div>
+                            <div className="tw-w-1/2 tw-text-right">
+                                <p className="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? 'Belum Lengkap' : nilaiAkhir()}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </>
             )}
-            <hr className="tw-my-3" />
-            <div className="card">
-                <Messages ref={msgs} className="tw-mb-2" />
-                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                    <div className="tw-flex tw-items-center">
-                        <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
-                    </div>
-                    {data_tas.pembimbing_1_id === data_dosen.id_dosen && data_tas.id_booking && data_tas.status_sidang_ta === '1' && (
-                        <>
-                            {data_tas.nilai_pembimbing_1 === null ? (
-                                <Button
-                                    label="Nilai"
-                                    icon="pi pi-plus"
-                                    severity="success"
-                                    className="mr-2"
-                                    tooltip="Beri Nilai"
-                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                    onClick={openNew}
+            <div className="tw-mt-6">
+                <div className="card">
+                    <h2 className="tw-text-lg tw-font-semibold tw-text-gray-800">Files</h2>
+                    <div className="tw-mt-4 tw-space-y-4">
+                        {fileButtons
+                            .filter((file) => file.show)
+                            .map((file, index) => (
+                                <FileButton
+                                    key={index}
+                                    label={file.label}
+                                    tooltip={file.tooltip}
+                                    onClick={file.onClick}
                                 />
-                            ) : (
-                                <Button
-                                    label="Nilai"
-                                    icon="pi pi-pencil"
-                                    severity="success"
-                                    className="mr-2"
-                                    tooltip="Edit Nilai"
-                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                    onClick={() => editnilaita(nilaiPembimbing())}
-                                />
-                            )}
-                        </>
-                    )}
-                    {data_tas.pembimbing_2_id === data_dosen.id_dosen && data_tas.id_booking && data_tas.status_sidang_ta === '1' && (
-                        <>
-                            {data_tas.nilai_pembimbing_2 === null ? (
-                                <Button
-                                    label="Nilai"
-                                    icon="pi pi-plus"
-                                    severity="success"
-                                    className="mr-2"
-                                    tooltip="Beri Nilai"
-                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                    onClick={openNew}
-                                />
-                            ) : (
-                                <Button
-                                    label="Nilai"
-                                    icon="pi pi-pencil"
-                                    severity="success"
-                                    className="mr-2"
-                                    tooltip="Edit Nilai"
-                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                    onClick={() => editnilaita(nilaiPembimbing())}
-                                />
-                            )}
-                        </>
-                    )}
-                </div>
-                <hr className="tw-my-4" />
-                <div className="tw-mt-4 tw-space-y-4">
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-800 tw-font-medium">Nama Dosen</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-800 tw-font-medium">Jabatan</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            <p className="tw-text-gray-800 tw-font-medium">Nilai</p>
-                        </div>
-                    </div>
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{!data_tas.nama_pembimbing_1 ? '-' : data_tas.nama_pembimbing_1}</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Pembimbing 1</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            {data_dosen.id_dosen === data_tas.pembimbing_1_id && nilaiPembimbing_1 ? (
-                                <>
-                                    {!nilaiPembimbing() ? (
-                                        <p className="tw-text-gray-600">-</p>
-                                    ) : (
-                                        <p className="tw-text-gray-600">{nilaiPembimbing().total_nilai}</p>
-                                    )}
-                                </>
-                            ) : (
-                                <p className="tw-text-gray-600">
-                                    {!nilaiPembimbing_1 ? 'Belum Dinilai' : nilaiPembimbing_1.total_nilai}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{!data_tas.nama_pembimbing_2 ? '-' : data_tas.nama_pembimbing_2}</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Pembimbing 2</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            {data_dosen.id_dosen === data_tas.pembimbing_2_id && nilaiPembimbing_2 ? (
-                                <>
-                                    {!nilaiPembimbing() ? (
-                                        <p className="tw-text-gray-600">-</p>
-                                    ) : (
-                                        <p className="tw-text-gray-600">{nilaiPembimbing().total_nilai}</p>
-                                    )}
-                                </>
-                            ) : (
-                                <p className="tw-text-gray-600">
-                                    {!nilaiPembimbing_2 ? 'Belum Dinilai' : nilaiPembimbing_2.total_nilai}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{!data_tas.nama_ketua ? '-' : data_tas.nama_ketua}</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Ketua</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiKetua ? (
-                                <p className="tw-text-gray-600">Belum Dinilai</p>
-                            ) : (
-                                <p className="tw-text-gray-600">{nilaiKetua.total_nilai}</p>
-                            )}
-                        </div>
-                    </div>
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{!data_tas.nama_sekretaris ? '-' : data_tas.nama_sekretaris}</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Sekretaris</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiSekretaris ? (
-                                <p className="tw-text-gray-600">Belum Dinilai</p>
-                            ) : (
-                                <p className="tw-text-gray-600">{nilaiSekretaris.total_nilai}</p>
-                            )}
-                        </div>
-                    </div>
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{!data_tas.nama_penguji_1 ? '-' : data_tas.nama_penguji_1}</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Penguji 1</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiPenguji_1 ? (
-                                <p className="tw-text-gray-600">Belum Dinilai</p>
-                            ) : (
-                                <p className="tw-text-gray-600">{nilaiPenguji_1.total_nilai}</p>
-                            )}
-                        </div>
-                    </div>
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">{!data_tas.nama_penguji_2 ? '-' : data_tas.nama_penguji_2}</p>
-                        </div>
-                        <div className="tw-w-1/3">
-                            <p className="tw-text-gray-600">Penguji 2</p>
-                        </div>
-                        <div className="tw-w-1/3 tw-text-right">
-                            {!nilaiPenguji_2 ? (
-                                <p className="tw-text-gray-600">Belum Dinilai</p>
-                            ) : (
-                                <p className="tw-text-gray-600">{nilaiPenguji_2.total_nilai}</p>
-                            )}
-                        </div>
-                    </div>
-                    <hr className="tw-my-2" />
-                    <div className="tw-flex tw-justify-between tw-items-center tw-border-b tw-pb-2">
-                        <div className="tw-w-1/2">
-                            <p className="tw-text-gray-800 tw-font-medium">Total Nilai</p>
-                        </div>
-                        <div className="tw-w-1/2 tw-text-right">
-                            <p className="tw-text-gray-800 tw-font-medium">{!nilaiAkhir() ? 'Belum Lengkap' : nilaiAkhir()}</p>
-                        </div>
+                            ))}
                     </div>
                 </div>
             </div>
 
-            <div className="tw-mt-6">
-                <div className="card">
-                    <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Files</p>
-                    <div className="tw-mt-4 tw-space-y-4">
-                        {data_tas.id_booking && (
-                            <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                                <div className="tw-flex tw-items-center">
-                                    <span className="tw-text-gray-800">Surat Tugas</span>
-                                </div>
-                                <Button icon="pi pi-file" severity="primary" outlined label="File"
-                                    tooltip="Lihat File" tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                    onClick={openFile} />
-                            </div>
-                        )}
-                        {data_tas.status_ver_ta === '2' && (
-                            <>
-                                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                                    <div className="tw-flex tw-items-center">
-                                        <span className="tw-text-gray-800">Tugas Akhir</span>
-                                    </div>
-                                    <Button
-                                        icon="pi pi-file"
-                                        severity="primary"
-                                        outlined
-                                        label="File"
-                                        tooltip="Lihat File"
-                                        tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                        onClick={() => window.open(`/storage/uploads/ta/file_ta/${data_tas?.file_ta}`, '_blank')}
-                                    />
-                                </div>
-                                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                                    <div className="tw-flex tw-items-center">
-                                        <span className="tw-text-gray-800">Laporan</span>
-                                    </div>
-                                    <Button
-                                        icon="pi pi-file"
-                                        severity="primary"
-                                        outlined
-                                        label="File"
-                                        tooltip="Lihat File"
-                                        tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                        onClick={() => window.open(`/storage/uploads/ta/file_laporan/${data_tas?.file_laporan}`, '_blank')}
-                                    />
-                                </div>
-                                <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                                    <div className="tw-flex tw-items-center">
-                                        <span className="tw-text-gray-800">Proposal</span>
-                                    </div>
-                                    <Button
-                                        icon="pi pi-file"
-                                        severity="primary"
-                                        outlined
-                                        label="File"
-                                        tooltip="Lihat File"
-                                        tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                        onClick={() => window.open(`/storage/uploads/sempro/file/${data_tas?.file_proposal}`, '_blank')}
-                                    />
-                                </div>
-                            </>
-                        )}
-                        {data_tas.file_revisi_sidang && (
-                            <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
-                                <div className="tw-flex tw-items-center">
-                                    <span className="tw-text-gray-800">Laporan</span>
-                                </div>
-                                <Button
-                                    icon="pi pi-file"
-                                    severity="primary"
-                                    outlined
-                                    label="File"
-                                    tooltip="Lihat File"
-                                    tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
-                                    onClick={() => window.open(`/storage/uploads/ta/file_revisi_sidang/${data_tas?.file_revisi_sidang}`, '_blank')}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
             <NilaitaForm
                 nilaitaDialog={nilaitaDialog}
                 nilaita={nilaita}

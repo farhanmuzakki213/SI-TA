@@ -74,6 +74,9 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
 
         //Tugas Akhir
         Route::get('/MhsTA', [\App\Http\Controllers\Mahasiswa\TAController::class, 'index'])->name('MhsTA');
+        Route::get('/MhsTA/{id}', [\App\Http\Controllers\Mahasiswa\TAController::class, 'detail']);
+        Route::post('/MhsTA/Judul/store', [\App\Http\Controllers\Mahasiswa\TAController::class, 'storeJudul'])->name('MhsTA.storeJudul');
+        Route::post('/MhsTA/Judul/{id}/update', [\App\Http\Controllers\Mahasiswa\TAController::class, 'updateJudul'])->name('MhsTA.updateJudul');
         Route::post('/MhsTA/Bimbingan/store', [\App\Http\Controllers\Mahasiswa\TAController::class, 'storeBimbingan'])->name('MhsTA.storeBimbingan');
         Route::post('/MhsTA/Bimbingan/{id}/update', [\App\Http\Controllers\Mahasiswa\TAController::class, 'updateBimbingan'])->name('MhsTA.updateBimbingan');
         Route::post('/MhsTA/Berkas/{id}/update', [\App\Http\Controllers\Mahasiswa\TAController::class, 'updateBerkas'])->name('MhsSempro.updateBerkas');
@@ -150,6 +153,7 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
             // Tugas Akhir
             Route::get('/Kprodi/MhsTA', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'index'])->name('MhsTAKprodi');
             Route::get('/Kprodi/MhsTA/{id}', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'detail']);
+            Route::put('/Kprodi/MhsTA/Penugasan/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'updatePenugasan'])->name('MhsTAKprodi.updatePenugasan');
             Route::put('/Kprodi/MhsTA/Dosen/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'updateDosen'])->name('MhsTAKprodi.updateDosen');
             Route::post('/Kprodi/MhsTA/Jadwal/store', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'storeJadwal'])->name('MhsTAKprodi.storeJadwal');
             Route::put('/Kprodi/MhsTA/Jadwal/{id}/update', [\App\Http\Controllers\Dosen\Kprodi\MhsTAController::class, 'updateJadwal'])->name('MhsTAKprodi.updateJadwal');
@@ -199,6 +203,10 @@ Route::group(['middleware' => ['role:admin']], function () {
         // Persetujuan Sidang TA
         Route::get('/VerifikasiBerkas/TA', [\App\Http\Controllers\Admin\VerBerkasTAController::class, 'index'])->name('verberkasta');
         Route::put('/VerifikasiBerkas/TA/{id}/update', [\App\Http\Controllers\Admin\VerBerkasTAController::class, 'update'])->name('verberkasta.update');
+
+        // Persetujuan Sidang TA
+        Route::get('/VerifikasiProposal/TA', [\App\Http\Controllers\Admin\VerProposalTAController::class, 'index'])->name('verproposalta');
+        Route::put('/VerifikasiProposal/TA/{id}/update', [\App\Http\Controllers\Admin\VerProposalTAController::class, 'update'])->name('verproposalta.update');
 
         // Data Dosen
         Route::get('/dosen', [\App\Http\Controllers\Admin\DosenController::class, 'index'])->name('dosen');

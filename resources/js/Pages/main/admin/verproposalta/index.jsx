@@ -1,31 +1,33 @@
-import Layout from "@/Layouts/layout/layout.jsx";
-import { router, usePage } from "@inertiajs/react";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import React, { useEffect, useRef, useState } from "react";
-import TaDataTable from "./component/taDataTable";
-import TaForm from "./component/taForm";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
+import React, { useEffect, useRef, useState } from "react";
+import { router, usePage } from "@inertiajs/react";
+import Layout from "@/Layouts/layout/layout.jsx";
+import TaDataTable from './component/taDataTable';
+import TaForm from './component/taForm';
+import CSVExportComponent from '@/Components/CSVExportComponent';
 
 const index = () => {
-
-    const { props } = usePage();
-    const { data_ta, data_sempro, data_mahasiswa, nextNumber, data_pkl } = props
     let emptyta = {
         id_ta_mhs: null,
-        mahasiswa_id: data_mahasiswa[0].id_mahasiswa,
-        judul: "",
+        komentar_proposal: "",
+        status_ver_proposal: "",
     };
-    const data_mahasiswas = data_mahasiswa[0];
-    const [globalFilter, setGlobalFilter] = useState('');
+
+
+    const { props } = usePage();
+    const { data_ta} = props;
     const [tas, settas] = useState(null);
     const [taDialog, settaDialog] = useState(false);
     const [ta, setta] = useState(emptyta);
     const [selectedtas, setSelectedtas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
+    const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+
     useEffect(() => {
         settas(data_ta);
         displaySuccessMessage(props.flash?.success);
@@ -36,13 +38,8 @@ const index = () => {
         setSubmitted(false);
         settaDialog(false);
     };
-    const openNew = () => {
-        setta(emptyta);
-        setSubmitted(false);
-        settaDialog(true);
-    };
+    console.log(data_ta);
 
-    // console.log(data_dosen)
     const displaySuccessMessage = (successMessage) => {
         if (successMessage !== null) {
             const message = successMessage || "Operation successful";
@@ -70,24 +67,13 @@ const index = () => {
     const saveta = async () => {
         setSubmitted(true);
 
-        const requiredFieldsForCreate = [
-            ta.mahasiswa_id,
-            ta.judul,
-        ];
-
         const requiredFieldsForUpdate = [
-            ta.mahasiswa_id,
-            ta.judul,
+            ta.id_ta_mhs,
+            ta.komentar_proposal,
+            ta.status_ver_proposal,
         ];
+        const isValid = requiredFieldsForUpdate.every(field => field);
 
-        const isCreating = !ta.id_ta_mhs;
-        let isValid = true;
-
-        if (isCreating) {
-            isValid = requiredFieldsForCreate.every(field => field);
-        } else {
-            isValid = requiredFieldsForUpdate.every(field => field);
-        }
 
         if (!isValid) {
             toast.current?.show({
@@ -99,37 +85,16 @@ const index = () => {
             return;
         }
 
+        let _ta = { ...ta };
+
         try {
+            await router.put(`/VerifikasiProposal/TA/${ta.id_ta_mhs}/update`, _ta);
 
-            const formData = new FormData();
-            formData.append("mahasiswa_id", ta.mahasiswa_id);
-            formData.append("judul", ta.judul);
-
-            if (isCreating) {
-                formData.append("id_ta_mhs", nextNumber);
-                // console.log(ta);
-                await router.post("/MhsTA/Judul/store", formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                });
-            } else {
-                await router.post(`/MhsTA/Judul/${ta.id_ta_mhs}/update`, formData, {
-                    _method: 'put',
-                    forceFormData: true,
-                });
-            }
-
-            if (isCreating) {
-                settas((prev) => [...prev, ta]);
-            } else {
-                settas((prev) =>
-                    prev.map((item) =>
-                        item.id_ta_mhs === ta.id_ta_mhs ? ta : item
-                    )
-                );
-            }
+            settas(prevtas =>
+                prevtas.map(d => d.id_ta_mhs === ta.id_ta_mhs ? _ta : d)
+            );
         } catch (error) {
-            // console.log("error:",error);
-            const errorMessage = error.response?.data?.message || "Failed to save ta.";
+            const errorMessage = error.response?.data?.message || "Failed to update data.";
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -147,6 +112,46 @@ const index = () => {
         settaDialog(true);
     };
 
+    const columns = [
+        { header: 'ID', field: 'id_ta_mhs' },
+        {
+            header: 'Name',
+            field: 'nama_mahasiswa'
+        },
+        { header: 'Nim', field: 'nim_mahasiswa' },
+        { header: 'Kelas', field: 'kelas' },
+        { header: 'Prodi', field: 'prodi' },
+        { header: 'Judul', field: 'judul_ta' },
+        { header: 'Gender', field: 'gender' },
+        {
+            header: 'Status',
+            field: (ta) => ta.status_ver_pkl === "1" ? "Ditolak" : ta.status_ver_pkl === "2" ? "Diproses" : ta.status_ver_pkl === "3" ? "Diterima" : "Revisi"
+        }
+    ];
+
+    const rightToolbarTemplate = () => {
+        return (
+            <React.Fragment>
+                <CSVExportComponent data={tas} toast={toast} fileName="Usulan_Sidang_Ta_data.csv" columns={columns} />
+            </React.Fragment>
+        );
+    };
+
+    const header = (
+        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 className="m-0">Mahasiswa Ta</h5>
+            <span className="block mt-2 md:mt-0 p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText
+                    type="search"
+                    value={globalFilter || ''}
+                    onInput={(e) => setGlobalFilter(e.target.value || '')}
+                    placeholder="Search..."
+                />
+            </span>
+        </div>
+    );
+
     const taDialogFooter = (
         <>
             <Button
@@ -159,38 +164,6 @@ const index = () => {
         </>
     );
 
-    const header = (
-        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Mahasiswa Tugas Akhir</h5>
-            <span className="block mt-2 md:mt-0 p-input-icon-left">
-                <i className="pi pi-search" />
-                <InputText
-                    type="search"
-                    value={globalFilter || ''}
-                    onInput={(e) => setGlobalFilter(e.target.value || '')}
-                    placeholder="Search..."
-                />
-            </span>
-        </div>
-    );
-    const leftToolbarTemplate = () => {
-        return (
-            <>
-                {data_mahasiswas.jenjang === "D3" && data_pkl[0].status_ver_pkl === "3" && (
-                    <Button
-                        label="New"
-                        icon="pi pi-plus"
-                        severity="success"
-                        className="mr-2"
-                        tooltip="Pengajuan Judul TA"
-                        tooltipOptions={{ position: 'right', mouseTrack: false, mouseTrackRight: 15 }}
-                        onClick={openNew}
-                    />
-                )}
-            </>
-        );
-    };
-    // console.log(data_ta);
     return (
         <Layout>
             <div className="grid crud-demo">
@@ -199,7 +172,7 @@ const index = () => {
                         <Toast ref={toast} />
                         <Toolbar
                             className="mb-4"
-                            left={leftToolbarTemplate}
+                            right={rightToolbarTemplate}
                         ></Toolbar>
 
                         <TaDataTable
@@ -223,9 +196,8 @@ const index = () => {
                     </div>
                 </div>
             </div>
-        </Layout >
+        </Layout>
     );
 };
-
 
 export default index;

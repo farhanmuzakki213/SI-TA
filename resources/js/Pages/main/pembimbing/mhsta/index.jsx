@@ -39,20 +39,14 @@ const index = () => {
             <div className="grid crud-demo">
                 <div className="col-12">
                     <div className="card">
-                        {data_dosen?.r_prodi?.jenjang === 'D4' ? (
-                            <TugasAkhirDataTable
-                                dt={dt}
-                                tugasakhirs={tugasakhirs}
-                                selectedtugasakhirs={selectedtugasakhirs}
-                                setSelectedtugasakhirs={setSelectedtugasakhirs}
-                                globalFilter={globalFilter}
-                                header={header}
-                            />
-                        ) : (
-                            <>
-                                d3
-                            </>
-                        )}
+                        <TugasAkhirDataTable
+                            dt={dt}
+                            tugasakhirs={tugasakhirs}
+                            selectedtugasakhirs={selectedtugasakhirs}
+                            setSelectedtugasakhirs={setSelectedtugasakhirs}
+                            globalFilter={globalFilter}
+                            header={header}
+                        />
                     </div>
                 </div>
             </div>
