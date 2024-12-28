@@ -152,7 +152,7 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
         // console.log(rowData.id_pkl_mhs, status);
         return (
             <>
-                {rowData.status_ver_sempro === '3' ? (
+                {rowData.status_judul_sempro === '3' ? (
                     <Link
                         href={'/MhsSempro/' + rowData.id_sempro_mhs}
                         className="text-blue-500 hover:underline"
@@ -161,19 +161,18 @@ const SemproDataTable = ({ sempros, globalFilter, header, editsempro, dt }) => {
                         <Button icon="pi pi-eye" rounded outlined />
                     </Link>
                 ) : (
-                    rowData.status_judul_sempro !== "1" && rowData.status_ver_sempro !== "1" && (
+                    (rowData.status_judul_sempro === "2" || rowData.status_judul_sempro === "4") && (
                         <Button
                             label="Sempro"
                             icon="pi pi-pencil"
                             severity="success"
                             className="mr-2"
-                            tooltip="Upload Sempro"
+                            tooltip="Ubah Judul Sempro"
                             tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
                             onClick={() => editsempro(rowData)}
                         />
                     )
                 )}
-
             </>
         );
     };

@@ -176,7 +176,7 @@ const index = () => {
     const leftToolbarTemplate = () => {
         return (
             <>
-                {data_mahasiswas.jenjang === "D3" && data_pkl[0].status_ver_pkl === "3" && (
+                {data_mahasiswas.jenjang === "D3" && data_pkl[0]?.status_ver_pkl === "3" && (
                     <Button
                         label="New"
                         icon="pi pi-plus"

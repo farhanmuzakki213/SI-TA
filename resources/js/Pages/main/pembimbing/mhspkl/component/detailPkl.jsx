@@ -170,9 +170,14 @@ const detailPkl = ({
                     <DataTable value={laporanpkls} rows={1} paginator responsiveLayout="scroll">
                         <Column field="tanggal" header="Tanggal Kegiatan" style={{ width: '20%' }} body={(data) => data.tanggal} />
                         <Column field="kegiatan" header="Kegiatan" style={{ width: '65%' }}
-                            body={(data) =>
-                                <div dangerouslySetInnerHTML={{ __html: data.kegiatan }}/>
-                            } />
+                            body={(data) => {
+                                const maxLength = 40;
+                                const truncatedText = data.kegiatan.length > maxLength
+                                    ? data.kegiatan.substring(0, maxLength) + "..."
+                                    : data.kegiatan;
+
+                                return <div dangerouslySetInnerHTML={{ __html: truncatedText }} />;
+                            }} />
                         <Column
                             header="File"
                             style={{ width: '5%' }}

@@ -51,6 +51,8 @@ class MhsSemproResource extends JsonResource
             'status_judul_sempro' => $this->status_judul_sempro,
             'status_sempro' => $this->status_sempro,
             'status' => $status,
+            'acc_pembimbing_satu' => $this->acc_pembimbing_satu,
+            'acc_pembimbing_dua' => $this->acc_pembimbing_dua,
 
             'nama_pembimbing_1' => $this->r_pembimbing_1->nama_dosen ?? null,
             'pembimbing_1_id' => $this->pembimbing_1_id ?? null,

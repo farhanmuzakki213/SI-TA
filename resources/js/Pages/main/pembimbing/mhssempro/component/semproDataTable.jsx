@@ -75,7 +75,7 @@ const SemproDataTable = ({ sempros, selectedsempros, setSelectedsempros, globalF
         // console.log(rowData.id_pkl_mhs, status);
         return (
             <>
-                {rowData.status_ver_sempro === '3' && (
+                {rowData.status_judul_sempro === '3' && (
                     <Link
                         href={'/Pembimbing/Mhssempro/' + rowData.id_sempro_mhs}
                         className="text-blue-500 hover:underline"

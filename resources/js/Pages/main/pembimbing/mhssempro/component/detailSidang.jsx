@@ -60,14 +60,14 @@ const detailSidang = ({
         return nilaisempro;
     };
 
-    console.log("Hasil Nilai Pembimbing:", nilaiPembimbing());
+    // console.log("Hasil Nilai Pembimbing:", nilaiPembimbing());
 
     const nilaiPenguji = JSON.parse(data_mhss.nilai_penguji?.nilai || '{}');
     const nilaiPembimbing_1 = JSON.parse(data_mhss.nilai_pembimbing_1?.nilai || null);
     const nilaiPembimbing_2 = JSON.parse(data_mhss.nilai_pembimbing_2?.nilai || null);
-    console.log("Hasil Nilai Penguji:", nilaiPenguji);
-    console.log("Hasil Nilai Pembimbing 1:", nilaiPembimbing_1);
-    console.log("Hasil Nilai Pembimbing 2:", nilaiPembimbing_2);
+    // console.log("Hasil Nilai Penguji:", nilaiPenguji);
+    // console.log("Hasil Nilai Pembimbing 1:", nilaiPembimbing_1);
+    // console.log("Hasil Nilai Pembimbing 2:", nilaiPembimbing_2);
     const nilaiAkhir = () => {
         if (nilaiPembimbing_1 != null && nilaiPembimbing_2 != null) {
             if (nilaiPembimbing() != null) {

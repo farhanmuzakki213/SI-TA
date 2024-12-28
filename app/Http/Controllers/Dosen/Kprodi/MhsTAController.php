@@ -46,7 +46,7 @@ class MhsTAController extends Controller
         // dd($kaprodi->toArray());
         return Inertia::render('main/kaprodi/mhsta/index', [
             'data_ta' => MhsTAResource::collection($data_ta),
-            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi->prodi_id)->get()->map(function ($dosen) {
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi->prodi_id)->where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
@@ -139,14 +139,14 @@ class MhsTAController extends Controller
             })),
             'bookingused' => $RSTterpakai,
             'jambookingused' => $STDosen,
-            'dosenPengujiOptions' => Dosen::all()->map(function ($dosen) {
+            'dosenPengujiOptions' => Dosen::where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
                     'golongan' => $dosen->golongan_id,
                 ];
             }),
-            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi->prodi_id)->get()->map(function ($dosen) {
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi->prodi_id)->where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,

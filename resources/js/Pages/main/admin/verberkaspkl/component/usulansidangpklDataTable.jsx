@@ -2,6 +2,7 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { Tag } from 'primereact/tag';
 
 const UsulansidangpklDataTable = ({ usulansidangpkls, selectedusulansidangpkls, setSelectedusulansidangpkls, globalFilter, header, editusulansidangpkl, confirmDeleteusulansidangpkl, dt }) => {
 

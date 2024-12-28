@@ -38,14 +38,14 @@ class MhspklController extends Controller
             ->get();
         return Inertia::render('main/kaprodi/mhspkl/index', [
             'data_usulanpkl' => MhsPklUsulanResource::collection($usulan),
-            'dosenOptions' => Dosen::all()->map(function ($dosen) {
+            'dosenOptions' => Dosen::where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
                     'golongan' => $dosen->golongan_id,
                 ];
             }),
-            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->get()->map(function ($dosen) {
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
@@ -126,7 +126,7 @@ class MhspklController extends Controller
         $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
         return Inertia::render('main/kaprodi/mhspkl/detail', [
             'data_mhs' => MhsPklResource::collection($data_mhs),
-            'dosenOptions' => Dosen::all()->map(function ($dosen) {
+            'dosenOptions' => Dosen::where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
@@ -142,7 +142,7 @@ class MhspklController extends Controller
             })),
             'bookingused' => $RSTterpakai,
             'jambookingused' => $STDosen,
-            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->get()->map(function ($dosen) {
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,

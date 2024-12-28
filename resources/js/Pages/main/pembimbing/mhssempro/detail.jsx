@@ -1,11 +1,12 @@
 import { usePage } from '@inertiajs/react';
 import React from 'react';
 import Layout from '@/Layouts/layout/layout.jsx';
+import Bimbingan from './component/bimbingan';
 import DetailSidang from './component/detailSidang';
 
 const MhspklDetail = () => {
     const { props } = usePage();
-    const { data_mhs, dosen_id, data_nilai, nextNumber_nilai } = props;
+    const { data_mhs, dosen_id, data_nilai, nextNumber_nilai, data_bimbingan_1, data_bimbingan_2, data_bimbingan } = props;
     // console.log("data_mhs", data_mhs);
     // console.log("data_laporan", data_laporan);
     // console.log("data_nilai", data_nilai);
@@ -34,8 +35,15 @@ const MhspklDetail = () => {
                 <div className="tw-w-full sm:tw-max-w-96">
                     <div className="tw-grid tw-gap-1">
                         <div className="tw-col-12">
+                            <Bimbingan data_mhs={data_mhs}
+                                data_bimbingan_1={data_bimbingan_1}
+                                data_bimbingan_2={data_bimbingan_2}
+                                data_bimbingan={data_bimbingan}
+                                dosen_id={dosen_id} />
+                        </div>
+                        <div className="tw-col-12">
                             <DetailSidang
-                            data_mhs={data_mhs} dosen_id={dosen_id} data_nilai={data_nilai} nextNumber_nilai={nextNumber_nilai} />
+                                data_mhs={data_mhs} dosen_id={dosen_id} data_nilai={data_nilai} nextNumber_nilai={nextNumber_nilai} />
                         </div>
                     </div>
                 </div>

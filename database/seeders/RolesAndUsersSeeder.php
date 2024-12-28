@@ -119,15 +119,6 @@ class RolesAndUsersSeeder extends Seeder
                 ]
             );
         }
-        $dosenUserIds = Dosen::get()->pluck('user_id')->toArray();
-
-        foreach ($dosenUserIds as $user_id) {
-            $user = User::find($user_id);
-            if ($user) {
-                $user->assignRole('dosenPembimbing');
-                $user->assignRole('dosenPenguji');
-            }
-        }
 
         // Data mahasiswa yang akan dibuat
         $data_mahasiswa = [

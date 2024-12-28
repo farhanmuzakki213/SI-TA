@@ -8,6 +8,7 @@ use App\Models\Dosen;
 use App\Models\JabatanPimpinan;
 use App\Models\Pimpinan;
 use App\Models\Prodi;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -98,6 +99,16 @@ class PimpinanController extends Controller
                 'periode' => $request->periode,
                 'status_pimpinan' => $status_pimpinan,
             ]);
+            $dosen = Dosen::where('id_dosen', $request->dosen_id)->first();
+            if ($dosen && $dosen->user_id) {
+                $user = User::find($dosen->user_id);
+                if ($user) {
+                    $role = ($request->jabatan_pimpinan_id === 1 || $request->jabatan_pimpinan_id === 2)
+                        ? 'pimpinanJurusan'
+                        : 'pimpinanProdi';
+                    $user->assignRole($role);
+                }
+            }
             DB::commit();
 
             return to_route('pimpinan')->with('success', 'Pimpinan created successfully');
@@ -177,6 +188,22 @@ class PimpinanController extends Controller
 
             $pimpinan = Pimpinan::findOrFail($id);
             $pimpinan->update($data);
+            $userId = Dosen::where('id_dosen', $pimpinan->dosen_id)->value('user_id');
+
+            if ($userId) {
+                $user = User::find($userId);
+
+                if ($user) {
+                    $user->removeRole('pimpinanJurusan');
+                    $user->removeRole('pimpinanProdi');
+                    if ($request->status_pimpinan != 0) {
+                        $newRole = ($request->jabatan_pimpinan_id == 1 || $request->jabatan_pimpinan_id == 2)
+                            ? 'pimpinanJurusan'
+                            : 'pimpinanProdi';
+                        $user->assignRole($newRole);
+                    }
+                }
+            }
             DB::commit();
             return to_route('pimpinan')->with('success', 'Pimpinan updated successfully');
         } catch (\Exception $e) {
@@ -190,8 +217,18 @@ class PimpinanController extends Controller
      */
     public function destroy(Pimpinan $pimpinan)
     {
-        $pimpinan->delete();
+        if ($pimpinan) {
+            $userId = Dosen::where('id_dosen', $pimpinan->dosen_id)->value('user_id');
 
+            if ($userId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->removeRole('pimpinanJurusan');
+                    $user->removeRole('pimpinanProdi');
+                }
+            }
+            $pimpinan->delete();
+        }
         return to_route('pimpinan')->with('success', 'Pimpinan deleted successfully');
     }
 
@@ -202,6 +239,20 @@ class PimpinanController extends Controller
             'ids.*' => 'exists:pimpinans,id_pimpinan',
         ]);
         $ids = $request->input('ids');
+        $userIds = Pimpinan::whereIn('id_pimpinan', $ids)
+            ->pluck('dosen_id')
+            ->map(function ($dosenId) {
+                return Dosen::where('id_dosen', $dosenId)->value('user_id');
+            })
+            ->filter();
+
+        foreach ($userIds as $userId) {
+            $user = User::find($userId);
+            if ($user) {
+                $user->removeRole('pimpinanJurusan');
+                $user->removeRole('pimpinanProdi');
+            }
+        }
         Pimpinan::whereIn('id_pimpinan', $ids)->delete();
 
         return to_route('pimpinan')->with('success', 'Pimpinan deleted successfully');

@@ -24,10 +24,10 @@ class DosenController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : Response
+    public function index(): Response
     {
         return Inertia::render('main/admin/dosen/dosen', [
-            'data_dosen' => DosenResource::collection( Dosen::with('r_user', 'r_prodi', 'r_golongan')->get()),
+            'data_dosen' => DosenResource::collection(Dosen::with('r_user', 'r_prodi', 'r_golongan')->get()),
             'nextNumber' => CariNomor::getCariNomor(Dosen::class, 'id_dosen'),
             'prodiOptions' => BaseOptionsResource::collection(Prodi::all()->map(function ($p) {
                 return new BaseOptionsResource($p, 'nama_prodi', 'id_prodi');
@@ -76,23 +76,20 @@ class DosenController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-
-            // Get user_id after creation
+            $user->assignRole(['dosenPembimbing', 'dosenPenguji']);
             $user_id = $user->id;
 
-            // Create dosen
             Dosen::create([
                 'id_dosen' => $nextDosenNumber,
                 'user_id' => $user_id,
                 'prodi_id' => $request->prodi_id,
-                'golongan_id' =>$request->golongan_id,
+                'golongan_id' => $request->golongan_id,
                 'nama_dosen' => $request->nama_dosen,
                 'nidn_dosen' => $request->nidn_dosen,
                 'gender' => $request->gender,
                 'status_dosen' => $request->status_dosen,
             ]);
 
-            // Trigger registered event
             event(new Registered($user));
             DB::commit();
 
@@ -139,19 +136,37 @@ class DosenController extends Controller
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
         }
-        $data = [
-            'user_id' => $request->user_id,
-            'prodi_id' => $request->prodi_id,
-            'golongan_id' =>$request->golongan_id,
-            'nama_dosen' => $request->nama_dosen,
-            'nidn_dosen' => $request->nidn_dosen,
-            'gender' => $request->gender,
-            'status_dosen' => $request->status_dosen,
-        ];
+        DB::beginTransaction();
+        try {
+            $data = [
+                'user_id' => $request->user_id,
+                'prodi_id' => $request->prodi_id,
+                'golongan_id' => $request->golongan_id,
+                'nama_dosen' => $request->nama_dosen,
+                'nidn_dosen' => $request->nidn_dosen,
+                'gender' => $request->gender,
+                'status_dosen' => $request->status_dosen,
+            ];
 
-        $dosen = Dosen::findOrFail($id);
-        $dosen->update($data);
-        return to_route('dosen')->with('success', 'Dosen updated successfully');
+            $dosen = Dosen::findOrFail($id);
+            $dosen->update($data);
+            $user = User::findOrFail($request->user_id);
+
+            if ($user) {
+                $user->removeRole('dosenPembimbing');
+                $user->removeRole('dosenPenguji');
+                if ($request->status_dosen != 0) {
+                    $user->assignRole('dosenPembimbing');
+                    $user->assignRole('dosenPenguji');
+                }
+            }
+
+            DB::commit();
+            return to_route('dosen')->with('success', 'Dosen updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to update dosen');
+        }
     }
 
     /**
@@ -160,6 +175,18 @@ class DosenController extends Controller
     public function destroy(Dosen $dosen)
     {
         $dosen->delete();
+        if ($dosen) {
+            $userId = $dosen->user_id;
+
+            if ($userId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->removeRole('dosenPembimbing');
+                    $user->removeRole('dosenPenguji');
+                }
+            }
+            $dosen->delete();
+        }
 
         return to_route('dosen')->with('success', 'Dosen deleted successfully');
     }
@@ -171,6 +198,16 @@ class DosenController extends Controller
             'ids.*' => 'exists:dosens,id_dosen',
         ]);
         $ids = $request->input('ids');
+        $userIds = Dosen::whereIn('id_dosen', $ids)
+            ->pluck('user_id')
+            ->filter();
+        foreach ($userIds as $userId) {
+            $user = User::find($userId);
+            if ($user) {
+                $user->removeRole('dosenPenguji');
+                $user->removeRole('dosenPembimbing');
+            }
+        }
         Dosen::whereIn('id_dosen', $ids)->delete();
 
         return to_route('dosen')->with('success', 'Selected dosens deleted successfully');

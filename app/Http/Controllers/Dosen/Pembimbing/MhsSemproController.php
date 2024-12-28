@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Dosen\Pembimbing;
 
 use App\Helpers\CariNomor;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MhsBimbinganSemproResource;
 use App\Http\Resources\MhsSemproNilaiResource;
 use App\Http\Resources\MhsSemproResource;
 use App\Models\Booking;
 use App\Models\Dosen;
+use App\Models\SemproBimbingan;
 use App\Models\SemproMhs;
 use App\Models\SemproNilai;
 use App\Models\TaMhs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -55,13 +58,114 @@ class MhsSemproController extends Controller
             ->where('dosen_id', $id_dosen)
             ->whereIn('sebagai', ['pembimbing_1', 'pembimbing_2'])
             ->get();
+        $data_bimbingan = SemproBimbingan::where('sempro_mhs_id', $id)->where('dosen_id', $id_dosen)->get();
+        $data_bimbingan_1 = SemproBimbingan::where('sempro_mhs_id', $id)->where('sebagai', 'pembimbing_1')->whereNot('status_bimbingan_sempro', '1')->get();
+        $data_bimbingan_2 = SemproBimbingan::where('sempro_mhs_id', $id)->where('sebagai', 'pembimbing_2')->whereNot('status_bimbingan_sempro', '1')->get();
         // dd($data_nilai->toArray());
         return Inertia::render('main/pembimbing/mhssempro/detail', [
             'data_mhs' => MhsSemproResource::collection($data_sempro),
             'dosen_id' => $id_dosen,
+            'data_bimbingan' => MhsBimbinganSemproResource::collection($data_bimbingan),
+            'data_bimbingan_1' => MhsBimbinganSemproResource::collection($data_bimbingan_1),
+            'data_bimbingan_2' => MhsBimbinganSemproResource::collection($data_bimbingan_2),
             'data_nilai' => MhsSemproNilaiResource::collection($data_nilai),
             'nextNumber_nilai' => CariNomor::getCariNomor(SemproNilai::class, 'id_sempro_nilai'),
         ]);
+    }
+
+    public function updateBimbingan(Request $request, string $id)
+    {
+        // dd($request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'status_bimbingan_sempro' => 'required|in:2,3',
+            'komentar' => 'required',
+            'file_bimbingan' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $oldData = SemproBimbingan::where('id_bimbingan_mhs', $id)->first();
+            $filename = $request->file_bimbingan;
+            if ($oldData->file_bimbingan !== $filename) {
+                Storage::delete('public/uploads/sempro/bimbingan/' . $oldData->file_bimbingan);
+                $file = $request->file('file_bimbingan');
+                $filename = $file->getClientOriginalName();
+                $path = 'public/uploads/sempro/bimbingan/';
+                $file->storeAs($path, $filename);
+            }
+            $data = [
+                'status_bimbingan_sempro' => $request->status_bimbingan_sempro,
+                'komentar' => $request->komentar,
+                'file_bimbingan' => $filename
+            ];
+            // dd($data);
+            $bimbingan = SemproBimbingan::findOrFail($id);
+            $bimbingan->update($data);
+            DB::commit();
+            return back()->with('success', 'Bimbingan SEMPRO updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Bimbingan SEMPRO updated failed');
+        }
+    }
+
+    public function tolakBimbingan(Request $request, string $id)
+    {
+        // dd("data reques",$request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'dosen_id' => 'required|exists:dosens,id_dosen',
+            'sebagai' => 'required|in:pembimbing_1,pembimbing_2',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $data = [
+                'dosen_id' => $request->dosen_id,
+                'sebagai' => $request->sebagai,
+            ];
+            // dd($data);
+            $bimbingan = SemproBimbingan::findOrFail($id);
+            $bimbingan->update($data);
+            DB::commit();
+            return back()->with('success', 'Bimbingan SEMPRO updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Bimbingan SEMPRO updated failed');
+        }
+    }
+
+    public function accSidangSempro(Request $request, string $id)
+    {
+        // dd("data reques",$request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'acc_pembimbing_satu' => 'required|in:0,1',
+            'acc_pembimbing_dua' => 'required|in:0,1',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
+        DB::beginTransaction();
+        try {
+            $data = [
+                'acc_pembimbing_satu' => $request->acc_pembimbing_satu ?? '0',
+                'acc_pembimbing_dua' => $request->acc_pembimbing_dua ?? '0',
+            ];
+            // dd($data);
+            $accbimbingan = SemproMhs::findOrFail($id);
+            $accbimbingan->update($data);
+            DB::commit();
+            return back()->with('success', 'Bimbingan SEMPRO updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Bimbingan SEMPRO updated failed' . $e->getMessage());
+        }
     }
 
     public function storeNilai(Request $request)
@@ -142,15 +246,15 @@ class MhsSemproController extends Controller
                     return back()->with('error', 'Data Sempro tidak ditemukan.');
                 }
                 $jadwal_sidang = Booking::where('mahasiswa_id', $sempro->mahasiswa_id)
-                ->where('tipe', '2')
-                ->where('status_booking', '1')
-                ->with('r_sesi', 'r_ruangan')
-                ->first();
+                    ->where('tipe', '2')
+                    ->where('status_booking', '1')
+                    ->with('r_sesi', 'r_ruangan')
+                    ->first();
                 if ($jadwal_sidang) {
                     $jadwal_sidang->update($data_booking);
                 }
                 $data_ta = TaMhs::where('mahasiswa_id', $sempro->mahasiswa_id)->whereIn('status_sidang_ta', ['1', '3'])->first();
-                if($data_sempro['status_sempro'] === '3' && !$data_ta) {
+                if ($data_sempro['status_sempro'] === '3' && !$data_ta) {
                     TaMhs::create([
                         'id_ta_mhs' => CariNomor::getCariNomor(TaMhs::class, 'id_ta_mhs'),
                         'mahasiswa_id' => $sempro->mahasiswa_id,
@@ -164,7 +268,7 @@ class MhsSemproController extends Controller
                         'status_judul' => '2',
                     ]);
                 }
-                if($data_sempro['status_sempro'] === '1' && $data_ta){
+                if ($data_sempro['status_sempro'] === '1' && $data_ta) {
                     $data_ta->delete();
                 }
                 $sempro->update($data_sempro);
@@ -259,15 +363,15 @@ class MhsSemproController extends Controller
                     return back()->with('error', 'Data Sempro tidak ditemukan.');
                 }
                 $jadwal_sidang = Booking::where('mahasiswa_id', $sempro->mahasiswa_id)
-                ->where('tipe', '2')
-                ->where('status_booking', '1')
-                ->with('r_sesi', 'r_ruangan')
-                ->first();
+                    ->where('tipe', '2')
+                    ->where('status_booking', '1')
+                    ->with('r_sesi', 'r_ruangan')
+                    ->first();
                 if ($jadwal_sidang) {
                     $jadwal_sidang->update($data_booking);
                 }
                 $data_ta = TaMhs::where('mahasiswa_id', $sempro->mahasiswa_id)->whereIn('status_sidang_ta', ['1', '3'])->first();
-                if($data_sempro['status_sempro'] === '3' && !$data_ta) {
+                if ($data_sempro['status_sempro'] === '3' && !$data_ta) {
                     TaMhs::create([
                         'id_ta_mhs' => CariNomor::getCariNomor(TaMhs::class, 'id_ta_mhs'),
                         'mahasiswa_id' => $sempro->mahasiswa_id,
@@ -281,7 +385,7 @@ class MhsSemproController extends Controller
                         'status_judul' => '2',
                     ]);
                 }
-                if($data_sempro['status_sempro'] === '1' && $data_ta){
+                if ($data_sempro['status_sempro'] === '1' && $data_ta) {
                     $data_ta->delete();
                 }
                 $sempro->update($data_sempro);

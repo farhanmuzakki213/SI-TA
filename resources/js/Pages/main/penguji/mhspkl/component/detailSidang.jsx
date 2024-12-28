@@ -47,39 +47,30 @@ const detailSidang = ({
 
         return nilaipkl;
     };
-
-    console.log("Hasil Nilai penguji:", nilaiPenguji());
     const nilaiPembimbing = JSON.parse(data_mhss.nilai_pembimbing?.nilai || '{}');
     const nilaiPenguji_1 = JSON.parse(data_mhss.nilai_penguji_1?.nilai || null);
     const nilaiPenguji_2 = JSON.parse(data_mhss.nilai_penguji_2?.nilai || null);
-    console.log("Hasil Nilai penguji 1:", nilaiPenguji_1);
-    console.log("Hasil Nilai penguji 2:", nilaiPenguji_2);
     const nilaiAkhir = () => {
-        if (nilaiPenguji_1 != null && nilaiPenguji_2 != null) {
-            if (nilaiPenguji() != null) {
-                if (data_mhss.pembimbing_id === id_dosen) {
-                    const totalNilai =
-                        (data_mhss.nilai_industri * 0.30) +
-                        (nilaiPembimbing.total_nilai * 0.35) +
-                        (((nilaiPenguji().total_nilai + nilaiPenguji_1.total_nilai) / 2) * 0.35);
-                    return parseFloat(totalNilai.toFixed(2));
-                }
-
-                if (data_mhss.penguji_id === id_dosen) {
-                    const totalNilai =
-                        (data_mhss.nilai_industri * 0.30) +
-                        (nilaiPembimbing.total_nilai * 0.35) +
-                        (((nilaiPenguji().total_nilai + nilaiPenguji_2.total_nilai) / 2) * 0.35);
-                    return parseFloat(totalNilai.toFixed(2));
-                }
-                return null
+        const pengujiNilai = nilaiPenguji();
+        if ((nilaiPenguji_1 != null && nilaiPenguji_2 != null) && pengujiNilai != null) {
+            if (data_mhss.pembimbing_id == id_dosen) {
+                const totalNilai =
+                    (data_mhss.nilai_industri * 0.30) +
+                    (nilaiPembimbing.total_nilai * 0.35) +
+                    (((pengujiNilai.total_nilai + nilaiPenguji_2.total_nilai) / 2) * 0.35);
+                return parseFloat(totalNilai.toFixed(2));
+            }else if(data_mhss.penguji_id == id_dosen){
+                const totalNilai =
+                    (data_mhss.nilai_industri * 0.30) +
+                    (nilaiPembimbing.total_nilai * 0.35) +
+                    (((pengujiNilai.total_nilai + nilaiPenguji_1.total_nilai) / 2) * 0.35);
+                return parseFloat(totalNilai.toFixed(2));
+            }else{
+                return null;
             }
-            return null
         }
-        return null
+        return null;
     };
-
-
 
     console.log("Hasil Nilai Akhir:", nilaiAkhir());
     const openNew = () => {

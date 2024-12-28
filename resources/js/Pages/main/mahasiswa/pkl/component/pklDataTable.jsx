@@ -93,14 +93,24 @@ const pklDataTable = ({ pkls, globalFilter, header, editpkl, dt }) => {
         // console.log(rowData.id_pkl_mhs);
         return (
             <>
-                {!rowData.id_pkl_mhs && rowData.status_usulan === "1" && (
-                    <Button
-                        icon="pi pi-pencil"
-                        severity="success"
-                        rounded
-                        className="mr-2"
-                        onClick={() => editpkl(rowData)}
-                    />
+                {rowData.status_usulan === '3' ? (
+                    <Link
+                        href={'/MhsPkl/' + rowData.id_usulan}
+                        className="text-blue-500 hover:underline"
+                        title="View Details"
+                    >
+                        <Button icon="pi pi-eye" rounded outlined />
+                    </Link>
+                ) : (
+                    rowData.status_usulan !== "2" &&  (
+                        <Button
+                            icon="pi pi-pencil"
+                            severity="success"
+                            rounded
+                            className="mr-2"
+                            onClick={() => editpkl(rowData)}
+                        />
+                    )
                 )}
             </>
         );

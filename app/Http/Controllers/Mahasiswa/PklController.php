@@ -26,26 +26,14 @@ class PklController extends Controller
     {
         $id_user = auth()->user()->id;
         $id_mahasiswa = Mahasiswa::where('user_id', $id_user)->first()->id_mahasiswa;
-        $data_mhs = PklMhs::whereHas('r_usulan', function ($q) use ($id_mahasiswa) {
-            $q->where('mahasiswa_id', $id_mahasiswa);
-        })->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_tempat_pkl', 'r_usulan.r_role_tempat_pkl', 'r_pembimbing', 'r_penguji')
-            ->get();
         $data_usulan = UsulanTempatPkl::with('r_mahasiswa', 'r_tempat_pkl', 'r_role_tempat_pkl')->where('mahasiswa_id', $id_mahasiswa)->get();
         // dd($data_mhs->toArray());
         $data_tempat = TempatPkl::all();
         $data_role = RoleTempatPkl::all();
-        if (!empty($data_mhs) && isset($data_mhs[0]['id_pkl_mhs'])) {
-            $data_laporan = log_book_pkl::where('pkl_mhs_id', $data_mhs[0]->id_pkl_mhs)->get();
-        } else {
-            $data_laporan = [];
-        }
         // dd($data_laporan->toArray());
         return Inertia::render('main/mahasiswa/pkl/index', [
             'nextNumberUsulan' => CariNomor::getCariNomor(UsulanTempatPkl::class, 'id_usulan'),
-            'nextNumberLaporan' => CariNomor::getCariNomor(log_book_pkl::class, 'id_log_book_pkl'),
-            'data_pkl' => MhsPklResource::collection($data_mhs),
             'data_usulan' => MhsPklUsulanResource::collection($data_usulan),
-            'data_laporan' => MhsPklLaporanResource::collection($data_laporan),
             'roleOptions' => $data_role->map(fn($u) => [
                 'label' => $u->nama_role,
                 'value' => $u->id_role_tempat_pkl,
@@ -54,6 +42,25 @@ class PklController extends Controller
                 'label' => $u->nama_tempat_pkl,
                 'value' => $u->id_tempat_pkl,
             ])
+        ]);
+    }
+
+    public function detail($id)
+    {
+        // dd($id);
+        $data_mhs = PklMhs::where('usulan_tempat_pkl_id', $id)
+            ->with('r_usulan.r_mahasiswa.r_user', 'r_usulan.r_mahasiswa.r_kelas.r_prodi', 'r_usulan.r_tempat_pkl', 'r_usulan.r_role_tempat_pkl', 'r_pembimbing', 'r_penguji')
+            ->get();
+        if (!empty($data_mhs) && isset($data_mhs[0]['id_pkl_mhs'])) {
+            $data_laporan = log_book_pkl::where('pkl_mhs_id', $data_mhs[0]->id_pkl_mhs)->get();
+        } else {
+            $data_laporan = [];
+        }
+        // dd($data_mhs->toArray());
+        return Inertia::render('main/mahasiswa/pkl/detail', [
+            'nextNumberLaporan' => CariNomor::getCariNomor(log_book_pkl::class, 'id_log_book_pkl'),
+            'data_mhs' => MhsPklResource::collection($data_mhs),
+            'data_laporan' => MhsPklLaporanResource::collection($data_laporan),
         ]);
     }
 
@@ -145,10 +152,10 @@ class PklController extends Controller
             // dd($data);
             DB::commit();
 
-            return to_route('MhsPkl')->with('success', 'Usulan Tempat Pkl created successfully');
+            return back()->with('success', 'Usulan Tempat Pkl created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsPkl')->with('error', 'Usulan Tempat Pkl created failed 123', $e->getMessage());
+            return back()->with('error', 'Usulan Tempat Pkl created failed 123', $e->getMessage());
         }
     }
 
@@ -238,10 +245,10 @@ class PklController extends Controller
             $oldData->update($data);
 
             DB::commit();
-            return to_route('MhsPkl')->with('success', 'Usulan Tempat Pkl updated successfully');
+            return back()->with('success', 'Usulan Tempat Pkl updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsPkl')->with('error', 'Usulan Tempat Pkl updated failed');
+            return back()->with('error', 'Usulan Tempat Pkl updated failed');
         }
     }
 
@@ -285,10 +292,10 @@ class PklController extends Controller
             }
             DB::commit();
 
-            return to_route('MhsPkl')->with('success', 'Laporan Pkl created successfully');
+            return back()->with('success', 'Laporan Pkl created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsPkl')->with('error', 'Laporan Pkl created failed');
+            return back()->with('error', 'Laporan Pkl created failed');
         }
     }
 
@@ -325,10 +332,10 @@ class PklController extends Controller
             // dd($data);
             $oldData->update($data);
             DB::commit();
-            return to_route('MhsPkl')->with('success', 'Laporan Pkl updated successfully');
+            return back()->with('success', 'Laporan Pkl updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsPkl')->with('error', 'Laporan Pkl updated failed');
+            return back()->with('error', 'Laporan Pkl updated failed');
         }
     }
 
@@ -384,10 +391,10 @@ class PklController extends Controller
 
             $oldData->update($data);
             DB::commit();
-            return to_route('MhsPkl')->with('success', 'Pengajuan Sidang updated successfully');
+            return back()->with('success', 'Pengajuan Sidang updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('MhsPkl')->with('error', 'Pengajuan Sidang updated failed' . $e->getMessage());
+            return back()->with('error', 'Pengajuan Sidang updated failed' . $e->getMessage());
         }
     }
 }

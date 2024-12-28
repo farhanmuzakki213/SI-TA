@@ -10,7 +10,7 @@ import { Toolbar } from "primereact/toolbar";
 import { InputText } from "primereact/inputtext";
 const index = () => {
     const { props } = usePage();
-    const { data_pkl, data_laporan, data_usulan, nextNumberUsulan, nextNumberLaporan, roleOptions: initialRoleOptions, tempatOptions: initialTempatOptions } = props
+    const { data_usulan, nextNumberUsulan, roleOptions: initialRoleOptions, tempatOptions: initialTempatOptions } = props
     let emptypkl = {
         id_usulan: null,
         nama_role: "",
@@ -220,50 +220,39 @@ const index = () => {
     );
     return (
         <Layout>
+            <div className="grid crud-demo">
+                <div className="col-12">
+                    <div className="card">
+                        <Toast ref={toast} />
+                        {(!data_usulan[0] || data_usulan[0]?.status_usulan === "2") && (
+                            <Toolbar
+                                className="mb-4"
+                                left={leftToolbarTemplate}
+                            ></Toolbar>
+                        )}
 
-            {data_usulan[0]?.status_usulan === "3" ? (
-                <DetailMhs
-                    data_mhs={data_pkl}
-                    data_laporan={data_laporan}
-                    nextNumberLaporan={nextNumberLaporan}
-                />
-            ) : (
-                <>
-                    <div className="grid crud-demo">
-                        <div className="col-12">
-                            <div className="card">
-                                <Toast ref={toast} />
-                                {(!data_usulan[0] || data_usulan[0]?.status_usulan === "2") && (
-                                    <Toolbar
-                                        className="mb-4"
-                                        left={leftToolbarTemplate}
-                                    ></Toolbar>
-                                )}
-
-                                <PklForm
-                                    pklDialog={pklDialog}
-                                    pkl={pkl}
-                                    setpkl={setpkl}
-                                    submitted={submitted}
-                                    roleOptions={roleOptions}
-                                    tempatOptions={tempatOptions}
-                                    pklDialogFooter={pklDialogFooter}
-                                    hideDialog={hideDialog}
-                                    setRoleOptions={setRoleOptions}
-                                    setTempatOptions={setTempatOptions}
-                                />
-                                <PklDataTable
-                                    dt={dt}
-                                    pkls={pkls}
-                                    globalFilter={globalFilter}
-                                    header={header}
-                                    editpkl={editpkl}
-                                />
-                            </div>
-                        </div>
+                        <PklForm
+                            pklDialog={pklDialog}
+                            pkl={pkl}
+                            setpkl={setpkl}
+                            submitted={submitted}
+                            roleOptions={roleOptions}
+                            tempatOptions={tempatOptions}
+                            pklDialogFooter={pklDialogFooter}
+                            hideDialog={hideDialog}
+                            setRoleOptions={setRoleOptions}
+                            setTempatOptions={setTempatOptions}
+                        />
+                        <PklDataTable
+                            dt={dt}
+                            pkls={pkls}
+                            globalFilter={globalFilter}
+                            header={header}
+                            editpkl={editpkl}
+                        />
                     </div>
-                </>
-            )}
+                </div>
+            </div>
         </Layout>
     );
 };

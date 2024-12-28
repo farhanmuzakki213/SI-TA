@@ -11,14 +11,14 @@ import BimbinganDetail from "./bimbinganDetail";
 
 const bimbingan = () => {
     const { props } = usePage();
-    const { data_ta, data_bimbingan, data_bimbingan_2, data_bimbingan_1, nextNumberBimbingan } = props;
-    const data_mhs_ta = data_ta[0];
+    const { data_sempro, data_bimbingan_1, data_bimbingan_2, data_bimbingan, nextNumberBimbingan } = props;
+    const data_mhs_sempro = data_sempro[0];
     // console.log(data_tas);
     // console.log("data bimbingan 1", data_bimbingan_1)
     // console.log("data bimbingan 2", data_bimbingan_2)
     let emptybimbingan = {
         id_bimbingan_mhs: null,
-        ta_mhs_id: data_mhs_ta.id_ta_mhs,
+        sempro_mhs_id: data_mhs_sempro.id_sempro_mhs,
         dosen_id: '',
         sebagai: '',
         pembahasan: '',
@@ -77,7 +77,7 @@ const bimbingan = () => {
         setSubmitted(true);
 
         const requiredFieldsForCreate = [
-            bimbingan.ta_mhs_id,
+            bimbingan.sempro_mhs_id,
             bimbingan.dosen_id,
             bimbingan.sebagai,
             bimbingan.file_bimbingan,
@@ -85,7 +85,7 @@ const bimbingan = () => {
         ];
 
         const requiredFieldsForUpdate = [
-            bimbingan.ta_mhs_id,
+            bimbingan.sempro_mhs_id,
             bimbingan.dosen_id,
             bimbingan.sebagai,
             bimbingan.file_bimbingan,
@@ -115,7 +115,7 @@ const bimbingan = () => {
         try {
 
             const formData = new FormData();
-            formData.append("ta_mhs_id", bimbingan.ta_mhs_id);
+            formData.append("sempro_mhs_id", bimbingan.sempro_mhs_id);
             formData.append("dosen_id", bimbingan.dosen_id);
             formData.append("sebagai", bimbingan.sebagai);
             formData.append("file_bimbingan", bimbingan.file_bimbingan);
@@ -123,11 +123,11 @@ const bimbingan = () => {
 
             if (isCreating) {
                 formData.append("id_bimbingan_mhs", nextNumberBimbingan);
-                await router.post("/MhsTA/Bimbingan/store", formData, {
+                await router.post("/MhsSempro/Bimbingan/store", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
             } else {
-                await router.post(`/MhsTA/Bimbingan/${bimbingan.id_bimbingan_mhs}/update`, formData, {
+                await router.post(`/MhsSempro/Bimbingan/${bimbingan.id_bimbingan_mhs}/update`, formData, {
                     _method: 'put',
                     forceFormData: true,
                 });
@@ -182,15 +182,17 @@ const bimbingan = () => {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <div className="my-2">
-                    <Button
-                        label="New"
-                        icon="pi pi-plus"
-                        severity="sucess"
-                        className="mr-2"
-                        onClick={openNew}
-                    />
-                </div>
+                {data_mhs_sempro.status_sempro === '2' && (
+                    <div className="my-2">
+                        <Button
+                            label="New"
+                            icon="pi pi-plus"
+                            severity="sucess"
+                            className="mr-2"
+                            onClick={openNew}
+                        />
+                    </div>
+                )}
             </React.Fragment>
         );
     };
@@ -229,11 +231,11 @@ const bimbingan = () => {
             <hr className="tw-my-4" />
             <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-p-6">
                 <div className="tw-bg-white tw-rounded-xl tw-shadow-md tw-p-6 tw-border tw-border-gray-200">
-                    <p className="tw-text-lg tw-font-medium tw-text-gray-700">{data_mhs_ta.nama_pembimbing_1}</p>
+                    <p className="tw-text-lg tw-font-medium tw-text-gray-700">{data_mhs_sempro.nama_pembimbing_1}</p>
                     <div className="tw-flex tw-items-center tw-justify-between tw-mt-5">
                         <div className="tw-text-base tw-text-gray-600">
                             <span className="tw-font-semibold tw-text-gray-500">Status</span>
-                            <p className="tw-text-gray-800">{statusTA(data_mhs_ta.acc_pembimbing_satu)}</p>
+                            <p className="tw-text-gray-800">{statusTA(data_mhs_sempro.acc_pembimbing_satu)}</p>
                         </div>
                         <div className="tw-text-base tw-text-gray-600">
                             <span className="tw-font-semibold tw-text-gray-500">Jumlah Bimbingan</span>
@@ -242,11 +244,11 @@ const bimbingan = () => {
                     </div>
                 </div>
                 <div className="tw-bg-white tw-rounded-xl tw-shadow-md tw-p-6 tw-border tw-border-gray-200">
-                    <p className="tw-text-lg tw-font-medium tw-text-gray-700">{data_mhs_ta.nama_pembimbing_2}</p>
+                    <p className="tw-text-lg tw-font-medium tw-text-gray-700">{data_mhs_sempro.nama_pembimbing_2}</p>
                     <div className="tw-flex tw-items-center tw-justify-between tw-mt-5">
                         <div className="tw-text-base tw-text-gray-600">
                             <span className="tw-font-semibold tw-text-gray-500">Status</span>
-                            <p className="tw-text-gray-800">{statusTA(data_mhs_ta.acc_pembimbing_dua)}</p>
+                            <p className="tw-text-gray-800">{statusTA(data_mhs_sempro.acc_pembimbing_dua)}</p>
                         </div>
                         <div className="tw-text-base tw-text-gray-600">
                             <span className="tw-font-semibold tw-text-gray-500">Jumlah Bimbingan</span>
@@ -303,15 +305,15 @@ const bimbingan = () => {
                                         icon="pi pi-file"
                                         severity="info"
                                         rounded outlined
-                                        onClick={() => window.open(`/storage/uploads/ta/bimbingan/${data.file_bimbingan}`, '_blank')}
+                                        onClick={() => window.open(`/storage/uploads/sempro/bimbingan/${data.file_bimbingan}`, '_blank')}
                                         tooltip="Lihat File" tooltipOptions={{ position: 'right', mouseTrack: false, mouseTrackRight: 15 }}
                                     />
                                 </>
                             )}
                         />
                         <Column field="nama_dosen" header="Nama Dosen" style={{ width: '20%' }} />
-                        <Column field="status_bimbingan_ta" header="Status Bimbingan" style={{ width: '5%' }} body={(data) => {
-                            const status = String(data.status_bimbingan_ta);
+                        <Column field="status_bimbingan_sempro" header="Status Bimbingan" style={{ width: '5%' }} body={(data) => {
+                            const status = String(data.status_bimbingan_sempro);
                             return status === '1' ? (
                                 <Tag severity="warning">Belum</Tag>
                             ) : status === '2' ? (
@@ -324,7 +326,7 @@ const bimbingan = () => {
                         }
                         } />
                         <Column header="Aksi" style={{ width: '5%' }} body={(data) => {
-                            return data.status_bimbingan_ta !== '1' ? (
+                            return data.status_bimbingan_sempro !== '1' ? (
                                 <Button
                                     icon="pi pi-info-circle"
                                     severity="info"
@@ -361,7 +363,7 @@ const bimbingan = () => {
                         submitted={submitted}
                         bimbinganDialogFooter={bimbinganDialogFooter}
                         hideDialog={hideDialog}
-                        data_mhs_ta={data_mhs_ta}
+                        data_mhs_sempro={data_mhs_sempro}
                     />
 
                     <BimbinganDetail

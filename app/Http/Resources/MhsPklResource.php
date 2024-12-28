@@ -40,9 +40,9 @@ class MhsPklResource extends JsonResource
         }
 
         //Nilai
-        $nilai_pembimbing = PklNilai::where('dosen_id', $this->r_pembimbing->id_dosen)->where('pkl_mhs_id', $this->id_pkl_mhs)->where('sebagai', 'pembimbing')->select('nilai')->first();
-        $nilai_penguji_1 = PklNilai::where('dosen_id', $this->r_pembimbing->id_dosen)->where('pkl_mhs_id', $this->id_pkl_mhs)->where('sebagai', 'penguji')->select('nilai')->first();
-        $nilai_penguji_2 = PklNilai::where('dosen_id', $this->r_penguji->id_dosen)->where('pkl_mhs_id', $this->id_pkl_mhs)->where('sebagai', 'penguji')->select('nilai')->first();
+        $nilai_pembimbing = PklNilai::where('dosen_id', $this->pembimbing_id)->where('pkl_mhs_id', $this->id_pkl_mhs)->where('sebagai', 'pembimbing')->select('nilai')->first();
+        $nilai_penguji_1 = PklNilai::where('dosen_id', $this->pembimbing_id)->where('pkl_mhs_id', $this->id_pkl_mhs)->where('sebagai', 'penguji')->select('nilai')->first();
+        $nilai_penguji_2 = PklNilai::where('dosen_id', $this->penguji_id)->where('pkl_mhs_id', $this->id_pkl_mhs)->where('sebagai', 'penguji')->select('nilai')->first();
         return [
             'id_pkl_mhs' => $this->id_pkl_mhs,
 

@@ -2,10 +2,11 @@ import { usePage } from '@inertiajs/react';
 import React from 'react';
 import Layout from '@/Layouts/layout/layout.jsx';
 import DetailSidang from './component/detailSidang';
+import Bimbingan from './component/bimbingan';
 
 const MhsSemproDetail = () => {
     const { props } = usePage();
-    const { data_sempro } = props;
+    const { data_sempro, data_bimbingan_1, data_bimbingan_2, data_bimbingan, nextNumberBimbingan } = props;
     // console.log("data_sempro", data_sempro);
     const data_sempros = data_sempro[0];
     return (
@@ -38,12 +39,15 @@ const MhsSemproDetail = () => {
                 </div>
                 <div className="tw-w-full sm:tw-max-w-96">
                     <div className="tw-grid tw-gap-4">
-                        <div className="tw-w-full sm:tw-max-w-96">
-                            <div className="tw-grid tw-gap-4">
-                                <div className="tw-col-12">
-                                    <DetailSidang data_sempro={data_sempro} />
-                                </div>
-                            </div>
+                        <div className="tw-col-12">
+                            <Bimbingan data_sempro={data_sempro}
+                                data_bimbingan_1={data_bimbingan_1}
+                                data_bimbingan_2={data_bimbingan_2}
+                                data_bimbingan={data_bimbingan}
+                                nextNumberBimbingan={nextNumberBimbingan} />
+                        </div>
+                        <div className="tw-col-12">
+                            <DetailSidang data_sempro={data_sempro} />
                         </div>
                     </div>
                 </div>

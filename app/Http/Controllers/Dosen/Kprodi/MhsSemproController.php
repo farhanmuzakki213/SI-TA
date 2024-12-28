@@ -40,14 +40,14 @@ class MhsSemproController extends Controller
         // dd($data_sempro, $kaprodi);
         return Inertia::render('main/kaprodi/mhssempro/index', [
             'data_sempro' => MhsSemproResource::collection($data_sempro),
-            'dosenOptions' => Dosen::all()->map(function ($dosen) {
+            'dosenOptions' => Dosen::where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
                     'golongan' => $dosen->golongan_id,
                 ];
             }),
-            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->get()->map(function ($dosen) {
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
@@ -126,7 +126,7 @@ class MhsSemproController extends Controller
         $kaprodi = Pimpinan::where('dosen_id', $id_dosen)->first()->prodi_id;
         return Inertia::render('main/kaprodi/mhssempro/detail', [
             'data_mhs' => MhsSemproResource::collection($data_mhs),
-            'dosenOptions' => Dosen::all()->map(function ($dosen) {
+            'dosenOptions' => Dosen::where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
@@ -142,7 +142,7 @@ class MhsSemproController extends Controller
             })),
             'bookingused' => $RSTterpakai,
             'jambookingused' => $STDosen,
-            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->get()->map(function ($dosen) {
+            'dosenPembimbingOptions' => Dosen::where('prodi_id', $kaprodi)->where('status_dosen', '1')->get()->map(function ($dosen) {
                 return [
                     'value' => $dosen->id_dosen,
                     'label' => $dosen->nama_dosen,
@@ -165,7 +165,7 @@ class MhsSemproController extends Controller
         }
         DB::beginTransaction();
         try {
-            if ($request->status_judul_sempro == '3') {
+            if ($request->status_judul_sempro === '3') {
                 $data_penugasan = [
                     'pembimbing_1_id' => $request->pembimbing_1_id,
                     'pembimbing_2_id' => $request->pembimbing_2_id,

@@ -40,6 +40,24 @@ const detailSempro = ({
         displaySuccessMessage(props.flash?.success);
         displayErrorMessage(props.flash?.error);
 
+        if (msgs.current && data_sempros.status_ver_sempro === '1') {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'error', detail: 'File Proposal Ditolak, Mohon Kirim File Proposal Dengan Benar', closable: true }
+            ]);
+        }
+        if (msgs.current && data_sempros.status_ver_sempro === '2') {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, severity: 'warn', summary: 'Warning', detail: 'Mohon Melakukan Revisi Sebelum Sidang Dimulai !!!', closable: true }
+            ]);
+        }
+        if (msgs.current && data_sempros.status_ver_sempro === '3') {
+            msgs.current.clear();
+            msgs.current.show([
+                { sticky: true, life: 1000, severity: 'success', summary: 'success', detail: 'File Proposal Anda Telah Diverifikasi, Jangan Lewatkan Jadwal Sidang Anda', closable: true },
+            ]);
+        }
         if (msgs.current && data_sempros.status_sempro === '1' && nilaiAkhir() !== null) {
             msgs.current.clear();
             msgs.current.show([
@@ -114,7 +132,7 @@ const detailSempro = ({
             const formData = new FormData();
             formData.append("judul_sempro", sempro.judul_sempro);
             formData.append("file_sempro", sempro.file_sempro);
-            await router.post(`/MhsSempro/${sempro.id_sempro_mhs}/update`, formData, {
+            await router.post(`/MhsSempro/FileUpload/${sempro.id_sempro_mhs}/update`, formData, {
                 _method: 'put',
                 forceFormData: true,
             });
@@ -161,13 +179,13 @@ const detailSempro = ({
                 <div className="tw-flex tw-items-center">
                     <h1 className="tw-text-2xl tw-font-bold tw-text-gray-900">Sidang Details</h1>
                 </div>
-                {data_sempros.status_sempro === '2' && (
+                {data_sempros.acc_pembimbing_satu === '1' && data_sempros.acc_pembimbing_dua === '1' && data_sempros.status_sempro === '2' && (
                     <Button
                         label="Sempro"
                         icon="pi pi-pencil"
                         severity="success"
                         className="mr-2"
-                        tooltip="Ubah Data Sempro"
+                        tooltip={data_sempros.file_sempro === null ? "Upload File" : "Ubah Data Sempro"}
                         tooltipOptions={{ position: 'left', mouseTrack: false, mouseTrackLeft: 15 }}
                         onClick={() => editsempro(data_sempros)}
                     />

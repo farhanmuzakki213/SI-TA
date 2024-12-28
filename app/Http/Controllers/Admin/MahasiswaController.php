@@ -72,7 +72,7 @@ class MahasiswaController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-
+            $user->assignRole('mahasiswa');
             $user_id = $user->id;
 
             Mahasiswa::create([
@@ -142,6 +142,14 @@ class MahasiswaController extends Controller
 
             $mahasiswa = Mahasiswa::findOrFail($id);
             $mahasiswa->update($data);
+            $user = $request->user_id;
+
+            if ($user) {
+                $user->removeRole('mahasiswa');
+                if ($request->status_mahasiswa != 0) {
+                    $user->assignRole('mahasiswa');
+                }
+            }
             DB::commit();
             return to_route('mahasiswa')->with('success', 'Mahasiswa updated successfully');
         } catch (\Exception $e) {
@@ -155,8 +163,18 @@ class MahasiswaController extends Controller
      */
     public function destroy(Mahasiswa $mahasiswa)
     {
-        $mahasiswa->delete();
+        if ($mahasiswa) {
+            $userId = $mahasiswa->user_id;
 
+            if ($userId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->removeRole('mahasiswa');
+                    $user->removeRole('mahasiswa');
+                }
+            }
+            $mahasiswa->delete();
+        }
         return to_route('mahasiswa')->with('success', 'Mahasiswa deleted successfully');
     }
 

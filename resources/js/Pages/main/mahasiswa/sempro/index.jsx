@@ -15,7 +15,6 @@ const index = () => {
         id_sempro_mhs: null,
         mahasiswa_id: data_mahasiswa[0].id_mahasiswa,
         judul_sempro: '',
-        file_sempro: '',
     };
     const data_sempros = data_sempro[0];
     console.log(data_sempro);
@@ -78,9 +77,6 @@ const index = () => {
         const requiredFieldsForUpdate = [
             sempro.judul_sempro,
         ];
-        if (data_sempros.status_judul_sempro === "3") {
-            requiredFieldsForUpdate.push(sempro.file_sempro);
-        }
 
         const isCreating = !sempro.id_sempro_mhs;
         let isValid = true;
@@ -106,16 +102,15 @@ const index = () => {
             const formData = new FormData();
             formData.append("mahasiswa_id", sempro.mahasiswa_id);
             formData.append("judul_sempro", sempro.judul_sempro);
-            formData.append("file_sempro", sempro.file_sempro);
 
             if (isCreating) {
                 formData.append("id_sempro_mhs", nextNumber);
                 // console.log(sempro);
-                await router.post("/MhsSempro/store", formData, {
+                await router.post("/MhsSempro/Judul/store", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
             } else {
-                await router.post(`/MhsSempro/${sempro.id_sempro_mhs}/update`, formData, {
+                await router.post(`/MhsSempro/Judul/${sempro.id_sempro_mhs}/update`, formData, {
                     _method: 'put',
                     forceFormData: true,
                 });
@@ -153,7 +148,7 @@ const index = () => {
     const leftToolbarTemplate = () => {
         return (
             <>
-                {data_pkl[0].status_ver_pkl === "3" ? (
+                {data_pkl[0]?.status_ver_pkl === "3" ? (
                     <Button
                         label="Sempro"
                         icon="pi pi-plus"
@@ -195,7 +190,7 @@ const index = () => {
             </span>
         </div>
     );
-    console.log("test", data_pkl);
+    // console.log("test", data_pkl);
     return (
         <Layout>
             <div className="grid crud-demo">

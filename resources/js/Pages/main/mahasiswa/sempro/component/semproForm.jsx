@@ -56,7 +56,7 @@ const semproForm = ({
             </div>
 
             {/* Upload Dokumen */}
-            {sempro.id_sempro_mhs && sempro.status_judul_sempro === '3' && (
+            {sempro?.id_sempro_mhs && sempro.status_judul_sempro === '3' && (
                 <div className="field">
                     <label htmlFor="file_sempro">Dokumen Sempro</label>
                     <FileUploadC
