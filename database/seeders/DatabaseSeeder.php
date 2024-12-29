@@ -27,12 +27,12 @@ class DatabaseSeeder extends Seeder
         $this->call([RuanganSeeder::class,]);
         $this->call([RoleTempatPklSeeder::class,]);
         $this->call([TempatPklSeeder::class,]);
-        // $this->call([UsulanTempatPklSeeder::class,]);
-        // $this->call([PklMhsSeeder::class,]);
-        // $this->call([LogBookPklSeeder::class,]);
-        // $this->call([BookingSeeder::class,]);
-        // $this->call([PklNilaiSeeder::class,]);
-        // $this->call([SemproMhsSeeder::class,]);
-        // $this->call([TaMhsSeeder::class,]);
+        $this->call([UsulanTempatPklSeeder::class,]);
+        $this->call([PklMhsSeeder::class,]);
+        $this->call([LogBookPklSeeder::class,]);
+        $this->call([BookingSeeder::class,]);
+        $this->call([PklNilaiSeeder::class,]);
+        $this->call([SemproMhsSeeder::class,]);
+        $this->call([TaMhsSeeder::class,]);
     }
 }

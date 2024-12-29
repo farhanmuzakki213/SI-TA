@@ -186,7 +186,7 @@
             margin: 0;
         }
 
-        .signatures .nama_kaprodi {
+        .signatures .nama_kajur {
             margin: 0;
             display: inline-block;
             border-bottom: 1px solid black;
@@ -195,7 +195,7 @@
             text-align: right;
         }
 
-        .signatures .nip_kaprodi {
+        .signatures .nip_kajur {
             margin: 0;
             display: block;
             text-align: right;
@@ -284,60 +284,52 @@
 
             @php
                 $counter = 1;
-                // dd($data_sidang_sempro);
+                // dd($data_sidang_ta);
             @endphp
             <tbody>
 
                 <tr class="table-light">
                     <td class="no">{{ $counter++ }}</td>
-                    <td class="nama_dosen">{{ $data_sidang_sempro->r_pembimbing_1->nama_dosen }}</td>
-                    <td class="nip">{{ $data_sidang_sempro->r_pembimbing_1->nip_dosen }}</td>
-                    <td class="jabatan">Dosen Pembimbing 1</td>
+                    <td class="nama_dosen">{{ $data_sidang_ta->r_pembimbing_1->nama_dosen }}</td>
+                    <td class="nip">{{ $data_sidang_ta->r_pembimbing_1->nip_dosen }}</td>
+                    <td class="jabatan">Pembimbing 1</td>
                 </tr>
 
                 <tr class="table-light">
                     <td class="no">{{ $counter++ }}</td>
-                    <td class="nama_dosen">{{ $data_sidang_sempro->r_pembimbing_2->nama_dosen }}</td>
-                    <td class="nip">{{ $data_sidang_sempro->r_pembimbing_2->nip_dosen }}</td>
-                    <td class="jabatan">Dosen Pembimbing 2</td>
-                </tr>
-
-                <tr class="table-light">
-                    <td class="no">{{ $counter++ }}</td>
-                    <td class="nama_dosen">{{ $data_sidang_sempro->r_penguji->nama_dosen }}</td>
-                    <td class="nip">{{ $data_sidang_sempro->r_penguji->nip_dosen }}</td>
-                    <td class="jabatan">Dosen Penguji</td>
+                    <td class="nama_dosen">{{ $data_sidang_ta->r_pembimbing_2->nama_dosen }}</td>
+                    <td class="nip">{{ $data_sidang_ta->r_pembimbing_2->nip_dosen }}</td>
+                    <td class="jabatan">Pembimbing 2</td>
                 </tr>
             </tbody>
 
         </table><br>
 
         <div style="margin-bottom: 1%;">
-            <font style="font-size: 15px;">Untuk melaksanakan Sidang Seminar Proposal Mahasiswa Jurusan {{$kajur->r_prodi->r_jurusan->nama_jurusan}} yang disebut dibawah ini
-            </font>
+            <font style="font-size: 15px;">Untuk melaksanakan Sidang Tugas Akhir Mahasiswa Jurusan {{$kajur->r_prodi->r_jurusan->nama_jurusan}} yang disebut dibawah ini</font>
         </div>
 
 
 
         <div class="details">
             <table class="details-table" style="padding-left: 20px;">
-                @if ($data_sidang_sempro)
+                @if ($data_sidang_ta)
                     <tr>
                         <td class="label">Nama </td>
-                        <td class="value">: {{ $data_sidang_sempro->r_mahasiswa->nama_mahasiswa }}</td>
+                        <td class="value">: {{ $data_sidang_ta->r_mahasiswa->nama_mahasiswa }}</td>
                     </tr>
                     <tr>
                         <td class="label">NIM</td>
-                        <td class="value">: {{ $data_sidang_sempro->r_mahasiswa->nim_mahasiswa }}</td>
+                        <td class="value">: {{ $data_sidang_ta->r_mahasiswa->nim_mahasiswa }}</td>
                     </tr>
                     <tr>
                         <td class="label">Program Studi</td>
-                        <td class="value">: {{ $data_sidang_sempro->r_mahasiswa->r_kelas->r_prodi->nama_prodi }}
+                        <td class="value">: {{ $data_sidang_ta->r_mahasiswa->r_kelas->r_prodi->nama_prodi }}
                         </td>
                     </tr>
                     <tr>
-                        <td class="label">Judul Proyek SEMPRO</td>
-                        <td class="value">: {{ $data_sidang_sempro->judul_sempro }}</td>
+                        <td class="label">Judul Tugas Akhir</td>
+                        <td class="value">: {{ $data_sidang_ta->judul }}</td>
                     </tr>
                 @endif
             </table>

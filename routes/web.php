@@ -84,6 +84,10 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         Route::post('/MhsTA/Bimbingan/store', [\App\Http\Controllers\Mahasiswa\TAController::class, 'storeBimbingan'])->name('MhsTA.storeBimbingan');
         Route::post('/MhsTA/Bimbingan/{id}/update', [\App\Http\Controllers\Mahasiswa\TAController::class, 'updateBimbingan'])->name('MhsTA.updateBimbingan');
         Route::post('/MhsTA/Berkas/{id}/update', [\App\Http\Controllers\Mahasiswa\TAController::class, 'updateBerkas'])->name('MhsSempro.updateBerkas');
+
+        // Template Surat Revisi TA
+        Route::get('/TemplateRevisi/TA/{id}', [\App\Http\Controllers\SuratTugasController::class, 'revisiTA']);
+        Route::get('/TemplateBeritaAcara/TA/{id}', [\App\Http\Controllers\SuratTugasController::class, 'beritaAcaraTA']);
     });
 });
 
@@ -196,7 +200,8 @@ Route::group(['middleware' => ['role:dosenPembimbing|dosenPenguji|pimpinanProdi'
         // Surat Tugas
         Route::get('/SuratTugas/Pkl/{id}', [\App\Http\Controllers\SuratTugasController::class, 'pkl']);
         Route::get('/SuratTugas/Sempro/{id}', [\App\Http\Controllers\SuratTugasController::class, 'sempro']);
-        Route::get('/SuratTugas/TA/{id}', [\App\Http\Controllers\SuratTugasController::class, 'ta']);
+        Route::get('/SuratTugas/TA/Pembimbing/{id}', [\App\Http\Controllers\SuratTugasController::class, 'taPembimbing']);
+        Route::get('/SuratTugas/TA/Penguji/{id}', [\App\Http\Controllers\SuratTugasController::class, 'taPenguji']);
     });
 });
 

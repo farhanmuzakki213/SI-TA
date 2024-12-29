@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Surat Tugas</title>
+    <title>Revisi Sidang</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
     <style>
@@ -96,12 +96,14 @@
         }
 
         .details-table .label {
-            padding-right: 10px;
+            padding-right: 30px;
             white-space: nowrap;
+            font-size: 15px;
         }
 
         .details-table .value {
-            padding-left: 5px;
+            padding-left: 15px;
+            font-size: 15px;
         }
 
         table .isi {
@@ -163,58 +165,8 @@
 
         .signatures {
             display: flex;
-            justify-content: flex-end;
-            margin-top: 70px;
+            justify-content: center;
             page-break-inside: avoid;
-        }
-
-        .signatures table {
-            border: none;
-            width: 100%;
-        }
-
-        .signatures .left,
-        .signatures .right {
-            width: 50%;
-            text-align: right;
-            border: none;
-            page-break-inside: avoid;
-            white-space: nowrap;
-        }
-
-        .signatures .right p {
-            margin: 0;
-        }
-
-        .signatures .nama_kaprodi {
-            margin: 0;
-            display: inline-block;
-            border-bottom: 1px solid black;
-            padding-bottom: 5px;
-            width: fit-content;
-            text-align: right;
-        }
-
-        .signatures .nip_kaprodi {
-            margin: 0;
-            display: block;
-            text-align: right;
-        }
-
-
-
-        /* .signatures .right p:last-child {
-            padding-top: 10px;
-        } */
-
-        .signatures .center {
-            width: 100%;
-            text-align: center;
-            page-break-inside: avoid;
-        }
-
-        .signatures .center p {
-            page-break-after: avoid;
         }
     </style>
 </head>
@@ -261,127 +213,156 @@
 
     <div class="badan">
         <center>
-            <h2 style="margin: 0;">SURAT TUGAS</h2>
-            <font style="font-size: 15px; margin-top: 0; margin-bottom: 0;">Nomor: . . ./PL9.5/PT/{{ \Carbon\Carbon::now()->format('Y')}}</font>
+            <h2 style="margin: 0;">PERNYATAAN PERBAIKAN TUGAS AKHIR</h2>
         </center>
         <br>
         <div>
-            <font style="font-size: 15px;">Yang bertanda tangan di bawah ini Ketua Jurusan {{$kajur->r_prodi->r_jurusan->nama_jurusan}}
-                menugaskan
-                kepada :</font>
+            <font style="font-size: 15px;">Telah memperbaiki Tugas Akhir sesuai dengan arahan penguji dan pembimbing.
+            </font>
         </div>
         <br>
-
+        <div class="details">
+            <table class="details-table" style="padding-left: 20px;">
+                @if ($data_sidang_ta)
+                    <tr>
+                        <td class="label">Nama </td>
+                        <td>:</td>
+                        <td class="value">{{ $data_sidang_ta->r_mahasiswa->nama_mahasiswa }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">NIM</td>
+                        <td>:</td>
+                        <td class="value">{{ $data_sidang_ta->r_mahasiswa->nim_mahasiswa }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Program Studi</td>
+                        <td>:</td>
+                        <td class="value">{{ $data_sidang_ta->r_mahasiswa->r_kelas->r_prodi->nama_prodi }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Judul Tugas Akhir</td>
+                        <td>:</td>
+                        <td class="value">{{ $data_sidang_ta->judul }}</td>
+                    </tr>
+                @endif
+            </table>
+        </div>
+        <br>
         <table class="isi">
             <thead>
                 <tr class="table-info">
                     <th>No</th>
                     <th>Nama</th>
-                    <th>NIP</th>
                     <th>Jabatan</th>
+                    <th>Tanggal Periksa</th>
+                    <th>Tanda Tangan</th>
                 </tr>
             </thead>
 
             @php
                 $counter = 1;
-                // dd($data_sidang_sempro);
+                // dd($data_sidang_ta);
             @endphp
             <tbody>
-
                 <tr class="table-light">
                     <td class="no">{{ $counter++ }}</td>
-                    <td class="nama_dosen">{{ $data_sidang_sempro->r_pembimbing_1->nama_dosen }}</td>
-                    <td class="nip">{{ $data_sidang_sempro->r_pembimbing_1->nip_dosen }}</td>
-                    <td class="jabatan">Dosen Pembimbing 1</td>
+                    <td class="nama_dosen">{{ $data_sidang_ta->r_ketua->nama_dosen }}</td>
+                    <td class="jabatan">Ketua</td>
+                    <td style="padding: 40px"></td>
+                    <td style="padding: 40px"></td>
                 </tr>
 
                 <tr class="table-light">
                     <td class="no">{{ $counter++ }}</td>
-                    <td class="nama_dosen">{{ $data_sidang_sempro->r_pembimbing_2->nama_dosen }}</td>
-                    <td class="nip">{{ $data_sidang_sempro->r_pembimbing_2->nip_dosen }}</td>
-                    <td class="jabatan">Dosen Pembimbing 2</td>
+                    <td class="nama_dosen">{{ $data_sidang_ta->r_sekretaris->nama_dosen }}</td>
+                    <td class="jabatan">Sekretaris</td>
+                    <td style="padding: 40px"></td>
+                    <td style="padding: 40px"></td>
                 </tr>
 
                 <tr class="table-light">
                     <td class="no">{{ $counter++ }}</td>
-                    <td class="nama_dosen">{{ $data_sidang_sempro->r_penguji->nama_dosen }}</td>
-                    <td class="nip">{{ $data_sidang_sempro->r_penguji->nip_dosen }}</td>
-                    <td class="jabatan">Dosen Penguji</td>
+                    <td class="nama_dosen">{{ $data_sidang_ta->r_penguji_1->nama_dosen }}</td>
+                    <td class="jabatan">Anggota 1</td>
+                    <td style="padding: 40px"></td>
+                    <td style="padding: 40px"></td>
+                </tr>
+
+                <tr class="table-light">
+                    <td class="no">{{ $counter++ }}</td>
+                    <td class="nama_dosen">{{ $data_sidang_ta->r_penguji_2->nama_dosen }}</td>
+                    <td class="jabatan">Anggota 2</td>
+                    <td style="padding: 40px"></td>
+                    <td style="padding: 40px"></td>
+                </tr>
+
+                <tr class="table-light">
+                    <td class="no">{{ $counter++ }}</td>
+                    <td class="nama_dosen">{{ $data_sidang_ta->r_pembimbing_1->nama_dosen }}</td>
+                    <td class="jabatan">Pembimbing 1</td>
+                    <td style="padding: 40px"></td>
+                    <td style="padding: 40px"></td>
+                </tr>
+
+                <tr class="table-light">
+                    <td class="no">{{ $counter++ }}</td>
+                    <td class="nama_dosen">{{ $data_sidang_ta->r_pembimbing_2->nama_dosen }}</td>
+                    <td class="jabatan">Pembimbing 2</td>
+                    <td style="padding: 40px"></td>
+                    <td style="padding: 40px"></td>
                 </tr>
             </tbody>
 
-        </table><br>
-
-        <div style="margin-bottom: 1%;">
-            <font style="font-size: 15px;">Untuk melaksanakan Sidang Seminar Proposal Mahasiswa Jurusan {{$kajur->r_prodi->r_jurusan->nama_jurusan}} yang disebut dibawah ini
-            </font>
-        </div>
-
-
-
-        <div class="details">
-            <table class="details-table" style="padding-left: 20px;">
-                @if ($data_sidang_sempro)
-                    <tr>
-                        <td class="label">Nama </td>
-                        <td class="value">: {{ $data_sidang_sempro->r_mahasiswa->nama_mahasiswa }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">NIM</td>
-                        <td class="value">: {{ $data_sidang_sempro->r_mahasiswa->nim_mahasiswa }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Program Studi</td>
-                        <td class="value">: {{ $data_sidang_sempro->r_mahasiswa->r_kelas->r_prodi->nama_prodi }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label">Judul Proyek SEMPRO</td>
-                        <td class="value">: {{ $data_sidang_sempro->judul_sempro }}</td>
-                    </tr>
-                @endif
-            </table>
-        </div>
-
-        <table class="isi">
-            <thead>
-                <tr class="table-info">
-                    <th>Hari</th>
-                    <th>Tanggal</th>
-                    <th>Jam</th>
-                    <th>Ruangan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-light">
-                    <td class="hari">
-                        {{ \Carbon\Carbon::parse($jadwal_sidang->tgl_booking)->locale('id')->translatedFormat('l') }}
-                    </td>
-                    <td class="tanggal_sidang">
-                        {{ \Carbon\Carbon::parse($jadwal_sidang->tgl_booking)->format('d M Y') }}</td>
-                    <td class="jam">{{ $jadwal_sidang->r_sesi->periode_sesi }}</td>
-                    <td class="ruangan">{{ $jadwal_sidang->r_ruangan->kode_ruangan }}</td>
-                </tr>
-            </tbody>
         </table>
         <br>
-
-
-        <font style="font-size: 15px;">Demikian surat tugas ini dibuat, untuk dapat dilaksanakan sebaik-baiknya</font>
-
         <div class="signatures">
-            <table style="width: 100%;">
+            <table style="width: 100%; font-size: 14px; margin-top: 50px; text-align: left;">
                 <tr>
-                    <td class="right" style="padding-left: 100px;">
-                        <p>Padang, {{ \Carbon\Carbon::parse($jadwal_sidang->created_at)->format('d M Y') }}</p>
-                        <p>Ketua Jurusan {{$kajur->r_prodi->r_jurusan->nama_jurusan}}</p>
-                        <br><br><br><br>
-                        <p class="nama_kajur">{{ $kajur->r_dosen->nama_dosen }}</p>
-                        <p class="nip_kajur">{{ $kajur->r_dosen->nip_dosen }}</p>
+                    <td colspan="2" >
+                        <strong>Diperiksa</strong>
                     </td>
+                    <td colspan="2" >
+                        <strong>Disetujui</strong>
+                    </td>
+                    <td colspan="2" >
+                        <strong>Yang Menyatakan</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Tanggal</td>
+                    <td style="width: 50%;"></td>
+                    <td style="width: 50%;">Tanggal</td>
+                    <td style="width: 50%;"></td>
+                    <td style="width: 50%;">Tanggal</td>
+                    <td style="width: 50%;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Oleh</td>
+                    <td style="width: 50%;"></td>
+                    <td style="width: 50%;">Oleh</td>
+                    <td style="width: 50%;">{{ $kajur->r_dosen->nama_dosen }}</td>
+                    <td style="width: 50%;">Oleh</td>
+                    <td style="width: 50%;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Jabatan</td>
+                    <td style="width: 50%;">Koordinator TA</td>
+                    <td style="width: 50%;">Jabatan</td>
+                    <td style="width: 50%;">Ketua Jurusan</td>
+                    <td style="width: 50%;">Jabatan</td>
+                    <td style="width: 50%;">Mahasiswa</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Tanda Tangan</td>
+                    <td style="width: 50%; padding: 40px;"></td>
+                    <td style="width: 50%;">Tanda Tangan</td>
+                    <td style="width: 50%; padding: 40px;"></td>
+                    <td style="width: 50%;">Tanda Tangan</td>
+                    <td style="width: 50%; padding: 40px;"></td>
                 </tr>
             </table>
         </div>
+
 
 
 </body>

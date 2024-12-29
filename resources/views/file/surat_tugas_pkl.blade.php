@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Surat Tugas PKL</title>
+    <title>Surat Tugas</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
     <style>
@@ -142,6 +142,7 @@
             max-width: 200px;
             overflow: hidden;
             text-align: left;
+            font-size: 15px;
         }
 
         .nip {
@@ -149,6 +150,7 @@
             overflow: hidden;
             text-align: justify;
             word-wrap: break-word;
+            font-size: 15px;
         }
 
         .jabatan {
@@ -156,12 +158,13 @@
             overflow: hidden;
             text-align: justify;
             word-wrap: break-word;
+            font-size: 15px;
         }
 
         .signatures {
             display: flex;
             justify-content: flex-end;
-            margin-top: 10px;
+            margin-top: 70px;
             page-break-inside: avoid;
         }
 
@@ -260,7 +263,7 @@
     <div class="badan">
         <center>
             <h2 style="margin: 0;">SURAT TUGAS</h2>
-            <font style="font-size: 15px; margin-top: 0; margin-bottom: 0;">Nomor: 772/PL9.5/PT/2024</font>
+            <font style="font-size: 15px; margin-top: 0; margin-bottom: 0;">Nomor: . . ./PL9.5/PT/{{ \Carbon\Carbon::now()->format('Y')}}</font>
         </center>
         <br>
         <div>
@@ -348,7 +351,7 @@
                         {{ \Carbon\Carbon::parse($jadwal_sidang->tgl_booking)->locale('id')->translatedFormat('l') }}
                     </td>
                     <td class="tanggal_sidang">
-                        {{ \Carbon\Carbon::parse($jadwal_sidang->tgl_booking)->format('d-m-Y') }}</td>
+                        {{ \Carbon\Carbon::parse($jadwal_sidang->tgl_booking)->format('d M Y') }}</td>
                     <td class="jam">{{ $jadwal_sidang->r_sesi->periode_sesi }}</td>
                     <td class="ruangan">{{ $jadwal_sidang->r_ruangan->kode_ruangan }}</td>
                 </tr>
@@ -363,7 +366,7 @@
             <table style="width: 100%;">
                 <tr>
                     <td class="right" style="padding-left: 100px;">
-                        <p>Padang, 12 November 2024</p>
+                        <p>Padang, {{ \Carbon\Carbon::parse($jadwal_sidang->created_at)->format('d M Y') }}</p>
                         <p>Ketua Prodi</p>
                         <br><br><br><br>
                         <p class="nama_kaprodi">{{ $Kaprodi->r_dosen->nama_dosen }}</p>

@@ -215,6 +215,25 @@ const detailTa = ({
             <Button label="Save" icon="pi pi-check" text onClick={saveta} />
         </>
     );
+
+    const openFile = async () => {
+        try {
+            const url = `/TemplateRevisi/TA/${data_tas.id_ta_mhs}`;
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const openFileBeritaAcara = async () => {
+        try {
+            const url = `/TemplateBeritaAcara/TA/${data_tas.id_ta_mhs}`;
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const tooltip = () => {
         if (data_tas.status_ver_proposal !== '0' && (data_tas.acc_pembimbing_satu === '0' || data_tas.acc_pembimbing_dua === '0')) {
             return 'Upload Berkas Proposal';
@@ -226,8 +245,21 @@ const detailTa = ({
             return 'Upload Berkas Revisi Sidang';
         }
     }
+    console.log('data ta:', data_tas)
 
     const fileButtons = [
+        {
+            show: data_tas?.status_sidang_ta === '3',
+            label: "Template Surat Revisi Tugas Akhir",
+            tooltip: "Download File",
+            onClick: openFile,
+        },
+        {
+            show: data_tas?.status_sidang_ta === '2',
+            label: "Template Berita Acara",
+            tooltip: "Download File",
+            onClick: openFileBeritaAcara,
+        },
         {
             show: data_tas?.file_ta,
             label: "Tugas Akhir",
@@ -250,7 +282,7 @@ const detailTa = ({
         },
         {
             show: data_tas?.file_revisi_sidang,
-            label: "Laporan Revisi",
+            label: "Surat Revisi Tugas Akhir",
             tooltip: "Lihat File",
             onClick: () =>
                 window.open(`/storage/uploads/ta/file_revisi_sidang/${data_tas?.file_revisi_sidang}`, "_blank"),
@@ -304,7 +336,7 @@ const detailTa = ({
                 <Messages ref={msgs} className="tw-mb-2" />
                 <div className="tw-flex tw-justify-between tw-items-center tw-py-2">
                     <div className="tw-flex tw-items-center">
-                        <p class="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
+                        <p className="tw-text-lg tw-font-semibold tw-text-gray-800">Penilaian Tugas Akhir</p>
                     </div>
                 </div>
                 <hr className="tw-my-4" />

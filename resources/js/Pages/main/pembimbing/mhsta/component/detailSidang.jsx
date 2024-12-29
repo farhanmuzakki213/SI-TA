@@ -276,7 +276,7 @@ const detailTa = ({
     );
     const openFile = async () => {
         try {
-            const url = `/SuratTugas/TA/${data_tas.id_ta_mhs}`;
+            const url = `/SuratTugas/TA/Pembimbing/${data_tas.id_ta_mhs}`;
             window.open(url, '_blank');
         } catch (error) {
             console.error(error);

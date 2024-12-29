@@ -346,12 +346,27 @@ const detailTa = ({
     );
     const openFile = async () => {
         try {
-            const url = `/SuratTugas/TA/${data_tas.id_ta_mhs}`;
-            window.open(url, '_blank');
+            const url1 = `/SuratTugas/TA/Penguji/${data_tas.id_ta_mhs}`;
+            const url2 = `/SuratTugas/TA/Pembimbing/${data_tas.id_ta_mhs}`;
+            const firstTab = window.open(url1, '_blank');
+            if (!firstTab) {
+                throw new Error("Failed to open the first tab. Please allow pop-ups.");
+            }
+            await new Promise((resolve) => {
+                setTimeout(resolve, 500);
+            });
+            const secondTab = window.open(url2, '_blank');
+            if (!secondTab) {
+                throw new Error("Failed to open the second tab. Please allow pop-ups.");
+            }
+
+            console.log("Both tabs opened successfully.");
         } catch (error) {
-            console.error(error);
+            console.error("Error opening files:", error);
         }
     };
+
+
 
     const fileButtons = [
         {
