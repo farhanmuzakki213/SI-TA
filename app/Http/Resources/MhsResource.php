@@ -20,6 +20,8 @@ class MhsResource extends JsonResource
             'nama_mahasiswa' => $this->nama_mahasiswa,
             'nim_mahasiswa' => $this->nim_mahasiswa,
             'prodi' => $this->r_kelas->r_prodi->nama_prodi,
+            'gender' => $this->gender,
+            'kelas' => $this->r_kelas->kode_kelas,
             'jenjang' => $this->r_kelas->r_prodi->jenjang,
             'jurusan' => $this->r_kelas->r_prodi->r_jurusan->nama_jurusan,
             'foto_mahasiswa' => $fotoProfile,

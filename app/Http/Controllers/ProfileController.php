@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Resources\DosenResource;
+use App\Http\Resources\MhsResource;
+use App\Models\Dosen;
+use App\Models\Mahasiswa;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,8 +22,21 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $id_user = auth()->user()->id;
+        $id_user_in_dosen = Dosen::select('user_id')->get()->pluck('user_id')->toArray();
+        $id_user_in_mahasiswa = Mahasiswa::select('user_id')->get()->pluck('user_id')->toArray();
+
+        if (in_array($id_user, $id_user_in_dosen)) {
+            $data_user = DosenResource::collection(Dosen::where('user_id', $id_user)->get());
+        } elseif (in_array($id_user, $id_user_in_mahasiswa)) {
+            $data_user = MhsResource::collection(Mahasiswa::where('user_id', $id_user)->with('r_kelas.r_prodi')->get());
+        } else {
+            $data_user = null;
+        }
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'data_user' => $data_user,
             'status' => session('status'),
         ]);
     }

@@ -2,16 +2,19 @@ import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
-import {InputText} from "primereact/inputtext";
+import { InputText } from "primereact/inputtext";
+import { usePermission } from '@/Layouts/layout/composables/permission';
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
     const user = usePage().props.auth.user;
-
+    const { props } = usePage();
+    const { data_user } = props;
+    const { hasRole } = usePermission();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
         email: user.email,
     });
-
+    console.log(data_user)
     const submit = (e) => {
         e.preventDefault();
 
@@ -39,7 +42,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         value={data.name}
                         onChange={(e) => setData('name', e.target.value)}
                     />
-                    <InputError message={errors.email} className=""/>
+                    <InputError message={errors.email} className="" />
                 </div>
 
                 <div className="mb-3">
@@ -52,7 +55,55 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         value={data.email}
                         onChange={(e) => setData('email', e.target.value)}
                     />
-                    <InputError message={errors.email} className=""/>
+                    <InputError message={errors.email} className="" />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="nim" className="block text-900 font-medium mb-2">NIM</label>
+                    <InputText
+                        disabled
+                        id="nim"
+                        type="text"
+                        placeholder="NIM"
+                        className="w-full"
+                        value={data_user[0].nim_mahasiswa}
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="Prodi" className="block text-900 font-medium mb-2">Prodi</label>
+                    <InputText
+                        disabled
+                        id="Prodi"
+                        type="text"
+                        placeholder="Prodi"
+                        className="w-full"
+                        value={data_user[0].prodi}
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="gender" className="block text-900 font-medium mb-2">Gender</label>
+                    <InputText
+                        disabled
+                        id="gender"
+                        type="text"
+                        placeholder="Gender"
+                        className="w-full"
+                        value={data_user[0].gender}
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="kelas" className="block text-900 font-medium mb-2">Kelas</label>
+                    <InputText
+                        disabled
+                        id="kelas"
+                        type="text"
+                        placeholder="Kelas"
+                        className="w-full"
+                        value={data_user[0].kelas}
+                    />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
