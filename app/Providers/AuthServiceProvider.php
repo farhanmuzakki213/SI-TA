@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Dosen;
 use App\Models\Pimpinan;
+use App\Models\User;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -16,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        User::class => UserPolicy::class,
     ];
 
     /**
@@ -31,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
             $jenjangProdi = optional(optional(optional($userWithRelations->mahasiswas)->r_kelas)->r_prodi)->jenjang;
             return $jenjangProdi === $requiredJenjang;
         });
+        Gate::define('loginAsPimpinanProdi', [UserPolicy::class, 'loginAsPimpinanProdi']);
 
         // Gate untuk kaprodi
         Gate::define('access-jenjang-kaprodi', function ($user, $requiredJenjang) {
