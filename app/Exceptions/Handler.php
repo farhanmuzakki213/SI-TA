@@ -2,8 +2,8 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -23,8 +23,32 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (ApiException $e, $request) {
+            return response()->json([
+                'error' => [
+                    'message' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                ]
+            ], $e->getCode());
+        });
+
+        $this->renderable(function (InvalidCredentialsException $e, $request) {
+            return response()->json([
+                'error' => [
+                    'message' => $e->getMessage(),
+                    'code' => 401,
+                ]
+            ], 401);
+        });
+
+        // Tambahkan handler untuk UnauthorizedRoleException
+        $this->renderable(function (UnauthorizedRoleException $e, $request) {
+            return response()->json([
+                'error' => [
+                    'message' => $e->getMessage(),
+                    'code' => 403,
+                ]
+            ], 403);
         });
     }
 }
