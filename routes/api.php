@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingControler;
+use App\Http\Controllers\Api\PklMhsController;
+use App\Http\Controllers\Api\SemproMhsController;
+use App\Http\Controllers\Api\TaMhsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +32,21 @@ Route::prefix('mobile/v1')->group(function () {
 
     Route::middleware('auth:api')->group(function () {
         Route::apiResource('bookings', BookingControler::class);
+
+        Route::prefix('pkl-mahasiswa')->group(function () {
+            Route::get('/', [PklMhsController::class, 'index']);
+            Route::get('/{id}', [PklMhsController::class, 'show']);
+        });
+
+        Route::prefix('sempro-mahasiswa')->group(function () {
+            Route::get('/', [SemproMhsController::class, 'index']);
+            Route::get('/{id}', [SemproMhsController::class, 'show']);
+        });
+
+        Route::prefix('ta-mahasiswa')->group(function () {
+            Route::get('/', [TaMhsController::class, 'index']);
+            Route::get('/{id}', [TaMhsController::class, 'show']);
+        });
     });
 });
 

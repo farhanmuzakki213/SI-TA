@@ -16,6 +16,22 @@ class TaMhs extends Model
     ];
     protected $table = 'ta_mhs';
     protected $primaryKey = 'id_ta_mhs';
+
+    public function scopeComplete($query)
+    {
+        return $query->whereNotNull('pembimbing_1_id')
+            ->whereNotNull('pembimbing_2_id')
+            ->whereNotNull('penguji_1_id')
+            ->whereNotNull('penguji_2_id')
+            ->whereNotNull('ketua_id')
+            ->whereNotNull('sekretaris_id')
+            ->whereHas('r_pembimbing_1')
+            ->whereHas('r_pembimbing_2')
+            ->whereHas('r_penguji_1')
+            ->whereHas('r_penguji_2')
+            ->whereHas('r_ketua')
+            ->whereHas('r_sekretaris');
+    }
     public function r_pembimbing_1()
     {
         return $this->belongsTo(Dosen::class, 'pembimbing_1_id');
