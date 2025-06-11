@@ -14,6 +14,18 @@ class SemproMhs extends Model
     ];
     protected $table = 'sempro_mhs';
     protected $primaryKey = 'id_sempro_mhs';
+
+    protected $with = ['r_mahasiswa', 'r_pembimbing_1', 'r_pembimbing_2', 'r_penguji'];
+
+    public function scopeComplete($query)
+    {
+        return $query->whereNotNull('pembimbing_1_id')
+            ->whereNotNull('pembimbing_2_id')
+            ->whereNotNull('penguji_id')
+            ->whereHas('r_pembimbing_1')
+            ->whereHas('r_pembimbing_2')
+            ->whereHas('r_penguji');
+    }
     public function r_pembimbing_1()
     {
         return $this->belongsTo(Dosen::class, 'pembimbing_1_id');

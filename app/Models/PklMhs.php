@@ -15,6 +15,16 @@ class PklMhs extends Model
     protected $table = 'pkl_mhs';
     protected $primaryKey = 'id_pkl_mhs';
 
+    protected $with = ['r_usulan', 'r_pembimbing', 'r_penguji'];
+
+    public function scopeComplete($query)
+    {
+        return $query->whereNotNull('pembimbing_id')
+            ->whereNotNull('penguji_id')
+            ->whereHas('r_pembimbing')
+            ->whereHas('r_penguji');
+    }
+
     public function r_usulan()
     {
         return $this->belongsTo(UsulanTempatPkl::class, 'usulan_tempat_pkl_id');
