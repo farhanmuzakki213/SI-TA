@@ -28,6 +28,7 @@ class BookingResource extends JsonResource
             'mahasiswa' => [
                 'id' => $this->r_mahasiswa->id_mahasiswa,
                 'nama' => $this->r_mahasiswa->nama_mahasiswa,
+                'nim' => $this->r_mahasiswa->nim_mahasiswa,
                 // Add other student fields as needed
             ],
             'tipe' => $this->tipe,
