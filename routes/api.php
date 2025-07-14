@@ -30,7 +30,7 @@ Route::prefix('mobile')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])
         ->middleware(['auth:sanctum', 'throttle:10,1']);
 
-    Route::middleware('auth:api')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('bookings', BookingControler::class);
 
         Route::prefix('pkl-mahasiswa')->group(function () {
