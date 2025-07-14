@@ -14,7 +14,6 @@ class JurusanSeeder extends Seeder
      */
     public function run(): void
     {
-        Jurusan::truncate();
 
         // Siapkan data dalam bentuk array
         $data = [
