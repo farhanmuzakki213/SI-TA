@@ -14,8 +14,6 @@ class JurusanSeeder extends Seeder
      */
     public function run(): void
     {
-        Jurusan::truncate();
-
         $data = [
             ['id_jurusan' => '1', 'kode_jurusan' => 'AN', 'nama_jurusan' => 'Administrasi Niaga'],
             ['id_jurusan' => '2', 'kode_jurusan' => 'AK', 'nama_jurusan' => 'Akuntansi'],
@@ -25,7 +23,6 @@ class JurusanSeeder extends Seeder
             ['id_jurusan' => '6', 'kode_jurusan' => 'SP', 'nama_jurusan' => 'Teknik Sipil'],
             ['id_jurusan' => '7', 'kode_jurusan' => 'TI', 'nama_jurusan' => 'Teknologi Informasi'],
         ];
-
         Jurusan::insert($data);
     }
 }
