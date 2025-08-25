@@ -14,8 +14,6 @@ class JurusanSeeder extends Seeder
      */
     public function run(): void
     {
-
-        // Siapkan data dalam bentuk array
         $data = [
             ['id_jurusan' => '1', 'kode_jurusan' => 'AN', 'nama_jurusan' => 'Administrasi Niaga'],
             ['id_jurusan' => '2', 'kode_jurusan' => 'AK', 'nama_jurusan' => 'Akuntansi'],
